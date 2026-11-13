@@ -1,0 +1,132 @@
+# ID | 中文 | English
+# 缩进定义父类。每家企业只落入一个三级类。
+ef-consumer | 消费 | Consumption
+  ef-consumer-staples | 必需消费品 | Consumer staples
+    ef-food | 食品与调味品 | Food and seasonings
+    ef-beverages | 非酒精饮料 | Non-alcoholic beverages
+    ef-alcohol | 酒类 | Alcoholic beverages
+    ef-tobacco | 烟草 | Tobacco
+    ef-personal | 个护、美妆与家清 | Personal care, beauty and home care
+  ef-consumer-durables | 可选消费品 | Consumer durables and discretionary goods
+    ef-devices | 消费电子与可穿戴 | Consumer electronics and wearables
+    ef-appliances | 家电与家用设备 | Home appliances and equipment
+    ef-passenger-cars | 乘用车 | Passenger vehicles
+    ef-mobility | 两轮与个人出行装备 | Two-wheelers and personal mobility equipment
+    ef-apparel | 服装、鞋履与配饰 | Apparel, footwear and accessories
+    ef-luxury | 奢侈品与珠宝 | Luxury and jewelry
+    ef-home-goods | 家具家居 | Furniture and home goods
+    ef-sport-goods | 运动与文娱用品 | Sporting and leisure goods
+    ef-housing | 住宅开发与销售 | Homebuilding and home sales
+  ef-consumer-experiences | 消费服务 | Consumer services
+    ef-restaurants | 餐饮 | Restaurants
+    ef-travel | 酒店、旅游与度假 | Lodging, travel and holidays
+    ef-education | 教育与职业培训 | Education and vocational training
+    ef-leisure | 现场文体、娱乐与本地生活 | Live entertainment, recreation and local services
+  ef-consumer-retail | 零售与渠道 | Consumer retail and distribution
+    ef-general-retail | 商超、便利与折扣 | Supermarkets, convenience and discount retail
+    ef-online-retail | 自营与混合电商 | Inventory-led and hybrid e-commerce
+    ef-specialty-retail | 专业零售与门店 | Specialty retail and stores
+    ef-auto-retail | 汽车零售与售后 | Vehicle retail and aftermarket
+ef-tools | 生产工具 | Production tools
+  ef-tool-machinery | 机械与工业自动化 | Machinery and industrial automation
+    ef-heavy-machinery | 工程与物料搬运机械 | Construction and handling machinery
+    ef-farm-machinery | 农林机械 | Farm and forestry machinery
+    ef-general-machinery | 通用机械与工业部件 | General machinery and industrial components
+    ef-automation | 工业自动化与机器人 | Automation and robotics
+    ef-special-machinery | 专用生产设备 | Specialized production machinery
+  ef-tool-semiconductors | 半导体与电子元件 | Semiconductors and electronic components
+    ef-chip-design | 芯片设计与 IP | Chip design and IP
+    ef-chip-integrated | IDM 与存储芯片 | Integrated chipmakers and memory
+    ef-chip-foundry | 晶圆代工与封装测试 | Foundries and outsourced assembly and testing
+    ef-chip-equipment | 半导体设备 | Semiconductor equipment
+    ef-electronics-components | 元件、模组与电子代工 | Components, modules and electronics manufacturing
+  ef-tool-digital | 计算与软件工具 | Computing and software tools
+    ef-compute | 服务器、存储与计算硬件 | Servers, storage and computing hardware
+    ef-network-equipment | 通信与网络设备 | Communications and networking hardware
+    ef-software | 企业应用与生产软件 | Enterprise and production software
+    ef-software-infra | 基础软件、数据与开发工具 | Infrastructure software, data and developer tools
+    ef-cyber | 网络安全工具 | Cybersecurity products
+  ef-tool-energy | 电气与能源装备 | Electrical and energy equipment
+    ef-batteries | 动力与储能电池 | Power and storage batteries
+    ef-renewables-equipment | 光伏、风电与储能装备 | Solar, wind and storage equipment
+    ef-grid-equipment | 电网与电气设备 | Grid and electrical equipment
+  ef-tool-transport | 交通装备与零部件 | Transport equipment and parts
+    ef-commercial-vehicles | 商用车与动力总成 | Commercial vehicles and powertrains
+    ef-auto-parts | 汽车零部件与轮胎 | Automotive parts and tires
+    ef-ships | 船舶与海工装备 | Ships and offshore equipment
+    ef-rail-equipment | 轨道装备 | Rail equipment
+    ef-aerospace | 航空航天与防务装备 | Aerospace and defense equipment
+  ef-tool-professional | 专业设备与耗材 | Professional equipment and supplies
+    ef-instruments | 检测、实验与测量仪器 | Testing, lab and measurement instruments
+    ef-industrial-supplies | 工业工具、耗材与设施设备 | Industrial tools, supplies and facilities equipment
+ef-materials | 源材料 | Primary resources and materials
+  ef-material-energy | 化石能源与炼化原料 | Fossil energy and refinery feedstocks
+    ef-oil-gas | 油气开采与一体化油气 | Oil and gas extraction and integrated energy
+    ef-coal | 煤炭及其他固体燃料 | Coal and other solid fuels
+    ef-refining | 炼油与基础燃料 | Refining and basic fuels
+  ef-material-metals | 金属矿产与冶炼 | Metal ores and smelting
+    ef-iron-steel | 铁矿与钢铁 | Iron ore and steel
+    ef-base-metals | 铜、铝与其他基础金属 | Copper, aluminum and other base metals
+    ef-precious-metals | 贵金属 | Precious metals
+    ef-critical-metals | 锂、稀土与关键矿物 | Lithium, rare earths and critical minerals
+  ef-material-building | 非金属矿与基础建材 | Non-metallic minerals and basic building materials
+    ef-cement | 水泥、石料与砂石 | Cement, aggregates and stone
+    ef-glass | 玻璃、玻纤与陶瓷材料 | Glass, fiberglass and ceramics
+    ef-construction-materials | 通用建筑材料与型材 | General building materials and sections
+  ef-material-chemical | 化工与基础工业材料 | Chemicals and industrial materials
+    ef-basic-chemicals | 基础化工、树脂与橡胶 | Basic chemicals, resins and rubber
+    ef-agri-chemicals | 肥料与农业化学品 | Fertilizers and agricultural chemicals
+    ef-special-chemicals | 涂料与特种化学材料 | Coatings and specialty chemicals
+    ef-energy-materials | 电子与新能源材料 | Electronics and energy materials
+    ef-paper-packaging | 纸浆、纸张与标准包装材料 | Pulp, paper and standard packaging
+    ef-textile-inputs | 纤维、纱线与面料 | Fibers, yarn and fabric
+  ef-material-agriculture | 农林牧渔原料 | Agricultural, forestry and fishery inputs
+    ef-crops | 谷物、油料、种子与初加工 | Crops, oilseeds, seeds and primary processing
+    ef-livestock | 畜禽、饲料与水产养殖 | Livestock, feed and aquaculture
+    ef-timber | 林业、原木与初级木材 | Forestry, logs and primary lumber
+ef-services | 服务／金融／医疗 | Services, finance and healthcare
+  ef-service-finance | 金融服务 | Financial services
+    ef-banks | 银行与存贷 | Banks, deposits and lending
+    ef-insurance | 保险与再保险 | Insurance and reinsurance
+    ef-investment | 投行、券商与交易所 | Investment banking, brokerage and exchanges
+    ef-asset-management | 资管与另类投资 | Asset management and alternatives
+    ef-payments | 支付与金融服务平台 | Payments and financial platforms
+  ef-service-health | 医疗健康 | Healthcare
+    ef-pharma | 制药、生物技术与疫苗 | Pharma, biotech and vaccines
+    ef-medical-devices | 医疗器械、诊断产品与视光 | Medical devices, diagnostic products and optics
+    ef-care | 医院、诊所与专科照护 | Hospitals, clinics and specialist care
+    ef-diagnostic-services | 医学检验与健康管理 | Medical testing and health management
+    ef-health-distribution | 医药流通与零售药房 | Pharmaceutical distribution and pharmacies
+    ef-health-research | 医药研发、试验与生产外包 | Life sciences research, trials and contract manufacturing
+    ef-managed-care | 医疗保障与综合健康管理 | Managed care and integrated health plans
+  ef-service-business | 商业与专业服务 | Business and professional services
+    ef-consulting | 专业咨询、检测与商业信息 | Consulting, testing and business information
+    ef-business-support | 外包、人力、租赁与运营支持 | Outsourcing, staffing, leasing and operations support
+    ef-b2b-distribution | 工商业分销与贸易 | Business distribution and trading
+    ef-marketing | 广告、营销与交易推广 | Advertising and marketing
+    ef-oilfield-services | 油田及能源工程服务 | Oilfield and energy services
+    ef-diversified | 多元经营与控股 | Diversified operations and holdings
+  ef-service-logistics | 运输网络与物流 | Transportation networks and logistics
+    ef-freight | 公路铁路货运与仓配 | Road and rail freight, storage and fulfillment
+    ef-courier | 快递与邮政 | Courier and postal services
+    ef-shipping | 海运与港口 | Shipping and ports
+    ef-airlines | 航空运输与机场 | Airlines and airports
+    ef-passenger-transit | 铁路客运与公共交通 | Passenger rail and public transport
+  ef-service-it | 数字基础设施与 IT 服务 | Digital infrastructure and IT services
+    ef-cloud | 云、IDC、CDN 与托管 | Cloud, data centers, CDN and hosting
+    ef-it-services | IT 外包、集成与托管运维 | IT outsourcing, integration and managed operations
+    ef-telecom | 电信运营与通信基础设施 | Telecom operators and communications infrastructure
+  ef-service-utilities | 公用事业与环保 | Utilities and environmental services
+    ef-electric-utilities | 发电与供电 | Power generation and utilities
+    ef-gas-utilities | 管网、输气与燃气供应 | Gas networks and distribution
+    ef-water | 供水与污水处理 | Water and wastewater
+    ef-waste | 固废、回收与环境治理 | Waste, recycling and remediation
+  ef-service-platforms | 平台与数字内容 | Platforms and digital content
+    ef-marketplaces | 交易撮合与本地平台 | Marketplaces and local platforms
+    ef-social-search | 搜索、社交与广告平台 | Search, social and ad platforms
+    ef-media | 出版、视听与流媒体 | Publishing, audiovisual media and streaming
+    ef-games | 游戏与互动内容 | Games and interactive content
+  ef-service-property | 工程与不动产运营 | Engineering and real asset operations
+    ef-construction | 工程建设与专业承包 | Engineering, construction and contracting
+    ef-property-assets | 商业地产、出租与物业管理 | Commercial real estate, leasing and facilities
+    ef-property-brokerage | 房地产经纪及服务 | Real estate brokerage and services

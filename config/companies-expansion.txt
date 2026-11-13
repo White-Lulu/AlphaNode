@@ -1,0 +1,82 @@
+
+# Additional representative issuers, with priority for uncovered industries and economies
+011|Farming/Agriculture|CRESY:AR|000998.SZ 600354.SH
+014|Farming/Agriculture||300761.SZ
+072|Metals & Mining|HMY:ZA|000975.SZ
+103|Food Processing||605089.SH
+104|Food Processing||300999.SZ 600127.SH
+107|Food Processing||002557.SZ 603866.SH
+110|Beverage (Soft)|KOF:MX|605388.SH
+131|Apparel||600987.SH
+139|Apparel||002083.SZ 605003.SH
+143|Apparel||603365.SH
+151|Apparel||002345.SZ 603900.SH
+161|Paper/Forest Products||000910.SZ
+162|Furn/Home Furnishings||002043.SZ 603801.SH
+181|Packaging & Container||603058.SH 301062.SZ
+192|Oil/Gas (Integrated)|SSL:ZA|000703.SZ
+201|Chemical (Basic)|BAK:BR|600160.SH 600596.SH
+202|Chemical (Specialty)||300285.SZ 603605.SH
+210|Drugs (Pharmaceutical)|ZTS:US ELAN:US|688235.SH 688266.SH 002422.SZ 300142.SZ
+221|Rubber& Tires||600469.SH 601500.SH
+222|Chemical (Specialty)||002108.SZ
+231|Building Materials||600176.SH
+239|Building Materials|CPAC:PE|000786.SZ 002271.SZ
+243|Metals & Mining||603348.SH
+251|Construction Supplies||600496.SH 002135.SZ
+261|Semiconductor|MRVL:US MPWR:US LSCC:US ALGM:US DIOD:US POWI:US CRDO:US ALAB:US|688396.SH 688008.SH 688521.SH 688099.SH 688385.SH 688041.SH
+263|Telecom. Equipment|ANET:US|300308.SZ 300502.SZ 300394.SZ
+265|Electronics (General)|A:US WAT:US BRKR:US|002236.SZ
+271|Electrical Equipment|VRT:US EMR:US|688390.SH 300274.SZ
+261|Green & Renewable Energy||601012.SH 002129.SZ 688599.SH 688223.SH
+272|Electrical Equipment||300207.SZ 300073.SZ
+275|Household Products||002508.SZ 002242.SZ 603486.SH 688169.SH
+281|Machinery|PH:US ITW:US TT:IE IR:US XYL:US PNR:GB CARR:US|601100.SH 688017.SH 002747.SZ 002050.SZ
+282|Semiconductor Equip|ONTO:US ENTG:US|688120.SH 688037.SH 688361.SH
+293|Auto Parts|DORM:US|002920.SZ 002906.SZ 603179.SH 601799.SH
+303|Aerospace/Defense||600893.SH 600862.SH
+310|Furn/Home Furnishings||300616.SZ
+325|Healthcare Products|TMO:US DHR:US RMD:US DXCM:US PODD:US ALC:CH BIO:US TFX:US|300896.SZ 300595.SZ
+351|Power|PAM:AR|600025.SH 600905.SH 601016.SH 003816.SZ
+352|Oil/Gas Distribution|TGS:AR|605090.SH
+370|Utility (Water)||300070.SZ 600323.SH
+381|Environmental & Waste Services||603568.SH 601827.SH
+390|Environmental & Waste Services||002340.SZ
+410|Homebuilding|MTH:US MHO:US GRBK:US|
+422|Engineering/Construction||601669.SH 600502.SH
+432|Engineering/Construction||002121.SZ
+453|Retail (Automotive)|GPC:US|
+465|Retail (Distributors)|FERG:US AIT:US|600153.SH
+466|Retail (Distributors)||600755.SH 600057.SH
+471|Retail (Grocery and Food)|FMX:MX|605188.SH
+477|Retail (Special Lines)||603233.SH 002727.SZ
+479|Retail (General)|CART:US|600415.SH
+492|Transportation|UBER:US LYFT:US|603569.SH
+501|Shipbuilding & Marine|CCL:US RCL:US NCLH:US|600428.SH
+522|Transportation|CAAP:AR|601298.SH 001872.SZ
+531|Transportation||603056.SH
+582|Software (System & Application)|CDNS:US SNPS:US ZM:US TEAM:US HUBS:US DOCU:US PLTR:US SNOW:US MDB:US DDOG:US GTLB:US TTWO:US PAYC:US PCTY:US|688083.SH 688777.SH 300253.SZ
+592|Entertainment|SPOT:SE|
+611|Telecom. Services|NTTYY:JP TEO:AR|
+620|Computer Services|FTNT:US CRWD:US PANW:US ZS:US OKTA:US|002439.SZ 688561.SH
+631|Software (Internet)|NET:US VNET:CN GDS:CN RBLX:US|300017.SZ 300413.SZ 600845.SH
+641|Bank (Money Center)|COF:US ALLY:US SOFI:US BMA:AR GGAL:AR AVAL:CO|601838.SH 601229.SH 601009.SH 002142.SZ
+642|Diversified|SFTBF:JP|
+649|Financial Svcs. (Non-bank & Insurance)|AXP:US AFRM:US UPST:US|
+651|Insurance (General)|WRB:US TRUP:US|
+652|Reinsurance|RNR:BM EG:BM|
+661|Brokerage & Investment Banking|HOOD:US COIN:US|600999.SH 601211.SH 601066.SH
+661|Financial Svcs. (Non-bank & Insurance)|V:US MA:US PYPL:US XYZ:US DLO:UY STNE:BR PAGS:BR JKHY:US FIS:US GPN:US|300773.SZ
+681|R.E.I.T.|PLD:US PSA:US SPG:US AMT:US O:US DLR:US WELL:US|
+681|Real Estate (Development)|IRS:AR|600606.SH
+682|Real Estate (Operations & Services)||002285.SZ
+711|Engineering/Construction||300284.SZ 603018.SH
+323|Recreation||300725.SZ
+731|Advertising|APP:US|300785.SZ
+750|Healthcare Support Services|IDXX:US|
+773|Machinery||603300.SH
+801|Business & Consumer Services|ADT:US|
+854|Education|DUOL:US COUR:US PRDO:US|
+862|Hospitals/Healthcare Facilities||600763.SH 301267.SZ
+869|Healthcare Support Services||300676.SZ
+931|Recreation||600158.SH

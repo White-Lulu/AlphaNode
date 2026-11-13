@@ -1,0 +1,338 @@
+[
+  [
+    "00001",
+    "长和",
+    "CK Hutchison Holdings",
+    "642",
+    "Diversified",
+    "HK"
+  ],
+  [
+    "00002",
+    "中电控股",
+    "CLP Holdings",
+    "351",
+    "Power",
+    "HK"
+  ],
+  [
+    "00003",
+    "香港中华煤气",
+    "Hong Kong and China Gas",
+    "352",
+    "Oil/Gas Distribution",
+    "HK"
+  ],
+  [
+    "00006",
+    "电能实业",
+    "Power Assets Holdings",
+    "351",
+    "Power",
+    "HK"
+  ],
+  [
+    "00012",
+    "恒基地产",
+    "Henderson Land Development",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00016",
+    "新鸿基地产",
+    "Sun Hung Kai Properties",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00017",
+    "新世界发展",
+    "New World Development",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00066",
+    "港铁公司",
+    "MTR Corporation",
+    "491",
+    "Transportation (Railroads)",
+    "HK"
+  ],
+  [
+    "00083",
+    "信和置业",
+    "Sino Land",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00101",
+    "恒隆地产",
+    "Hang Lung Properties",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00178",
+    "莎莎国际",
+    "Sa Sa International",
+    "477",
+    "Retail (Special Lines)",
+    "HK"
+  ],
+  [
+    "00293",
+    "国泰航空",
+    "Cathay Pacific Airways",
+    "511",
+    "Air Transport",
+    "HK"
+  ],
+  [
+    "00303",
+    "伟易达",
+    "VTech Holdings",
+    "264",
+    "Electronics (Consumer & Office)",
+    "HK"
+  ],
+  [
+    "00388",
+    "香港交易所",
+    "Hong Kong Exchanges and Clearing",
+    "661",
+    "Brokerage & Investment Banking",
+    "HK"
+  ],
+  [
+    "00669",
+    "创科实业",
+    "Techtronic Industries",
+    "281",
+    "Machinery",
+    "HK"
+  ],
+  [
+    "00823",
+    "领展房产基金",
+    "Link Real Estate Investment Trust",
+    "681",
+    "R.E.I.T.",
+    "HK"
+  ],
+  [
+    "01113",
+    "长实集团",
+    "CK Asset Holdings",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "01299",
+    "友邦保险",
+    "AIA Group",
+    "651",
+    "Insurance (Life)",
+    "HK"
+  ],
+  [
+    "01972",
+    "太古地产",
+    "Swire Properties",
+    "681",
+    "Real Estate (Development)",
+    "HK"
+  ],
+  [
+    "00700",
+    "腾讯控股",
+    "Tencent",
+    "631",
+    "Software (Internet)",
+    "CN"
+  ],
+  [
+    "03690",
+    "美团",
+    "Meituan",
+    "631",
+    "Software (Internet)",
+    "CN"
+  ],
+  [
+    "01810",
+    "小米集团",
+    "Xiaomi",
+    "264",
+    "Electronics (Consumer & Office)",
+    "CN"
+  ],
+  [
+    "01024",
+    "快手",
+    "Kuaishou",
+    "631",
+    "Software (Internet)",
+    "CN"
+  ],
+  [
+    "00992",
+    "联想集团",
+    "Lenovo Group",
+    "262",
+    "Computers/Peripherals",
+    "CN"
+  ],
+  [
+    "02269",
+    "药明生物",
+    "WuXi Biologics",
+    "210",
+    "Drugs (Biotechnology)",
+    "CN"
+  ],
+  [
+    "00960",
+    "龙湖集团",
+    "Longfor Group",
+    "681",
+    "Real Estate (Development)",
+    "CN"
+  ],
+  [
+    "01109",
+    "华润置地",
+    "China Resources Land",
+    "681",
+    "Real Estate (Development)",
+    "CN"
+  ],
+  [
+    "01997",
+    "九龙仓置业",
+    "Wharf Real Estate Investment",
+    "681",
+    "Real Estate (Operations & Services)",
+    "HK"
+  ],
+  [
+    "00019",
+    "太古股份",
+    "Swire Pacific",
+    "642",
+    "Diversified",
+    "HK"
+  ],
+  [
+    "00011",
+    "恒生银行",
+    "Hang Seng Bank",
+    "641",
+    "Bank (Money Center)",
+    "HK"
+  ],
+  [
+    "02388",
+    "中银香港",
+    "BOC Hong Kong",
+    "641",
+    "Bank (Money Center)",
+    "HK"
+  ],
+  [
+    "02313",
+    "申洲国际",
+    "Shenzhou International",
+    "143",
+    "Apparel",
+    "CN"
+  ],
+  [
+    "02020",
+    "安踏体育",
+    "ANTA Sports",
+    "152",
+    "Shoe",
+    "CN"
+  ],
+  [
+    "02331",
+    "李宁",
+    "Li Ning",
+    "152",
+    "Shoe",
+    "CN"
+  ],
+  [
+    "01458",
+    "周黑鸭",
+    "Zhou Hei Ya",
+    "101",
+    "Food Processing",
+    "CN"
+  ],
+  [
+    "09633",
+    "农夫山泉",
+    "Nongfu Spring",
+    "110",
+    "Beverage (Soft)",
+    "CN"
+  ],
+  [
+    "00291",
+    "华润啤酒",
+    "China Resources Beer",
+    "110",
+    "Beverage (Alcoholic)",
+    "CN"
+  ],
+  [
+    "00220",
+    "统一企业中国",
+    "Uni-President China",
+    "107",
+    "Food Processing",
+    "CN"
+  ],
+  [
+    "00322",
+    "康师傅控股",
+    "Tingyi",
+    "107",
+    "Food Processing",
+    "CN"
+  ],
+  [
+    "01044",
+    "恒安国际",
+    "Hengan International",
+    "170",
+    "Paper/Forest Products",
+    "CN"
+  ],
+  [
+    "00868",
+    "信义玻璃",
+    "Xinyi Glass",
+    "231",
+    "Building Materials",
+    "CN"
+  ],
+  [
+    "01099",
+    "国药控股",
+    "Sinopharm Group",
+    "464",
+    "Retail (Distributors)",
+    "CN"
+  ]
+]

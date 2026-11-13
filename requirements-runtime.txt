@@ -1,0 +1,3 @@
+# DuckDB and Crible power the local advanced expression filter.
+duckdb>=1.2,<2
+pandas>=3,<4

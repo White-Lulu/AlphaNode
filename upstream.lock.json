@@ -1,0 +1,61 @@
+[
+  {
+    "checkout": "upstream/crible",
+    "repository": "https://github.com/maxgfr/crible",
+    "commit": "6a3e9ca95e023409a2eac88c6c5fbb1e718092f0",
+    "license": "MIT",
+    "used": [
+      "src/crible/dsl",
+      "src/crible/compute/scores.py"
+    ]
+  },
+  {
+    "checkout": "upstream/financetoolkit",
+    "repository": "https://github.com/JerBouma/FinanceToolkit",
+    "commit": "375f820d8f84e90e2f42f5d413ed67056cbd4256",
+    "license": "MIT",
+    "used": [
+      "financetoolkit/models/dupont_model.py",
+      "financetoolkit/models/altman_model.py"
+    ]
+  },
+  {
+    "checkout": "upstream/financedatabase",
+    "repository": "https://github.com/JerBouma/FinanceDatabase",
+    "commit": "1ac8809da4801a717541a92bb00278d4d444e240",
+    "license": "MIT",
+    "used": [
+      "financedatabase/listings_model.py",
+      "compression/equities.parquet (pinned data URL)"
+    ]
+  },
+  {
+    "checkout": "upstream/akshare",
+    "repository": "https://github.com/akfamily/akshare",
+    "commit": "f5324effb9419cba50bba423b4bd33073c79bdc2",
+    "license": "MIT",
+    "used": [
+      "akshare/stock/finance/stock_finance_hk_em.py"
+    ]
+  },
+  {
+    "checkout": "upstream/openbb",
+    "repository": "https://github.com/openbq-org/OpenBB",
+    "commit": "11290d8b468570cea64b5feb0225ad9cbf5228e0",
+    "license": "Apache-2.0",
+    "used": [
+      "openbb_platform/core",
+      "openbb_platform/providers/federal_reserve/openbb_federal_reserve/models/treasury_rates.py",
+      "openbb_platform/providers/ecb/openbb_ecb/utils/yield_curve_series.py"
+    ]
+  },
+  {
+    "checkout": "upstream/superset",
+    "repository": "https://github.com/apache/superset",
+    "commit": "14365bbebd3ecfb3d9a0c1304908248d5fbeb3d4",
+    "license": "Apache-2.0",
+    "used": [
+      "superset-frontend/plugins/plugin-chart-echarts/src/Timeseries/percentChange.ts"
+    ]
+  }
+]

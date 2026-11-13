@@ -1,0 +1,81 @@
+# 三级经济功能类 | ISIC Rev.4 组代码，或大类代码作为回填
+ef-food | 10
+ef-beverages | 11
+ef-tobacco | 12
+ef-apparel | 14 15
+ef-home-goods | 31
+ef-luxury | 321
+ef-sport-goods | 322 323 324
+ef-devices | 264
+ef-appliances | 275
+ef-passenger-cars | 291
+ef-mobility | 309
+ef-auto-retail | 45 473
+ef-general-retail | 471 478
+ef-specialty-retail | 47
+ef-online-retail | 479
+ef-travel | 55 79 771
+ef-restaurants | 56
+ef-education | 85
+ef-leisure | 90 91 92 93 96 97 98 742 772 952
+ef-general-machinery | 28
+ef-special-machinery | 282
+ef-industrial-supplies | 25 274 329
+ef-aerospace | 252 303 304
+ef-auto-parts | 221 293
+ef-commercial-vehicles | 29 30
+ef-ships | 301
+ef-rail-equipment | 302
+ef-electronics-components | 26
+ef-chip-design | 261
+ef-compute | 262
+ef-network-equipment | 263
+ef-instruments | 265 267
+ef-software | 582
+ef-batteries | 272
+ef-grid-equipment | 27
+ef-crops | 01 106
+ef-livestock | 03 014 108
+ef-timber | 02 16
+ef-coal | 05 191
+ef-oil-gas | 06
+ef-refining | 19
+ef-iron-steel | 071 241
+ef-base-metals | 07 24
+ef-cement | 08 239
+ef-glass | 231
+ef-construction-materials | 23 162 251
+ef-paper-packaging | 17
+ef-textile-inputs | 13 203
+ef-basic-chemicals | 20 22
+ef-special-chemicals | 202
+ef-pharma | 21
+ef-medical-devices | 266 325
+ef-care | 86 87 88 750
+ef-diagnostic-services | 869
+ef-banks | 64
+ef-insurance | 65 662
+ef-investment | 66
+ef-asset-management | 643 663
+ef-payments | 649
+ef-diversified | 642 84 94 99
+ef-oilfield-services | 09
+ef-business-support | 33 77 78 80 81 82 18 016 024 562
+ef-b2b-distribution | 46
+ef-consulting | 69 70 72 74 712
+ef-marketing | 73
+ef-construction | 41 42 43 711
+ef-property-assets | 68
+ef-property-brokerage | 682
+ef-freight | 49 52
+ef-courier | 53
+ef-shipping | 50 522
+ef-airlines | 51
+ef-telecom | 61
+ef-it-services | 62 951
+ef-cloud | 631
+ef-media | 58 59 60 63 182 268
+ef-electric-utilities | 35
+ef-gas-utilities | 352 493
+ef-water | 36 37
+ef-waste | 38 39

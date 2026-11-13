@@ -1,0 +1,65 @@
+# 三级经济功能类 | 企业 ID=展示代码 | 可选中英文备注
+ef-oil-gas | sec-34088=XOM sec-93410=CVX sec-1306965=SHEL sec-313807=BP sec-879764=TTE cn-601857.SH=601857.SH | 一体化集团按油气主业归类，集团营收仍包括炼化、销售等分部。 | Integrated oil and gas group. Consolidated revenue includes refining and marketing.
+ef-precious-metals | sec-1164727=NEM sec-756894=GOLD sec-2809=AEM sec-1786909=SBSW sec-1973832=AU sec-1172724=GFI sec-701818=KGC cn-600547.SH=600547.SH sec-1023514=HMY cn-000975.SZ=000975.SZ
+ef-critical-metals | sec-1801368=MP sec-915913=ALB sec-909037=SQM cn-000792.SZ=000792.SZ cn-002460.SZ=002460.SZ cn-600111.SH=600111.SH
+ef-agri-chemicals | sec-941221=ICL sec-1725964=NTR sec-1285785=MOS esef-213800WKOUWXWFJ5Z514=YAR.OL
+ef-energy-materials | cn-002129.SZ=002129.SZ cn-002709.SZ=002709.SZ cn-688005.SH=688005.SH cn-300073.SZ=300073.SZ sec-1101302=ENTG cn-002340.SZ=002340.SZ | 主要提供硅片、电池化学材料、再生材料或半导体工艺材料，归入投入材料。 | Supplies wafers, battery chemicals, recycled materials or semiconductor process materials.
+ef-basic-chemicals | cn-002648.SZ=002648.SZ
+ef-alcohol | sec-1668717=BUD sec-835403=DEO sec-24545=TAP sec-16918=STZ sec-949870=SAM sec-888746=CCU sec-1565025=ABEV cn-600519.SH=600519.SH cn-000858.SZ=000858.SZ cn-000568.SZ=000568.SZ cn-600600.SH=600600.SH cn-000729.SZ=000729.SZ esef-724500K5PTPSST86UQ23=HEIA.AS esef-5299001O0WJQYB5GYZ19=CARL-B.CO esef-52990097YFPX9J0H5D87=RI.PA esef-213800ED5AN2J56N6Z02=CPR.MI hk-00291=0291.HK
+ef-food | sec-16160=CALM cn-300999.SZ=300999.SZ cn-600127.SH=600127.SH cn-002299.SZ=002299.SZ
+ef-beverages | sec-77476=PEP | 饮料与零食并营，暂放在饮料组，使用集团合并值。 | Diversified beverages and snacks. The beverage assignment uses consolidated figures.
+ef-personal | esef-529900JI1GG6F7RKVI53=OR.PA esef-549300MKFYEKVRWML317=ULVR.L esef-5493003JFSMOJG48V108=RKT.L cn-603605.SH=603605.SH hk-01044=1044.HK
+ef-luxury | esef-IOG4E947OATN0KJYSD45=MC.PA esef-549300VGEJKB7SVUZR78=KER.PA esef-969500Y4IJGHJE2MTJ13=RMS.PA cn-002345.SZ=002345.SZ cn-603900.SH=603900.SH
+ef-home-goods | cn-002083.SZ=002083.SZ cn-605003.SH=605003.SH cn-603365.SH=603365.SH cn-603801.SH=603801.SH
+ef-textile-inputs | cn-002003.SZ=002003.SZ
+ef-apparel | hk-02313=2313.HK | 服装代工按所交付的最终品归入服装链。 | Apparel contract manufacturing is assigned by the final goods delivered.
+ef-specialty-retail | esef-549300TTCXZOGZM2EY83=ITX.MC esef-213800HROV6Y9MUU8375=JD.L sec-1403568=ULTA sec-701985=BBWI hk-00178=0178.HK
+ef-paper-packaging | sec-812074=OI sec-9389=BALL sec-1219601=CCK sec-849869=SLGN cn-002701.SZ=002701.SZ cn-002191.SZ=002191.SZ cn-603058.SH=603058.SH cn-301062.SZ=301062.SZ
+ef-construction-materials | esef-NFONVGN05Z0FMN5PEC35=SGO.PA cn-000786.SZ=000786.SZ cn-002271.SZ=002271.SZ cn-002043.SZ=002043.SZ
+ef-auto-parts | cn-600660.SH=600660.SH cn-002050.SZ=002050.SZ
+ef-renewables-equipment | cn-601012.SH=601012.SH cn-688599.SH=688599.SH cn-688223.SH=688223.SH cn-601865.SH=601865.SH cn-600876.SH=600876.SH sec-1996810=GEV cn-688390.SH=688390.SH cn-300274.SZ=300274.SZ esef-549300DYMC8BGZZC8844=VWS.CO
+ef-chip-foundry | sec-1046179=TSM sec-1122411=ASX sec-1033767=UMC sec-1709048=GFS cn-688981.SH=688981.SH
+ef-chip-integrated | sec-50863=INTC sec-723125=MU sec-97476=TXN sec-6281=ADI sec-1413447=NXPI sec-932787=STM sec-1097864=ON sec-895419=WOLF sec-827054=MCHP sec-29002=DIOD cn-688396.SH=688396.SH issuer-skhynix=000660.KS
+ef-chip-design | sec-1045810=NVDA | 以加速计算芯片和平台为核心，外包制造，归入芯片设计。 | Accelerator chips and platforms with outsourced fabrication.
+ef-chip-equipment | sec-937966=ASML sec-6951=AMAT sec-707549=LRCX sec-319201=KLAC sec-1113232=ACLS sec-21535=COHU cn-002371.SZ=002371.SZ cn-688012.SH=688012.SH cn-688072.SH=688072.SH sec-704532=ONTO cn-688120.SH=688120.SH cn-688037.SH=688037.SH cn-688361.SH=688361.SH esef-7245007A1YFLI2GNYX06=BESI.AS esef-7245001I22ND6ZFHX623=ASM.AS sec-97210=TER
+ef-electronics-components | cn-000021.SZ=000021.SZ cn-002475.SZ=002475.SZ cn-002241.SZ=002241.SZ cn-300433.SZ=300433.SZ cn-600885.SH=600885.SH
+ef-devices | sec-320193=AAPL hk-01810=1810.HK sec-1121788=GRMN sec-1032975=LOGI hk-00992=0992.HK sec-47217=HPQ
+ef-devices | issuer-samsung=005930.KS | 集团同时经营终端、显示与半导体，按终端产品放置，合并数据含上游业务。 | The group spans devices, display and semiconductors. Its device assignment uses consolidated figures.
+ef-games | sec-313838=SONY | 集团横跨游戏、影视、音乐、电子和传感器，按游戏与互动娱乐业务放置。 | The group spans gaming, film, music, electronics and sensors and is grouped by games and interactive entertainment.
+ef-grid-equipment | esef-969500XXRPGD7HCAFA90=LR.PA
+ef-automation | sec-1024478=ROK sec-32604=EMR cn-300124.SZ=300124.SZ cn-688017.SH=688017.SH cn-002747.SZ=002747.SZ cn-688777.SH=688777.SH
+ef-heavy-machinery | sec-18230=CAT cn-600031.SH=600031.SH cn-000425.SZ=000425.SZ cn-000157.SZ=000157.SZ cn-600761.SH=600761.SH
+ef-farm-machinery | sec-315189=DE sec-880266=AGCO sec-1567094=CNH
+ef-commercial-vehicles | sec-26172=CMI cn-000338.SZ=000338.SZ sec-75362=PCAR esef-549300HGV012CNC8JD22=VOLV-B.ST
+ef-industrial-supplies | sec-55242=KMT esef-5299008ZUAXN43LVZF54=SAND.ST sec-1783180=CARR sec-1466258=TT sec-1674101=VRT sec-1781335=OTIS esef-2138001CNF45JP5XZK38=KNEBV.HE hk-00669=0669.HK cn-002236.SZ=002236.SZ cn-002414.SZ=002414.SZ
+ef-aerospace | esef-529900FNDVTQJOVVPZ19=HO.PA cn-300114.SZ=300114.SZ
+ef-industrial-supplies | sec-66382=MLKN sec-48287=HNI
+ef-housing | sec-882184=DHI sec-920760=LEN sec-822416=PHM sec-794170=TOL sec-795266=KBH sec-906163=NVR sec-833079=MTH sec-799292=MHO sec-1373670=GRBK esef-213800XI72Y57UWN6F31=PSN.L esef-21380089BTRXTD8S3R66=TW.L cn-000002.SZ=000002.SZ cn-600048.SH=600048.SH cn-001979.SZ=001979.SZ cn-600383.SH=600383.SH hk-00960=0960.HK hk-01109=1109.HK
+ef-housing | hk-00016=0016.HK | 同时经营住宅发展和商业物业，按住宅发展主线放置。 | Residential development and commercial property, classified by its homebuilding business.
+ef-online-retail | sec-1018724=AMZN | 集团同时经营自营零售、第三方市场和 AWS，按零售主线归类，云收入仍含在集团合并值中。 | The group spans inventory-led retail, marketplace services and AWS. The retail assignment uses consolidated figures.
+ef-online-retail | sec-1549802=JD sec-1834584=CPNG cn-002024.SZ=002024.SZ
+ef-marketplaces | sec-1577552=BABA sec-1737806=PDD sec-1099590=MELI sec-1703399=SE sec-1065088=EBAY sec-1370637=ETSY sec-1835963=GLBE sec-1756708=JMIA sec-1579091=CART cn-002127.SZ=002127.SZ cn-600415.SH=600415.SH sec-1792789=DASH sec-1855612=GRAB hk-03690=3690.HK sec-1543151=UBER sec-1759509=LYFT
+ef-health-distribution | hk-01099=1099.HK cn-603939.SH=603939.SH cn-603883.SH=603883.SH cn-603233.SH=603233.SH cn-002727.SZ=002727.SZ cn-000963.SZ=000963.SZ
+ef-managed-care | sec-64803=CVS | 跨医保、药品福利管理与药房，按综合健康管理归类。 | Spans insurance, pharmacy benefits and pharmacy retail.
+ef-medical-devices | esef-549300M3VH1A3ER1TB49=EL.PA sec-874716=IDXX
+ef-health-research | hk-02269=2269.HK sec-1478242=IQV sec-1060955=ICLR sec-1100682=CRL sec-1668397=MEDP cn-603259.SH=603259.SH cn-300347.SZ=300347.SZ
+ef-travel | sec-815097=CCL sec-884887=RCL sec-1513761=NCLH
+ef-passenger-transit | cn-601333.SH=601333.SH cn-601816.SH=601816.SH hk-00066=0066.HK
+ef-airlines | sec-1347557=PAC sec-1123452=ASR sec-1378239=OMAB cn-600009.SH=600009.SH cn-000089.SZ=000089.SZ sec-1717393=CAAP esef-959800R7QMXKF0NFMT29=AENA.MC
+ef-freight | esef-529900X41C0BSLK67H70=DSV.CO
+ef-gas-utilities | cn-600803.SH=600803.SH sec-931427=TGS
+ef-consulting | sec-929869=RELX sec-1075124=TRI esef-724500TEM53I0U077B74=WKL.AS
+ef-software-infra | sec-789019=MSFT sec-1341439=ORCL sec-1441816=MDB sec-1561550=DDOG sec-1653482=GTLB sec-1321655=PLTR sec-813672=CDNS sec-883241=SNPS sec-1810806=U
+ef-cloud | sec-1640147=SNOW sec-1477333=NET cn-300017.SZ=300017.SZ sec-1508475=VNET sec-1526125=GDS cn-600845.SH=600845.SH sec-1297996=DLR | 主要交付托管的云服务、数据中心或网络边缘资源。 | Delivers managed cloud, data center or edge infrastructure.
+ef-software | sec-1594805=SHOP cn-600570.SH=600570.SH cn-002230.SZ=002230.SZ esef-9598004A3FTY3TEHHN09=AMS.MC cn-300033.SZ=300033.SZ
+ef-cyber | sec-1262039=FTNT sec-1535527=CRWD sec-1327567=PANW sec-1713683=ZS sec-1660134=OKTA cn-002439.SZ=002439.SZ cn-688561.SH=688561.SH cn-300454.SZ=300454.SZ
+ef-social-search | sec-1652044=GOOGL sec-1326801=META sec-1564408=SNAP sec-1506293=PINS sec-1713445=RDDT sec-1329099=BIDU sec-1595761=WB hk-01024=1024.HK cn-300418.SZ=300418.SZ
+ef-games | sec-946581=TTWO sec-1110646=NTES sec-1315098=RBLX
+ef-games | hk-00700=0700.HK | 同时经营游戏、社交、广告及金融科技，按互动内容和增值服务归类。 | Spans games, social platforms, advertising and fintech, grouped with interactive content and value-added services.
+ef-media | sec-1723690=BILI cn-300413.SZ=300413.SZ
+ef-telecom | sec-1053507=AMT
+ef-diversified | sec-1067983=BRK-B sec-1001085=BN sec-1061736=FMX | 多业务集团，使用集团合并财务。 | Diversified group, reported on a consolidated basis.
+ef-payments | sec-1403161=V sec-1141391=MA sec-1633917=PYPL sec-1512673=XYZ sec-1846832=DLO sec-1745431=STNE sec-1712807=PAGS sec-1123360=GPN cn-300773.SZ=300773.SZ esef-213800LD9XCHIC1C4V71=WISE.L esef-9695006LOD5B2D7Y0N70=EDEN.PA
+ef-software | sec-779152=JKHY sec-1136893=FIS
+ef-property-assets | sec-766704=WELL sec-1045609=PLD sec-1393311=PSA
+ef-marketing | sec-1751008=APP cn-300785.SZ=300785.SZ

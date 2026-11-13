@@ -1,0 +1,9 @@
+-r requirements.txt
+-e ./upstream/openbb/openbb_platform/core
+anyio>=4,<5
+beautifulsoup4>=4.13,<5
+curl-cffi>=0.13,<1
+html5lib>=1.1,<2
+lxml>=5,<7
+mini-racer>=0.13,<1
+tqdm>=4.60,<5

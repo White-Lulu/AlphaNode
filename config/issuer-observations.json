@@ -1,0 +1,225 @@
+[
+  {
+    "company": {
+      "id": "issuer-skhynix",
+      "code": "000660.KS",
+      "country": "KR",
+      "parent": "261",
+      "benchmark": "Semiconductor",
+      "name": "SK hynix 海力士",
+      "provider": "issuer"
+    },
+    "periods": {
+      "2016": {
+        "end": "2016-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            17200000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2016-and-fourth-quarter-results/"
+          ],
+          "net": [
+            2960000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2016-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            3280000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2016-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2017": {
+        "end": "2017-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            30100000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2017-and-fourth-quarter-results/"
+          ],
+          "net": [
+            10640000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2017-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            13720000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2017-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2018": {
+        "end": "2018-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            40450000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2018-and-fourth-quarter-results/"
+          ],
+          "net": [
+            15540000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2018-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            20840000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2018-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2019": {
+        "end": "2019-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            26990000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2019-and-fourth-quarter-results/"
+          ],
+          "net": [
+            2020000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2019-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            2710000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2019-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2020": {
+        "end": "2020-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            31900000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2020-and-fourth-quarter-results/"
+          ],
+          "net": [
+            4759000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2020-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            5013000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2020-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2021": {
+        "end": "2021-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            42998000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2021-and-fourth-quarter-results/"
+          ],
+          "net": [
+            9616000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2021-and-fourth-quarter-results/"
+          ],
+          "ebit": [
+            12410000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-inc-reports-fiscal-year-2021-and-fourth-quarter-results/"
+          ]
+        }
+      },
+      "2022": {
+        "end": "2022-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            44622000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-reports-fourth-quarter-2023-financial-results/"
+          ],
+          "net": [
+            2242000000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-reports-fourth-quarter-2023-financial-results/"
+          ],
+          "ebit": [
+            6809000000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-reports-fourth-quarter-2023-financial-results/"
+          ]
+        }
+      },
+      "2023": {
+        "end": "2023-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            32765700000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ],
+          "net": [
+            -9137500000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ],
+          "ebit": [
+            -7730300000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ]
+        }
+      },
+      "2024": {
+        "end": "2024-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            66193000000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ],
+          "net": [
+            19796900000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ],
+          "ebit": [
+            23467300000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-4q24-financial-results/"
+          ]
+        }
+      },
+      "2025": {
+        "end": "2025-12-31",
+        "currency": "KRW",
+        "facts": {
+          "revenue": [
+            97146700000000,
+            "Consolidated revenue · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-fy25-financial-results/"
+          ],
+          "net": [
+            42947900000000,
+            "Consolidated net income · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-fy25-financial-results/"
+          ],
+          "ebit": [
+            47206300000000,
+            "Consolidated operating profit · 年度业绩公告",
+            "https://news.skhynix.com/en/sk-hynix-announces-fy25-financial-results/"
+          ]
+        }
+      }
+    }
+  }
+]

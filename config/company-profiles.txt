@@ -1,0 +1,60 @@
+
+# Code | Company website | Short description
+NVDA|https://www.nvidia.com/zh-cn/|设计 GPU、AI 加速器与高速互连设备，向数据中心、游戏和专业可视化市场供货。
+AAPL|https://www.apple.com/|设计 iPhone、Mac、iPad 及可穿戴设备，并运营数字内容与订阅服务。
+MSFT|https://www.microsoft.com/|经营 Azure 云服务、企业软件、Windows、游戏和生产力工具。
+GOOGL|https://abc.xyz/|Alphabet 的主要业务包括谷歌搜索广告、YouTube、Google Cloud 及其他技术投资。
+META|https://about.meta.com/|运营 Facebook、Instagram、WhatsApp 等产品，收入主要来自广告业务。
+AMZN|https://www.aboutamazon.com/|经营网上零售、第三方卖家服务、广告、物流及 AWS 云计算。
+TSLA|https://www.tesla.com/|生产电动汽车、储能设备和太阳能产品，并经营充电网络。
+XOM|https://corporate.exxonmobil.com/|经营油气勘探生产、炼化与石油化工。
+TSM|https://www.tsmc.com/|提供专用集成电路晶圆代工和先进封装服务。
+ASML|https://www.asml.com/|生产用于芯片制造的光刻系统，并提供设备升级与服务。
+AMD|https://www.amd.com/|设计处理器、图形芯片、数据中心加速器及嵌入式芯片。
+INTC|https://www.intel.com/|设计和制造计算处理器并开展晶圆代工业务。
+AVGO|https://www.broadcom.com/|提供通信、网络和存储半导体，以及基础设施软件。
+QCOM|https://www.qualcomm.com/|开发移动通信芯片并授权无线通信相关技术。
+MU|https://www.micron.com/|制造 DRAM 和 NAND 等存储器产品。
+JPM|https://www.jpmorganchase.com/|提供零售银行、商业银行、投资银行与资产管理服务。
+V|https://www.visa.com/|运营电子支付网络，并向金融机构和商户提供支付服务。
+MA|https://www.mastercard.com/|运营支付处理网络，并提供数据、安全与支付增值服务。
+WMT|https://corporate.walmart.com/|经营大型超市、会员仓储商店及电子商务。
+TM|https://global.toyota/|设计、生产及销售乘用车和商用车，并经营汽车金融。
+SONY|https://www.sony.com/|业务涵盖游戏、音乐、电影、消费电子及图像传感器。
+NVO|https://www.novonordisk.com/|开发和销售糖尿病、肥胖症和罕见病治疗药物。
+LLY|https://www.lilly.com/|研发和销售糖尿病、肥胖症、肿瘤和免疫等领域的药物。
+BRK-B|https://www.berkshirehathaway.com/|多元化控股集团，经营保险、铁路、能源、制造和零售业务。
+BABA|https://www.alibabagroup.com/|经营电商平台、云计算、物流和其他数字服务。
+JD|https://www.jd.com/|经营自营零售、电商平台和供应链物流。
+PDD|https://www.pddholdings.com/|运营拼多多与 Temu 等面向消费者和商家的电商平台。
+BIDU|https://www.baidu.com/|经营搜索和在线营销业务，布局 AI 云服务与自动驾驶。
+SHOP|https://www.shopify.com/|面向商家提供电商软件、支付与营销服务。
+9988.HK|https://www.alibabagroup.com/|
+0700.HK|https://www.tencent.com/zh-cn/|经营微信和 QQ 社交平台、游戏、数字内容、金融科技和企业服务。
+3690.HK|https://www.meituan.com/|经营餐饮外卖、即时零售和本地生活服务。
+1810.HK|https://www.mi.com/|经营智能手机、智能家居及电动汽车业务。
+1024.HK|https://www.kuaishou.com/|运营短视频和直播平台，提供广告、电商与直播服务。
+1299.HK|https://www.aia.com/|在亚太地区经营人寿保险、健康保险与相关金融服务。
+0388.HK|https://www.hkexgroup.com/|运营香港交易所和结算机构，并经营伦敦金属交易所。
+0001.HK|https://www.ckh.com.hk/|多元化集团，业务包括港口、零售、基建及电信。
+0002.HK|https://www.clpgroup.com/|投资和经营亚太地区发电、输配电及零售供电业务。
+0066.HK|https://www.mtr.com.hk/|运营铁路和公共交通，并开展车站周边的物业开发和租赁。
+0293.HK|https://www.cathaypacific.com/|提供航空客运、货运及相关旅行服务。
+0669.HK|https://www.ttigroup.com/|生产电动工具、配件、户外设备和地板清洁产品。
+2330.TW|https://www.tsmc.com/|
+005930.KS|https://www.samsung.com/|经营半导体、显示、手机及消费电子业务。
+000660.KS|https://www.skhynix.com/|制造 DRAM、NAND 闪存及高带宽存储器。
+AIR.PA|https://www.airbus.com/|生产民用客机、直升机及航天防务产品。
+MC.PA|https://www.lvmh.com/|经营高端时装皮具、酒类、香水化妆品、钟表珠宝和零售业务。
+OR.PA|https://www.loreal.com/|经营大众、专业、高档及皮肤科学美容品牌。
+RMS.PA|https://www.hermes.com/|生产和销售皮具、服饰、丝织品、香氛与钟表等产品。
+MAERSK-B.CO|https://www.maersk.com/|经营集装箱班轮、港口码头和综合物流。
+ITX.MC|https://www.inditex.com/|运营 Zara 等服装品牌的实体与线上零售网络。
+VWS.CO|https://www.vestas.com/|设计、制造、安装和维护风力发电设备。
+SU.PA|https://www.se.com/|提供能源管理、配电、工业自动化及数字化解决方案。
+SAN|https://www.santander.com/|经营商业银行、个人金融和财富管理。
+HSBC|https://www.hsbc.com/|提供国际商业银行、零售银行、财富管理及全球市场服务。
+NVS|https://www.novartis.com/|研发和销售创新处方药。
+SPOT|https://www.spotify.com/|运营音乐、播客和有声内容流媒体平台。
+WBD|https://wbd.com/|经营影视制作、电视网络和流媒体服务。
+AIR|https://www.aarcorp.com/|向商用和政府航空客户提供飞机零部件、维护和供应链服务。

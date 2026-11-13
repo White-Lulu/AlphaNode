@@ -1,0 +1,271 @@
+/* Theme tokens for the workbench. */
+/* Three hues (slate, cyan, cobalt) in high-contrast light/dark plus a standard variant. */
+[data-ui-theme] {
+  --theme-radius:0px; --theme-control-radius:0px; --theme-shadow:none;
+  --theme-mono:"IBM Plex Mono",Consolas,monospace;
+  --theme-heading:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  --plot-primary:var(--theme-accent);
+}
+/* Light high-contrast skeleton */
+[data-ui-theme="hm-slate"], [data-ui-theme="hm-cobalt"] {
+  --theme-background:#ffffff; --theme-panel:#ffffff; --theme-subtle:#eef0f2; --theme-ink:#16181d;
+  --theme-muted:#3a4654; --theme-border:#6b7683; --theme-action-ink:#ffffff; --theme-input:#ffffff;
+  --theme-nav:#ffffff; --theme-nav-ink:#16181d; --theme-nav-muted:#3a4654;
+  --theme-nav-control:#eef0f2; --theme-nav-border:#6b7683; --theme-panel-head:#f0f2f4;
+  --theme-rule:#6b7683; --theme-divider:#6b7683; --theme-warning:#744500;
+  --plot-ink:#3a4654; --plot-grid:#e0e4e8;
+}
+/* Dark high-contrast skeleton */
+[data-ui-theme="hm-slate-dark"], [data-ui-theme="hm-vscode-hc"], [data-ui-theme="hm-slate-blue"] {
+  --theme-background:#0b0e13; --theme-panel:#12161d; --theme-subtle:#1a2028; --theme-ink:#ffffff;
+  --theme-muted:#b4bcc6; --theme-border:#525964; --theme-action-ink:#0b0e13; --theme-input:#0b0e13;
+  --theme-nav:#0b0e13; --theme-nav-ink:#ffffff; --theme-nav-muted:#b4bcc6;
+  --theme-nav-control:#12161d; --theme-nav-border:#525964; --theme-panel-head:#161b22;
+  --theme-rule:#525964; --theme-divider:#525964; --theme-warning:#fbd669;
+  --plot-ink:#b4bcc6; --plot-grid:#1a2028;
+  --theme-level-lightness:.62;
+}
+/* Standard (non-high-contrast) skeleton */
+[data-ui-theme="hm-slate-soft"], [data-ui-theme="hm-cobalt-soft"], [data-ui-theme="hm-cobalt-deep"] {
+  --theme-panel:#ffffff; --theme-ink:#1b1f27; --theme-muted:#5a6472;
+  --theme-action-ink:#ffffff; --theme-input:#ffffff;
+  --theme-nav:#ffffff; --theme-nav-ink:#1b1f27; --theme-nav-muted:#5a6472;
+  --theme-nav-control:#eef1f5; --theme-nav-border:#e3e7ed; --theme-panel-head:#f3f5f8;
+  --theme-divider:#c3c9d2; --theme-warning:#9a6700;
+  --plot-ink:#5a6472;
+}
+[data-ui-theme="hm-slate"] {
+  --theme-accent:#475569; --theme-action:#475569; --theme-nav-accent:#475569;
+  --radar-company:#475569; --radar-peer:#a40e26;
+}
+[data-ui-theme="hm-cobalt"] {
+  --theme-accent:#1f4f9c; --theme-action:#1f4f9c; --theme-nav-accent:#1f4f9c;
+  --radar-company:#1f4f9c; --radar-peer:#a40e26;
+}
+[data-ui-theme="hm-slate-dark"] {
+  --theme-accent:#cbd5e1; --theme-action:#cbd5e1; --theme-nav-accent:#cbd5e1;
+  --theme-level-base:#475569;
+  --radar-company:#cbd5e1; --radar-peer:#ffb757;
+}
+[data-ui-theme="hm-slate-blue"] {
+  --theme-accent:#99c8ff; --theme-action:#99c8ff; --theme-nav-accent:#99c8ff;
+  --radar-company:#99c8ff; --radar-peer:#ffb757;
+}
+[data-ui-theme="hm-vscode-hc"] {
+  --theme-background:#000000; --theme-panel:#000000; --theme-subtle:#0c141f; --theme-ink:#ffffff;
+  --theme-muted:#c0c0c0; --theme-border:#ffffff; --theme-action-ink:#ffffff; --theme-input:#000000;
+  --theme-nav:#000000; --theme-nav-ink:#ffffff; --theme-nav-muted:#c0c0c0;
+  --theme-nav-control:#0c141f; --theme-nav-border:#ffffff; --theme-panel-head:#0c141f;
+  --theme-rule:#ffffff; --theme-divider:#ffffff; --theme-warning:#f38518;
+  --theme-accent:#ffffff; --theme-action:#0f4a85; --theme-nav-accent:#ffffff; --menu-hover-ink:#16181d;
+  --theme-level-base:var(--theme-action);
+  --plot-ink:#c0c0c0; --plot-grid:#1a1a1a; --radar-company:#ffffff; --radar-peer:#f38518;
+}
+[data-ui-theme="hm-slate-soft"] {
+  --theme-background:#eef1f5; --theme-subtle:#e7ecf2; --theme-border:#e3e7ed; --theme-rule:#e3e7ed;
+  --theme-accent:#475569; --theme-action:#475569; --theme-nav-accent:#475569;
+  --radar-company:#475569; --radar-peer:#c0394a; --plot-grid:#e2e7ed;
+}
+[data-ui-theme="hm-cobalt-soft"] {
+  --theme-background:#edf1f8; --theme-subtle:#e6ecf5; --theme-border:#e1e8f2; --theme-rule:#e1e8f2;
+  --theme-accent:#558dce; --theme-action:#558dce; --theme-nav-accent:#558dce; --theme-action-ink:#ffffff; --menu-hover-ink:#16181d;
+  --radar-company:#558dce; --radar-peer:#c0394a; --plot-grid:#e1e8f1;
+}
+[data-ui-theme="hm-cobalt-deep"] {
+  --theme-background:#edf1f8; --theme-subtle:#e6ecf5; --theme-border:#e1e8f2; --theme-rule:#e1e8f2;
+  --theme-accent:#1f4f9c; --theme-action:#1f4f9c; --theme-nav-accent:#1f4f9c;
+  --radar-company:#1f4f9c; --radar-peer:#c0394a; --plot-grid:#e1e8f1;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) {
+  color-scheme:dark;
+}
+
+:root[data-ui-theme] {
+  --surface:var(--theme-panel); --soft:var(--theme-subtle); --accent:var(--theme-accent);
+  --muted:var(--theme-muted); --border:var(--theme-border); --theme-focus:var(--accent);
+  --control-radius:var(--theme-control-radius,var(--theme-radius,4px));
+  color:var(--theme-ink); background:var(--theme-background);
+}
+:root[data-ui-theme] .topbar {
+  --surface:var(--theme-nav-control,var(--theme-panel));
+  --muted:var(--theme-nav-muted,var(--theme-muted));
+  --border:var(--theme-nav-border,var(--theme-border));
+  --accent:var(--theme-nav-accent,var(--theme-accent));
+  --theme-focus:var(--accent);
+  background:var(--theme-nav,var(--surface)); color:var(--theme-nav-ink,var(--theme-ink));
+}
+:root[data-ui-theme] .topbar .quiet,
+:root[data-ui-theme] .topbar select { background:var(--surface); color:inherit; }
+:root[data-ui-theme] .topbar .quiet:hover { background:color-mix(in srgb,var(--surface),currentColor 10%); }
+:root[data-ui-theme] :is(h1,h2,h3,.brand,summary,.comparison-head h2,.profile-header h2) { font-family:var(--theme-heading,inherit); }
+:root[data-ui-theme] :is(.panel,.chart,dialog) {
+  background:var(--surface); border-color:var(--border);
+  border-radius:var(--theme-radius,4px); color:var(--theme-ink);
+}
+:root[data-ui-theme] :is(.panel,dialog) { box-shadow:var(--theme-shadow,none); }
+:root[data-ui-theme] :is(.quiet,.primary,select,input[type=search],.rule-line input,.pref-toolbar input:not([type=checkbox])) {
+  border-radius:var(--control-radius); border-color:var(--border);
+}
+:root[data-ui-theme] :is(.quiet,select,input[type=search],.rule-line input,.pref-toolbar input:not([type=checkbox])) {
+  background:var(--theme-input,var(--surface));
+}
+:root[data-ui-theme] .topbar .top-actions :is(.quiet,select) {
+  background:var(--theme-nav-control,var(--surface));
+  color:var(--theme-nav-ink,var(--theme-ink));
+  border-color:var(--theme-nav-border,var(--border));
+}
+:root[data-ui-theme] :is(.quiet:not([popovertarget]):hover,.chart-controls button[aria-pressed=true]) { background:var(--soft); }
+:root[data-ui-theme] :is(.primary,.view-tabs button[aria-pressed=true]) {
+  background:var(--theme-action,var(--accent)); color:var(--theme-action-ink,#fff); border-color:var(--accent);
+}
+:root[data-ui-theme] .primary:hover { background:color-mix(in srgb,var(--theme-action,var(--accent)),var(--surface) 14%); }
+:root[data-ui-theme] :focus-visible { outline-color:var(--theme-focus); }
+:root[data-ui-theme] .filter-pane { background:var(--soft); }
+:root[data-ui-theme] :is(.tabs,.comparison-head,.profile-header) { background:var(--theme-panel-head,var(--surface)); }
+:root[data-ui-theme] .tabs { border-radius:inherit; border-end-start-radius:0; border-end-end-radius:0; }
+:root[data-ui-theme] .comparison-head { border-radius:inherit; border-end-start-radius:0; border-end-end-radius:0; }
+:root[data-ui-theme] :is(.chart-tip,.chart-data td,.radar-values td,.profile-grid td) { background:var(--surface); color:var(--theme-ink); }
+:root[data-ui-theme] :is(.chart-data td,.radar-values td,.profile-grid td) { border-bottom-color:var(--border); }
+:root[data-ui-theme] .profile-grid td:first-child { background:var(--soft); }
+:root[data-ui-theme] :is(.chart-tip small,.chart-data sup,.data-marker,.quality-note) { color:var(--theme-warning,#815200); }
+:root[data-ui-theme] .radar-issuer { color:var(--radar-company,#285ad2); }
+:root[data-ui-theme] .radar-peer { color:var(--radar-peer,#148578); }
+:root[data-ui-theme] .term-tooltip { background:var(--theme-action,var(--accent)); color:var(--theme-action-ink,#fff); }
+:root[data-ui-theme] .term-tooltip p { color:inherit; }
+:root[data-ui-theme] #methods { color:var(--theme-ink); }
+:root[data-ui-theme] .chart-cursor { background:var(--theme-divider,#17171761); }
+:root[data-ui-theme] .splitter::before,
+:root[data-ui-theme] .splitter::after { background:transparent; }
+:root[data-ui-theme] .splitter:hover::before,
+:root[data-ui-theme] .splitter:focus-visible::before,
+:root[data-ui-theme] .splitter.dragging::before,
+:root[data-ui-theme] .splitter:hover::after,
+:root[data-ui-theme] .splitter:focus-visible::after,
+:root[data-ui-theme] .splitter.dragging::after { background:var(--accent); }
+:root[data-ui-theme] :is(.splitter[data-resize="financial"],.splitter[data-resize="directory"])::before,
+:root[data-ui-theme] :is(.splitter[data-resize="financial"],.splitter[data-resize="directory"])::after,
+:root[data-ui-theme] :is(.splitter[data-resize="financial"],.splitter[data-resize="directory"]):hover::before,
+:root[data-ui-theme] :is(.splitter[data-resize="financial"],.splitter[data-resize="directory"]):hover::after { background:transparent; }
+
+/* Table heat colors: white cells in light themes, dark cells in dark themes. */
+:root[data-ui-theme] :is(#grid,.directory-table) { background:#fff; }
+:root[data-ui-theme] :is(#grid,.directory-table) tbody {
+  --accent:#171717; --muted:#696969; --border:#e4e4e4; --soft:#f6f6f6; --surface:#fff;
+  --theme-input:#fff; --theme-ink:#171717; --theme-action:#171717; --theme-action-ink:#fff; --theme-focus:#171717;
+  --theme-warning:#815200;
+  color:#171717; color-scheme:light;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) {
+  background:var(--theme-panel);
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) tbody {
+  --accent:var(--theme-accent); --muted:var(--theme-muted); --border:#525964; --soft:var(--theme-subtle); --surface:var(--theme-panel);
+  --theme-input:var(--theme-panel); --theme-ink:#ffffff; --theme-action:var(--theme-accent); --theme-action-ink:var(--theme-background); --theme-focus:#ffffff;
+  --theme-warning:#fbd669; --heat-hi:255,120,100; --heat-lo:96,150,255;
+  color:#ffffff; color-scheme:dark;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td {
+  background:var(--theme-panel);
+  border-bottom-color:#2a3038;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) thead th {
+  background:#161b22;
+  color:#e6edf3;
+  border-bottom-color:#525964;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid tbody tr.level-1 td:first-child,
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .detail-row td:first-child {
+  background:#161b22;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) .directory-table tr:nth-child(even) td {
+  background:#161b22;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .missing {
+  color:#8b949e;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .tier {
+  background:#4a3a1a; color:#e8c878;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .tier.mid {
+  background:#2a3a52; color:#b8d0f0;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .tier.low {
+  background:#23406a; color:#a9c8ff;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .name-cell .profile-open:hover,
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .name-cell .star:hover {
+  background:#2a3038;
+}
+:root[data-ui-theme] :is(.brand,.cell-value,.chart-data td,.radar-score-value) { font-family:var(--theme-mono,inherit); }
+:root[data-ui-theme] .cell-value { padding-block:6px; }
+:root[data-ui-theme] #grid td { height:33px; }
+
+/* Borderless charts for the contrast themes. */
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) .chart {
+  border:0;
+  background:transparent;
+}
+
+/* Modern borderless standard variants: separate regions with fill color instead of frames. */
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(.panel,.chart,.table-scroll,.comparison-head,.tabs) {
+  border:0;
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) .chart {
+  background:color-mix(in srgb,var(--soft),#fff 55%);
+  padding:10px;
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) .scope {
+  border:0;
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) th {
+  border-bottom:0;
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table) td {
+  border-bottom-color:color-mix(in srgb,var(--border),transparent 55%);
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table) td:first-child {
+  border-right:0;
+}
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) .filter-pane {
+  background:var(--soft);
+}
+
+/* Borderless tables for the contrast themes: faint dividers, no vertical rules. */
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"]) :is(#grid,.directory-table) td {
+  border-bottom-color:#eceef2;
+}
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td {
+  border-bottom-color:#1e242c;
+}
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td:first-child {
+  border-right:0;
+}
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) th {
+  border-bottom:0;
+}
+
+#grid tr[data-outline-level="1"] { --level-tone:-.09; --level-hue:16; }
+#grid tr[data-outline-level="2"] { --level-tone:.075; --level-hue:-14; }
+#grid tr[data-outline-level="3"] { --level-tone:.24; --level-hue:-42; }
+#grid tr[data-outline-level="4"] { --level-tone:.30; --level-hue:-55; }
+:root[data-level-colors] #grid tbody > tr[data-outline-level] > td:first-child {
+  --level-marker:oklch(from var(--theme-level-base,var(--theme-accent,#475569))
+    calc(var(--theme-level-lightness,.54) + var(--level-tone)) clamp(.075,c,.13) calc(h + var(--level-hue)));
+  background-image:linear-gradient(var(--level-marker),var(--level-marker));
+  background-position:left top;
+  background-size:7px 100%;
+  background-repeat:no-repeat;
+}
+
+/* Serif type test: switch the entire UI to Source Han Serif, Latin glyphs included. */
+:root[data-font="serif"] body {
+  font-family:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+  font-weight:500;
+}
+:root[data-font="serif"] :is(button,input,select,textarea) {
+  font-family:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+}
+:root[data-font="serif"] :is(.brand,.cell-value,.chart-data td,.radar-score-value,th button,.profile-table th,.profile-table td) {
+  font-family:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+}
+
