@@ -2,7 +2,7 @@ import {esc,options,modeLabel,observation,finite,scale,unitLabel,modes,format} f
 import {prefs,save,pair,locale,countryName,nameOf} from "./i18n.js";
 import {metricLabel} from "./glossary.js";
 
-export const initialScreen=()=>({country:[],industry:[],rules:[],preset:"",expression:""});
+export const initialScreen=()=>({country:[],industry:[],onlyWatch:false,rules:[],preset:"",expression:""});
 const builtins={
   returns:{name:["资本回报较高","Higher capital returns"],rules:[
     {metric:"roic",mode:"level",op:"ge",threshold:"12"},{metric:"spread",mode:"level",op:"ge",threshold:"3"}]},
@@ -22,7 +22,6 @@ export function presetFor(id) {
   const chosen=builtins[id]??prefs.presets.find(p=>p.id===id);
   if (!chosen) return null;
   const screen={...initialScreen(),...clone(chosen.screen||{rules:chosen.rules}),preset:id};
-  delete screen.onlyWatch;
   for (const key of ["country","industry"]) if (!Array.isArray(screen[key])) screen[key]=screen[key]?[screen[key]]:[];
   return screen;
 }
@@ -57,6 +56,7 @@ export function matchesIndustry(row,industry,lookup) {
   return false;
 }
 export function matchesScreen(row,screen,state,meta,lookup) {
+  if (screen.onlyWatch&&!isWatched(row)) return false;
   if (screen.expression&&!state.advancedIds?.has(row.id)) return false;
   if (screen.country.length&&!screen.country.includes(row.country)) return false;
   if (!matchesIndustry(row,screen.industry,lookup)) return false;

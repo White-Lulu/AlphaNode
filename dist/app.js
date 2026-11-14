@@ -659,6 +659,7 @@ function screenFilters() {
 function screenControls() {
   const s=state.screen;
   screenFilters();
+  $("screen-only-watch").checked=s.onlyWatch===true;
   $("screen-preset").innerHTML=presetOptions(s.preset);
   $("delete-preset").hidden=!prefs.presets.some(p=>p.id===s.preset);
   renderRules($("rules"),s.rules,meta);
@@ -710,7 +711,7 @@ function syncControls() {
   $("coverage-control").hidden=!(state.tab in state.coverage);
   if (state.tab in state.coverage) $("company-coverage").value=String(state.coverage[state.tab]);
   $("source-control").hidden=state.tab!=="statistics";
-  for (const id of ["screen-tools","screen-country-control","screen-industry-control"]) $(id).hidden=state.tab!=="screen";
+  for (const id of ["screen-tools","screen-country-control","screen-industry-control","screen-watch-control"]) $(id).hidden=state.tab!=="screen";
   $("collapse").hidden=["screen","benchmark"].includes(state.tab);
   $("financial-view").hidden=state.tab==="directory";$("directory-view").hidden=state.tab!=="directory";
   updateFilterLayout(state.tab);
@@ -814,11 +815,12 @@ function snapshot(row,scope=activeScope()) {
 }
 function relaxScreenFor(row) {
   const defaults=initialScreen(),current=state.screen,next={...current};
+  if (current.onlyWatch&&!isWatched(row)) next.onlyWatch=false;
   if (current.country.length&&!current.country.includes(row.country)) next.country=[...current.country,row.country];
   if (!matchesIndustry(row,current.industry,records)) next.industry=[...current.industry,row.parent];
   if (current.expression&&!matchesScreen(row,{...defaults,expression:current.expression},state,meta,records)) next.expression="";
   next.rules=current.rules.filter(rule=>matchesScreen(row,{...defaults,rules:[rule]},state,meta,records));
-  if (["country","industry","expression"].every(key=>next[key]===current[key])&&next.rules.length===current.rules.length) return;
+  if (["country","industry","onlyWatch","expression"].every(key=>next[key]===current[key])&&next.rules.length===current.rules.length) return;
   if (next.expression!==current.expression) {
     advancedToken++;
     state.advancedIds=state.advancedError=null;
@@ -1367,6 +1369,7 @@ function wire() {
     if ($("preset-dialog").returnValue==="save"&&title) {state.screen.preset=savePreset(title,state.screen);screenControls();}
   };
   $("delete-preset").onclick=()=>{deletePreset(state.screen.preset);state.screen.preset="";screenControls();};
+  $("screen-only-watch").onchange=e=>changeScreen("onlyWatch",e.target.checked);
   $("edit-columns").onclick=()=>openColumns();
   $("column-glossary").onchange=event=>{prefs.columnGlossary=event.target.checked;save();renderColumns();};
   $("column-list").onchange=()=>{
