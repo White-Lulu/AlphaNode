@@ -3,7 +3,7 @@ import {companyNames,locale,pair,prefs,prose,save,scopeLabel} from "./i18n.js";
 import {metricLabel} from "./glossary.js";
 import {renderCharts,redraw,seriesName,chartRows,chartRowKey,chartParts,chartObservations,isMergeableRow,moveChartInRows} from "./chart.js";
 import {refreshSplitters} from "./layout.js";
-import {request,message} from "./analysis-client.js";
+import {request,message,analyzeCustomChart} from "./analysis-client.js";
 import {applyAnalysisMarks,remapAnalysisMarks,setAnalysisMark,wireAnalysisSelection} from "./analysis-selection.js";
 import {renderAnalysis,renderLegacyAnalysis} from "./analysis-markdown.js";
 
@@ -277,10 +277,11 @@ async function analyzeChart(chart) {
   inProgress.add(chart.id);
   update();
   try {
-    await prepareAnalysis();
+    const config=await prepareAnalysis();
     if (!find(chart.id)||defaultAnalysisBlocked(chart)) return;
-    const result=await request("/api/chart-analysis",{chart:analysisContext(chart),language:prose("zh","en"),
-      previousAnalysis:{provider:chart.analysis?.provider,model:chart.analysis?.model}});
+    const data={chart:analysisContext(chart),language:prose("zh","en"),
+      previousAnalysis:{provider:chart.analysis?.provider,model:chart.analysis?.model}};
+    const result=config.provider==="custom"?await analyzeCustomChart(config,data):await request("/api/chart-analysis",data);
     const current=find(chart.id);
     if (!current) return;
     const updated={...current,analysis:{...result,marks:[]}};

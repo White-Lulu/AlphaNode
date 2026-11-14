@@ -11,7 +11,7 @@ import re
 from threading import Lock
 from time import monotonic
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlencode, urlsplit
+from urllib.parse import quote
 from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
 CONFIG = Path(__file__).resolve().parent / "cache" / "analysis-settings.json"
@@ -21,7 +21,6 @@ PRICE_TTL = 3600
 _prices = OrderedDict()
 _price_lock = Lock()
 _price_requests = [Lock() for _ in range(8)]
-_settings_lock = Lock()
 
 
 class ServiceError(Exception):
@@ -91,90 +90,35 @@ def stock_price(code):
         return value
 
 
-AI_BASES = {
-    "chat": "https://api.openai.com/v1",
-    "responses": "https://api.openai.com/v1",
-    "anthropic": "https://api.anthropic.com/v1",
-    "gemini": "https://generativelanguage.googleapis.com/v1beta",
-}
-
-
-def read_settings():
+def remove_legacy_custom_settings():
+    """Discard credentials previously saved by the local AI settings endpoint."""
     try:
         saved = json.loads(CONFIG.read_text(encoding="utf-8"))
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError):
         saved = {}
-    api_type = saved.get("apiType", "chat")
-    return {
-        "provider": saved.get("provider", "default"),
-        "apiType": api_type if api_type in AI_BASES else "chat",
-        "url": saved.get("url", ""), "model": saved.get("model", ""),
-        "key": saved.get("key", ""), "arkKey": saved.get("arkKey", ""),
-        "prompt": saved.get("prompt", ""),
-    }
+    CONFIG.with_suffix(".tmp").unlink(missing_ok=True)
+    if not isinstance(saved, dict) or not any(key != "arkKey" for key in saved):
+        return
+    retained = {"arkKey": saved["arkKey"]} if saved.get("arkKey") else {}
+    temp = CONFIG.with_name("analysis-settings-clean.tmp")
+    temp.write_text(json.dumps(retained), encoding="utf-8")
+    temp.replace(CONFIG)
 
 
 def settings():
-    with _settings_lock:
-        return read_settings()
+    try:
+        saved = json.loads(CONFIG.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        saved = {}
+    return {"provider": "default", "arkKey": saved.get("arkKey", "") if isinstance(saved,dict) else ""}
 
 
 def ark_key(config):
     return config["arkKey"] or os.environ.get("ALPHANODE_ARK_API_KEY") or os.environ.get("PORTRAIT_ARK_API_KEY", "")
 
 
-def settings_response(config, reveal=False):
-    response = {k: config[k] for k in ("provider", "apiType", "url", "model", "prompt")}
-    response.update(hasKey=bool(config["key"]), hasArkKey=bool(ark_key(config)), defaultModel=ARK_MODEL)
-    if reveal:
-        response["key"] = config["key"]
-    return response
-
-
-def public_settings(reveal=False):
-    return settings_response(settings(), reveal)
-
-
-def update_settings(data):
-    with _settings_lock:
-        config = read_settings()
-        provider = data.get("provider", config["provider"])
-        api_type = data.get("apiType", config["apiType"])
-        if provider not in ("default", "custom") or not isinstance(api_type, str) or api_type not in AI_BASES:
-            raise ServiceError(400, "INVALID_AI_SETTINGS")
-        config.update(provider=provider, apiType=api_type)
-        for key, limit in {"url": 2048, "model": 150, "key": 1024, "arkKey": 1024, "prompt": 3000}.items():
-            if key not in data:
-                continue
-            value = data[key]
-            if not isinstance(value, str) or len(value) > limit:
-                raise ServiceError(400, "INVALID_AI_SETTINGS")
-            config[key] = value.strip()
-        CONFIG.parent.mkdir(parents=True, exist_ok=True)
-        temp = CONFIG.with_suffix(".tmp")
-        temp.write_text(json.dumps(config, ensure_ascii=False), encoding="utf-8")
-        temp.replace(CONFIG)
-    return settings_response(config)
-
-
-def api_base(value, api_type):
-    base = value or AI_BASES[api_type]
-    try:
-        parsed = urlsplit(base)
-        local = parsed.hostname in ("localhost", "127.0.0.1", "::1")
-        if not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
-            raise ValueError
-        if parsed.scheme != "https" and not (parsed.scheme == "http" and local):
-            raise ValueError
-        if parsed.port == 0 or any(character.isspace() for character in base):
-            raise ValueError
-    except ValueError as error:
-        raise ServiceError(400, "INVALID_AI_URL") from error
-    base = base.rstrip("/")
-    for suffix in ("/chat/completions", "/responses", "/messages", "/models"):
-        if parsed.path.rstrip("/").endswith(suffix):
-            return base.removesuffix(suffix)
-    return base
+def public_settings():
+    return {"provider": "default", "defaultModel": ARK_MODEL, "hasArkKey": bool(ark_key(settings()))}
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -206,63 +150,34 @@ def text_parts(content):
             and part.get("type") in (None,"text","output_text") and not part.get("thought")]
 
 
-def stream_result(raw, api_type):
+def stream_result(raw):
     chunks = []
-    completed = None
-    for line in raw.decode("utf-8-sig").splitlines():
+    for line in raw.decode("utf-8").splitlines():
         if not line.startswith("data:"):
             continue
-        data = line[5:].strip()
-        if not data or data == "[DONE]":
-            continue
-        item = json.loads(data)
+        content = line[5:].strip()
+        if content == "[DONE]":
+            break
+        item = json.loads(content)
         if not isinstance(item, dict):
             continue
         if item.get("error"):
             raise ServiceError(502, upstream_error(502, item))
-        if api_type == "responses":
-            if item.get("type") in ("response.completed","response.incomplete"):
-                completed = item.get("response")
-            elif item.get("type") == "response.output_text.delta" and isinstance(item.get("delta"), str):
-                chunks.append(item["delta"])
-        elif api_type == "anthropic":
-            delta = item.get("delta", {})
-            if item.get("type") == "content_block_delta" and delta.get("type") == "text_delta":
-                chunks.extend(text_parts(delta.get("text")))
-        elif api_type == "gemini":
-            for candidate in item.get("candidates", []):
-                chunks.extend(text_parts(candidate.get("content", {}).get("parts")))
-        else:
-            for choice in item.get("choices", []):
-                chunks.extend(text_parts(choice.get("delta", {}).get("content")))
-    if isinstance(completed, dict):
-        return completed
-    if not chunks:
-        raise ServiceError(502,"AI_EMPTY")
-    return {"streamText":"".join(chunks)}
+        for choice in item.get("choices", []):
+            chunks.extend(text_parts(choice.get("delta", {}).get("content")))
+    return {"streamText": "".join(chunks)}
 
 
-def ai_request(url, api_type, key, payload=None, timeout=30):
+def ai_request(url, key, payload, timeout):
     if any(not 33 <= ord(char) <= 126 for char in key):
         raise ServiceError(400, "INVALID_AI_KEY")
-    headers = {"Accept": "application/json"}
-    if payload is not None:
-        headers["Content-Type"] = "application/json"
-    if api_type == "anthropic":
-        headers["anthropic-version"] = "2023-06-01"
-        if key:
-            headers["x-api-key"] = key
-    elif key:
-        if api_type == "gemini":
-            headers["x-goog-api-key"] = key
-        else:
-            headers["Authorization"] = "Bearer " + key
+    headers = {"Accept":"application/json", "Content-Type":"application/json", "Authorization":"Bearer "+key}
     try:
-        req = Request(url, data=None if payload is None else json.dumps(payload).encode("utf-8"), headers=headers)
+        req = Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
         with build_opener(NoRedirect).open(req, timeout=timeout) as response:
             raw = response.read(2_000_000)
             streaming = response.headers.get_content_type() == "text/event-stream" or raw.lstrip().startswith((b"data:",b"event:"))
-        data = stream_result(raw, api_type) if streaming else json.loads(raw)
+        data = stream_result(raw) if streaming else json.loads(raw)
         if not isinstance(data, dict):
             raise ValueError("Invalid model response")
         if data.get("error"):
@@ -282,99 +197,29 @@ def ai_request(url, api_type, key, payload=None, timeout=30):
         raise ServiceError(HTTPStatus.BAD_GATEWAY,"AI_FORMAT") from error
 
 
-def custom_settings():
-    config = settings()
-    if config["provider"] != "custom":
-        raise ServiceError(400, "AI_CUSTOM_REQUIRED")
-    return config
-
-
-def list_models(_):
-    config = custom_settings()
-    api_type = config["apiType"]
-    endpoint = api_base(config["url"], api_type) + "/models"
-    models = set()
-    cursor = ""
-    for _ in range(5):
-        result = ai_request(endpoint+cursor, api_type, config["key"], timeout=12)
-        if api_type == "gemini":
-            models.update(entry["name"].removeprefix("models/") for entry in result.get("models", [])
-                          if isinstance(entry.get("name"), str) and "generateContent" in entry.get("supportedGenerationMethods", []))
-            token = result.get("nextPageToken")
-            if not token:
-                break
-            cursor = "?" + urlencode({"pageToken": token})
-        else:
-            models.update(entry["id"] for entry in result.get("data", []) if isinstance(entry.get("id"), str))
-            if api_type != "anthropic" or not result.get("has_more") or not result.get("last_id"):
-                break
-            cursor = "?" + urlencode({"after_id": result["last_id"]})
-    return {"models": sorted(models)[:500]}
-
-
-def generate(config, instructions, prompt, limit, timeout, test=False):
-    default = config["provider"] == "default"
-    api_type = "chat" if default else config["apiType"]
-    model = ARK_MODEL if default else config["model"]
-    key = ark_key(config) if default else config["key"]
-    if not model:
-        raise ServiceError(400, "AI_MODEL_REQUIRED")
-    if default and not key:
+def generate(config, instructions, prompt, limit, timeout):
+    key = ark_key(config)
+    if not key:
         raise ServiceError(400, "ARK_KEY_REQUIRED")
-    base = ARK_BASE if default else api_base(config["url"], api_type)
-    messages = [{"role":"user","content":prompt}]
-    if api_type == "responses":
-        endpoint = "/responses"
-        body = {"model":model,"instructions":instructions,"input":prompt,"max_output_tokens":limit,"store":False}
-    elif api_type == "anthropic":
-        endpoint = "/messages"
-        body = {"model":model,"system":instructions,"messages":messages,"max_tokens":limit}
-    elif api_type == "gemini":
-        endpoint = "/models/" + quote(model.removeprefix("models/"), safe="") + ":generateContent"
-        body = {"systemInstruction":{"parts":[{"text":instructions}]},"contents":[{"role":"user","parts":[{"text":prompt}]}],
-                "generationConfig":{"maxOutputTokens":limit}}
-    else:
-        endpoint = "/chat/completions"
-        token_limit = "max_completion_tokens" if urlsplit(base).hostname == "api.openai.com" else "max_tokens"
-        body = {"model":model,"messages":[{"role":"system","content":instructions}, *messages],token_limit:limit}
-        if default:
-            body["thinking"] = {"type":"disabled"}
+    url = ARK_BASE + "/chat/completions"
+    body = {"model": ARK_MODEL, "messages": [
+        {"role":"system", "content":instructions}, {"role":"user", "content":prompt},
+    ], "max_tokens":limit, "thinking":{"type":"disabled"}}
     try:
-        result = ai_request(base+endpoint, api_type, key, body, timeout)
+        result = ai_request(url, key, body, timeout)
     except ServiceError as error:
-        if api_type != "chat" or str(error) != "AI_TOKEN_PARAMETER":
+        if str(error) != "AI_TOKEN_PARAMETER":
             raise
-        alternative = "max_tokens" if token_limit == "max_completion_tokens" else "max_completion_tokens"
-        body[alternative] = body.pop(token_limit)
-        result = ai_request(base+endpoint, api_type, key, body, timeout)
-    limited = False
-    if "streamText" in result:
-        parts = text_parts(result["streamText"])
-    elif api_type == "responses":
-        parts = text_parts(result.get("output_text")) or [
-            text for item in result.get("output", []) for text in text_parts(item.get("content"))]
-        limited = (result.get("incomplete_details") or {}).get("reason") == "max_output_tokens"
-    elif api_type == "anthropic":
-        parts = text_parts(result.get("content"))
-        limited = result.get("stop_reason") == "max_tokens"
-    elif api_type == "gemini":
-        candidates = result.get("candidates", [])
-        parts = [text for item in candidates for text in text_parts(item.get("content", {}).get("parts"))]
-        limited = any(item.get("finishReason") == "MAX_TOKENS" for item in candidates)
-    else:
-        choices = result.get("choices", [])
-        parts = [text for item in choices for text in text_parts(item.get("message", {}).get("content"))]
-        limited = any(item.get("finish_reason") == "length" for item in choices)
+        body["max_completion_tokens"] = body.pop("max_tokens")
+        result = ai_request(url, key, body, timeout)
+    parts = text_parts(result["streamText"]) if "streamText" in result else [
+        text for choice in result.get("choices", [])
+        for text in text_parts(choice.get("message", {}).get("content"))
+    ]
     answer = "\n".join(parts).strip()
-    if not answer and not (test and limited):
+    if not answer:
         raise ServiceError(HTTPStatus.BAD_GATEWAY, "AI_EMPTY")
-    return {"text":answer,"model":model}
-
-
-def test_model(_):
-    config = custom_settings()
-    result = generate(config, "This is an API connectivity check.", "Reply with OK.", 128, 25, test=True)
-    return {"model":result["model"]}
+    return {"text":answer, "model":ARK_MODEL}
 
 
 _ANALYSIS_HEADING = re.compile(
@@ -427,7 +272,7 @@ def analyze(data):
         "Close each bold or highlight span immediately after the intended text, and do not escape its delimiters. Write in " +
         ("English." if data.get("language") == "en" else "Simplified Chinese.")
     )
-    user = {"chart_context":snapshot,"analysis_angle":config["prompt"] if provider == "custom" else ""}
+    user = {"chart_context":snapshot}
     result = generate(config, instructions, json.dumps(user, ensure_ascii=False, separators=(",",":")), 1600, 60)
     result["text"] = analysis_body(result["text"])
     if not result["text"]:

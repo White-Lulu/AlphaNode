@@ -15,7 +15,7 @@ from pathlib import Path
 import threading
 import webbrowser
 
-from local_services import ServiceError, analyze, list_models, public_settings, stock_price, test_model, update_settings
+from local_services import ServiceError, analyze, public_settings, remove_legacy_custom_settings, stock_price
 
 ASSET_PREFIX = "/_ui/"
 WORKBENCH_HEADER = "X-IndustryLab-Workbench"
@@ -101,8 +101,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         if url.path == "/api/analysis-settings":
             if not self.same_origin_service():
                 return self.reply(403, {"error": "LOCAL_ORIGIN_REQUIRED"})
-            reveal = parse_qs(url.query).get("reveal") == ["1"]
-            return self.local_service(lambda: public_settings(reveal))
+            return self.local_service(public_settings)
         if url.path != "/api/screen":
             return super().do_GET()
         if len(url.query) > 16000:
@@ -136,10 +135,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 and origin in (None, "http://" + host) and self.headers.get("X-AlphaNode-Local") == "1")
 
     def do_POST(self):
-        actions = {"/api/analysis-settings": update_settings, "/api/chart-analysis": analyze,
-                   "/api/analysis-models": list_models, "/api/analysis-test": test_model}
-        action = actions.get(urlsplit(self.path).path)
-        if action is None:
+        if urlsplit(self.path).path != "/api/chart-analysis":
             return self.reply(404, {"error": "UNKNOWN_ENDPOINT"})
         if not self.same_origin_service():
             return self.reply(403, {"error": "LOCAL_ORIGIN_REQUIRED"})
@@ -152,7 +148,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 raise ValueError
         except (ValueError, UnicodeError):
             return self.reply(400, {"error": "INVALID_JSON"})
-        return self.local_service(lambda: action(data))
+        return self.local_service(lambda: analyze(data))
 
     def local_service(self, action):
         try:
@@ -193,6 +189,7 @@ def main():
     root=project/"dist"
     if not (root/"data/meta.json").is_file():
         parser.error("Data snapshot is missing. Run python refresh.py first.")
+    remove_legacy_custom_settings()
     frontend=Frontend(root)
     handler=partial(WorkbenchHandler,directory=str(root),frontend=frontend)
     try:

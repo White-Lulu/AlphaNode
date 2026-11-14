@@ -1,6 +1,7 @@
 import {$,esc} from "./model.js";
 import {pair,prose} from "./i18n.js";
-import {request,message} from "./analysis-client.js";
+import {request,message,apiBases,listCustomModels,testCustomModel} from "./analysis-client.js";
+import {readAnalysisConfig,writeAnalysisConfig} from "./analysis-storage.js";
 import {wireSavedCharts,renderSavedCharts,setAnalysisSettings} from "./saved-charts.js";
 import {renderWatchlist} from "./watchlist.js";
 
@@ -14,13 +15,10 @@ export function wireCollection(config) {
   void refreshAnalysisSettings().catch(()=>{});
 }
 
-const apiBases={
-  chat:"https://api.openai.com/v1",responses:"https://api.openai.com/v1",
-  anthropic:"https://api.anthropic.com/v1",gemini:"https://generativelanguage.googleapis.com/v1beta"
-};
+const defaults={provider:"default",apiType:"chat",url:"",model:"",key:"",prompt:""};
 const aiInput=key=>$("ai-"+key);
-let aiConfig,settingsToken=0,editVersion=0,keyEdited=false,saveTimer,saving,operation;
-let pending={};
+let aiConfig,configRequest,serverRequest,serverSettings={},settingsToken=0,editVersion=0,saveTimer,saving,operation;
+let pending=false;
 
 function reportAI(text) {
   aiInput("settings-status").textContent=text;
@@ -49,69 +47,80 @@ function maskAIKey() {
   const input=aiInput("key");
   input.type="password";
   aiInput("show-key").setAttribute("aria-pressed","false");
-  if (!keyEdited) input.value="";
+  input.value=aiConfig?.key??"";
 }
 function fillAISettings(config) {
-  aiConfig=config;
   aiInput("api-type").value=apiBases[config.apiType]?config.apiType:"chat";
   for (const key of ["url","model","prompt"]) aiInput(key).value=config[key];
-  keyEdited=false;
   maskAIKey();
-  aiInput("key").placeholder=config.hasKey?"••••••••":"";
   renderAIModels();
   updateAIControls();
 }
+function initAIConfig() {
+  configRequest??=readAnalysisConfig().then(config=>{
+    aiConfig={...defaults,...config};
+    updateAnalysisMode();
+  }).catch(error=>{
+    configRequest=null;
+    throw error;
+  });
+  return configRequest;
+}
+function updateAnalysisMode() {
+  setAnalysisSettings({...serverSettings,provider:aiConfig?.provider??"default"});
+}
+function refreshServerSettings() {
+  serverRequest??=request("/api/analysis-settings").then(config=>{
+    serverSettings=config;
+    const notice=$("ai-web-notice");
+    if (notice) notice.hidden=!config.publicWeb;
+    updateAnalysisMode();
+  }).finally(()=>{serverRequest=null;});
+  return serverRequest;
+}
+async function refreshAnalysisSettings() {
+  await Promise.allSettled([initAIConfig(),refreshServerSettings()]);
+}
 function flushAISettings() {
   clearTimeout(saveTimer);
+  if (!pending) return saving??Promise.resolve(true);
   if (saving) return saving;
   const token=settingsToken;
   saving=(async()=>{
-    let changed=false;
-    while (Object.keys(pending).length) {
-      const patch=pending;
-      pending={};
-      try {
-        const config=await request("/api/analysis-settings",patch);
-        setAnalysisSettings(config);
-        changed=true;
-        if (token===settingsToken&&aiConfig) {
-          aiConfig.hasKey=config.hasKey;
-          aiInput("key").placeholder=config.hasKey?"••••••••":"";
-        }
-      } catch (error) {
-        pending={...patch,...pending};
-        if (token===settingsToken) reportAI(message(error));
+    while (pending) {
+      pending=false;
+      try {await writeAnalysisConfig({...aiConfig});}
+      catch {
+        pending=true;
+        if (token===settingsToken) reportAI(message(new Error("AI_PRIVATE_STORAGE")));
         return false;
       }
     }
-    if (changed&&!operation&&token===settingsToken) reportAI(prose("已自动保存。","Saved automatically."));
+    if (!operation&&token===settingsToken) reportAI(prose("已在浏览器加密保存。","Saved encrypted in this browser."));
     return true;
   })().finally(()=>{saving=null;});
   return saving;
 }
 function queueAISetting(key,value,immediate=false) {
+  aiConfig[key]=value;
   editVersion++;
-  pending[key]=value;
+  pending=true;
   clearTimeout(saveTimer);
-  if (!operation) reportAI(prose("正在保存…","Saving…"));
+  if (key==="provider") updateAnalysisMode();
   if (immediate) void flushAISettings();
   else saveTimer=setTimeout(flushAISettings,400);
 }
-async function refreshAnalysisSettings() {
-  const config=await request("/api/analysis-settings");
-  setAnalysisSettings(config);
-  return config;
-}
 async function prepareAnalysis() {
+  await initAIConfig();
   if (!await flushAISettings()) throw new Error("AI_SETTINGS_UNSAVED");
-  await refreshAnalysisSettings();
+  if (aiConfig.provider==="default") await refreshServerSettings();
+  return {...aiConfig};
 }
 export function resetAISettings() {
   settingsToken++;
-  aiConfig=null;
   operation=null;
-  keyEdited=false;
   maskAIKey();
+  aiInput("key").value="";
   aiInput("model-options").hidePopover();
   updateAIControls();
   void flushAISettings();
@@ -121,12 +130,9 @@ export async function loadAISettings() {
   reportAI("");
   updateAIControls();
   try {
-    if (!await flushAISettings()) {
-      if (token===settingsToken) reportAI(prose("上次改动暂未保存，请检查本地服务。","The last edit could not be saved. Check the local service."));
-      return;
-    }
-    const config=await refreshAnalysisSettings();
-    if (token===settingsToken) fillAISettings(config);
+    await initAIConfig();
+    if (token===settingsToken) fillAISettings(aiConfig);
+    void refreshServerSettings().catch(()=>{});
   } catch (error) {
     if (token===settingsToken) reportAI(message(error));
   }
@@ -140,12 +146,13 @@ async function runAIAction(kind) {
   const current=()=>token===settingsToken&&version===editVersion;
   try {
     if (!await flushAISettings()||!current()) return;
-    const result=await request("/api/analysis-"+kind,{});
+    const config={...aiConfig};
+    const result=kind==="models"?await listCustomModels(config):await testCustomModel(config);
     if (!current()) return;
     if (kind==="models") {
-      renderAIModels(result.models);
-      if (result.models.length) {
-        reportAI(prose("已拉取 "+result.models.length+" 个模型。","Fetched "+result.models.length+" models."));
+      renderAIModels(result);
+      if (result.length) {
+        reportAI(prose("已拉取 "+result.length+" 个模型。","Fetched "+result.length+" models."));
         const menu=aiInput("model-options");
         if (!menu.matches(":popover-open")) menu.showPopover({source:aiInput("model-menu")});
       } else reportAI(prose("接口未返回可选模型，可手动填写。","The provider returned no models. You can type a model name."));
@@ -165,13 +172,12 @@ function wireAISettings() {
   aiInput("modes").onclick=event=>{
     const provider=event.target.closest("[data-ai-provider]")?.dataset.aiProvider;
     if (!aiConfig||!provider||provider===aiConfig.provider) return;
-    aiConfig.provider=provider;
+    queueAISetting("provider",provider,true);
     if (provider==="default") {
       maskAIKey();
       aiInput("model-options").hidePopover();
     }
     updateAIControls();
-    queueAISetting("provider",provider,true);
   };
   aiInput("api-type").onchange=event=>{
     renderAIModels();
@@ -179,7 +185,6 @@ function wireAISettings() {
     queueAISetting("apiType",event.target.value,true);
   };
   for (const key of ["url","key","model","prompt"]) aiInput(key).oninput=event=>{
-    if (key==="key") keyEdited=true;
     if (key==="url"||key==="key") renderAIModels();
     queueAISetting(key,event.target.value);
   };
@@ -191,23 +196,11 @@ function wireAISettings() {
     aiInput("model").focus();
     queueAISetting("model",model,true);
   };
-  aiInput("show-key").onclick=async()=>{
-    const input=aiInput("key"),button=aiInput("show-key");
+  aiInput("show-key").onclick=()=>{
+    const input=aiInput("key");
     if (input.type==="text") {maskAIKey();return;}
-    const token=settingsToken;
-    if (!keyEdited&&!input.value&&aiConfig?.hasKey) {
-      button.disabled=true;
-      try {
-        const revealed=await request("/api/analysis-settings?reveal=1");
-        if (token!==settingsToken||aiConfig?.provider!=="custom") return;
-        if (!keyEdited) input.value=revealed.key;
-      } catch (error) {
-        if (token===settingsToken) reportAI(message(error));
-        return;
-      } finally {button.disabled=false;}
-    }
     input.type="text";
-    button.setAttribute("aria-pressed","true");
+    aiInput("show-key").setAttribute("aria-pressed","true");
   };
   aiInput("fetch-models").onclick=()=>void runAIAction("models");
   aiInput("test-model").onclick=()=>void runAIAction("test");
