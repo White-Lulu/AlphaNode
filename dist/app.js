@@ -1379,6 +1379,22 @@ function wire() {
     const available=allColumns(columnView);
     setColumns(key==="default"?null:key==="all"?available:presets[key][2].filter(k=>available.includes(k)));
   };
+  // Older mobile browsers ignore closedby="any".
+  for (const dialog of document.querySelectorAll('dialog[closedby="any"]')) {
+    let startedOutside=false;
+    const onBackdrop=event=>{
+      if (event.target!==dialog) return false;
+      const {left,right,top,bottom}=dialog.getBoundingClientRect();
+      return event.clientX<left||event.clientX>=right||event.clientY<top||event.clientY>=bottom;
+    };
+    dialog.addEventListener("pointerdown",event=>{startedOutside=event.isPrimary&&event.button===0&&onBackdrop(event);});
+    dialog.addEventListener("pointercancel",()=>{startedOutside=false;});
+    dialog.addEventListener("click",event=>{
+      const dismiss=startedOutside&&dialog.open&&onBackdrop(event);
+      startedOutside=false;
+      if (dismiss) dialog.close();
+    });
+  }
   $("method").onclick=()=>$("method-dialog").showModal();
   $("settings-theme").onchange=e=>{
     prefs.uiTheme=e.target.value;
