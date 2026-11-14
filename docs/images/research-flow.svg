@@ -23,25 +23,25 @@
     <path d="M192 254 H424" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <text x="308" y="245" fill="#244c77" font-size="14" font-weight="650" text-anchor="middle">加入自选</text>
     <rect x="42" y="91" width="150" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="117" y="123" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">数据表查询</text>
-    <text x="117" y="148" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">选中数据系列</text>
+    <text x="117" y="129" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">数据表查询</text>
+    <text x="117" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">选中数据系列</text>
     <rect x="212" y="91" width="145" height="86" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="284.5" y="123" fill="#244c77" font-size="18" font-weight="650" text-anchor="middle">趋势对照</text>
-    <text x="284.5" y="148" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">折线图与数值表</text>
+    <text x="284.5" y="128" fill="#244c77" font-size="18" font-weight="650" text-anchor="middle">趋势对照</text>
+    <text x="284.5" y="153" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">折线图与数值表</text>
     <rect x="42" y="215" width="150" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="117" y="247" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">企业信息</text>
-    <text x="117" y="272" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">点星标</text>
+    <text x="117" y="253" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">企业信息</text>
+    <text x="117" y="278" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">点星标</text>
     <rect x="425" y="91" width="217" height="86" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="533.5" y="123" fill="#244c77" font-size="18" font-weight="650" text-anchor="middle">已保存图表</text>
-    <text x="533.5" y="148" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">分类夹与拖动排序</text>
+    <text x="533.5" y="129" fill="#244c77" font-size="18" font-weight="650" text-anchor="middle">已保存图表</text>
+    <text x="533.5" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">分类夹与拖动排序</text>
     <rect x="723" y="91" width="235" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="840.5" y="123" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI 分析</text>
-    <text x="840.5" y="148" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">分析角度与荧光标记</text>
+    <text x="840.5" y="129" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI 分析</text>
+    <text x="840.5" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">分析角度与荧光标记</text>
     <rect x="425" y="215" width="217" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="533.5" y="247" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">自选企业</text>
-    <text x="533.5" y="272" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">数据展台 · 对照指标</text>
+    <text x="533.5" y="253" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">自选企业</text>
+    <text x="533.5" y="278" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">数据展台 · 对照指标</text>
     <rect x="723" y="215" width="235" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="840.5" y="247" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">图表工作台</text>
-    <text x="840.5" y="272" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">多图并排 · 按行合并保存</text>
+    <text x="840.5" y="253" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">图表工作台</text>
+    <text x="840.5" y="278" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">多图并排 · 按行合并保存</text>
   </g>
 </svg>

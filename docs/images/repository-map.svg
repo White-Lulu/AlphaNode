@@ -22,31 +22,31 @@
     <path d="M695 262 H740" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <path d="M857 217 V199" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <rect x="27" y="106" width="178" height="93" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="41" y="134" fill="#273443" font-size="18" font-weight="650" text-anchor="start">外部原始资料</text>
-    <text x="41" y="159" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">财报、官方统计</text>
-    <text x="41" y="180" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">市场数据、证券资料</text>
+    <text x="41" y="137" fill="#273443" font-size="18" font-weight="650" text-anchor="start">外部原始资料</text>
+    <text x="41" y="162" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">财报、官方统计</text>
+    <text x="41" y="183" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">市场数据、证券资料</text>
     <rect x="27" y="217" width="178" height="98" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="41" y="245" fill="#273443" font-size="18" font-weight="650" text-anchor="start">config/</text>
-    <text x="41" y="270" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">企业样本与分类规则</text>
+    <text x="41" y="260" fill="#273443" font-size="18" font-weight="650" text-anchor="start">config/</text>
+    <text x="41" y="285" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">企业样本与分类规则</text>
     <rect x="248" y="155" width="195" height="96" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="262" y="183" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">refresh.py</text>
-    <text x="262" y="208" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">pipeline/ · 采集与计算</text>
-    <text x="262" y="229" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">verify.py · 数据校验</text>
+    <text x="262" y="186" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">refresh.py</text>
+    <text x="262" y="211" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">pipeline/ · 采集与计算</text>
+    <text x="262" y="232" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">verify.py · 数据校验</text>
     <rect x="480" y="106" width="215" height="93" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="494" y="134" fill="#273443" font-size="18" font-weight="650" text-anchor="start">浏览器 JSON</text>
-    <text x="494" y="159" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">dist/data/ · dist/research/</text>
+    <text x="494" y="147" fill="#273443" font-size="18" font-weight="650" text-anchor="start">浏览器 JSON</text>
+    <text x="494" y="172" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">dist/data/ · dist/research/</text>
     <rect x="480" y="217" width="215" height="98" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="494" y="245" fill="#273443" font-size="18" font-weight="650" text-anchor="start">warehouse/</text>
-    <text x="494" y="270" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">DuckDB 执行筛选查询</text>
-    <text x="494" y="291" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">Parquet 存储列式数据</text>
+    <text x="494" y="249" fill="#273443" font-size="18" font-weight="650" text-anchor="start">warehouse/</text>
+    <text x="494" y="274" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">DuckDB 执行筛选查询</text>
+    <text x="494" y="295" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">Parquet 存储列式数据</text>
     <rect x="741" y="106" width="232" height="93" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="755" y="134" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">dist/ · 浏览器前端</text>
-    <text x="755" y="159" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">表格、Canvas 图表</text>
-    <text x="755" y="180" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">浏览器存储工作台状态</text>
+    <text x="755" y="137" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">dist/ · 浏览器前端</text>
+    <text x="755" y="162" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">表格、Canvas 图表</text>
+    <text x="755" y="183" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">浏览器存储工作台状态</text>
     <rect x="741" y="217" width="232" height="98" rx="2" fill="#ffffff" stroke="#d0d5db"/>
-    <text x="755" y="245" fill="#273443" font-size="18" font-weight="650" text-anchor="start">serve.py · 本地服务</text>
-    <text x="755" y="270" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">高级筛选、股价</text>
-    <text x="755" y="291" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">local_services.py · AI</text>
+    <text x="755" y="249" fill="#273443" font-size="18" font-weight="650" text-anchor="start">serve.py · 本地服务</text>
+    <text x="755" y="274" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">高级筛选、股价</text>
+    <text x="755" y="295" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">local_services.py · AI</text>
     </g>
   </g>
 </svg>

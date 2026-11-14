@@ -10,26 +10,26 @@
   <g font-family="'AlphaNode Diagram Serif', 'Source Han Serif SC', 'Noto Serif SC', SimSun, serif">
     <rect width="1000" height="233" fill="#fff"/>
     <rect x="433" y="24" width="134" height="43" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="500" y="52" fill="#244c77" font-size="21" font-weight="650" text-anchor="middle">设置</text>
+    <text x="500" y="54" fill="#244c77" font-size="21" font-weight="650" text-anchor="middle">设置</text>
     <path d="M500 67 V91 H137 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <path d="M500 91 H863 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <path d="M379 91 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <path d="M621 91 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
     <rect x="27" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="137" y="139" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">显示配置</text>
-    <text x="137" y="164" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">语言、主题和字体</text>
-    <text x="137" y="185" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">表格对齐、层级色与热力色</text>
+    <text x="137" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">显示配置</text>
+    <text x="137" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">语言、主题和字体</text>
+    <text x="137" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">表格对齐、层级色与热力色</text>
     <rect x="269" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="379" y="139" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">同业对照雷达图</text>
-    <text x="379" y="164" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">选择对照指标</text>
-    <text x="379" y="185" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">可恢复默认六项</text>
+    <text x="379" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">同业对照雷达图</text>
+    <text x="379" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">选择对照指标</text>
+    <text x="379" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">可恢复默认六项</text>
     <rect x="511" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="621" y="139" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">术语解释</text>
-    <text x="621" y="164" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">按需显示指标释义</text>
-    <text x="621" y="185" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">悬停查阅公式</text>
+    <text x="621" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">术语解释</text>
+    <text x="621" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">按需显示指标释义</text>
+    <text x="621" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">悬停查阅公式</text>
     <rect x="753" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="863" y="139" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI 图表分析</text>
-    <text x="863" y="164" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">默认或自定义接口</text>
-    <text x="863" y="185" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">配置模型和分析角度</text>
+    <text x="863" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI 图表分析</text>
+    <text x="863" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">默认或自定义接口</text>
+    <text x="863" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">配置模型和分析角度</text>
   </g>
 </svg>
