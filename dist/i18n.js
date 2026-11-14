@@ -3,7 +3,7 @@ const storageKey=workbenchKey;
 export const languages=[
   ["zh","简体中文"],["en","English"],["zh-en","中文（English）"],["en-zh","English（中文）"]
 ];
-const defaults={language:"zh",hints:{},hover:true,watch:[],columns:{},presets:[],align:"finance",indentHierarchy:true,colorHierarchy:true};
+const defaults={language:"zh",hints:{},hover:true,watch:[],columns:{},presets:[],align:"finance",indentHierarchy:true,colorHierarchy:true,heat:true};
 function restore() {
   try {
     const saved=JSON.parse(localStorage.getItem(storageKey)??localStorage.getItem(workbenchKey)) || {};
