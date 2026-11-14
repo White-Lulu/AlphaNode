@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="233" viewBox="0 0 1000 233" role="img" aria-labelledby="title desc">
+  <title id="title">设置</title>
+  <desc id="desc">设置分为显示配置、同业对照雷达图、术语解释和 AI 图表分析。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#6b8eb5"/></marker></defs>
+  <g font-family="system-ui,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif">
+    <rect x="1" y="1" width="998" height="231" rx="18" fill="#f1f5fb" stroke="#d2deee"/>
+    <rect x="433" y="24" width="134" height="43" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="500" y="52" fill="#1f4f9c" font-size="21" font-weight="650" text-anchor="middle">设置</text>
+    <path d="M500 67 V91 H137 V110" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M500 91 H863 V110" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M379 91 V110" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M621 91 V110" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <rect x="27" y="111" width="220" height="100" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="41" y="139" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">显示配置</text>
+    <text x="41" y="164" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">语言、主题和字体</text>
+    <text x="41" y="185" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">表格对齐、层级色与热力色</text>
+    <rect x="269" y="111" width="220" height="100" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="283" y="139" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">同业对照雷达图</text>
+    <text x="283" y="164" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">选择对照指标</text>
+    <text x="283" y="185" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">可恢复默认六项</text>
+    <rect x="511" y="111" width="220" height="100" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="525" y="139" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">术语解释</text>
+    <text x="525" y="164" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">按需显示指标释义</text>
+    <text x="525" y="185" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">悬停查阅公式</text>
+    <rect x="753" y="111" width="220" height="100" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="767" y="139" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">AI 图表分析</text>
+    <text x="767" y="164" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">默认或自定义接口</text>
+    <text x="767" y="185" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">配置模型和分析角度</text>
+  </g>
+</svg>

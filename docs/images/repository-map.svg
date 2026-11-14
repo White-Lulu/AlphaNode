@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="363" viewBox="0 0 1000 363" role="img" aria-labelledby="title desc">
+  <title id="title">仓库结构与数据流</title>
+  <desc id="desc">外部原始数据与 config 中的样本和分类规则交由 Python 构建，生成浏览器 JSON、DuckDB 和 Parquet。serve.py 提供浏览器页面和运行时接口。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#6b8eb5"/></marker></defs>
+  <g font-family="system-ui,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif">
+    <rect x="1" y="1" width="998" height="361" rx="18" fill="#f1f5fb" stroke="#d2deee"/>
+    <text x="28" y="47" fill="#182b43" font-size="25" font-weight="650" text-anchor="start">仓库结构与数据流</text>
+    <text x="27" y="88" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">输入</text>
+    <text x="248" y="88" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">采集与计算</text>
+    <text x="480" y="88" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">生成的文件</text>
+    <text x="741" y="88" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">运行</text>
+    <path d="M205 153 H226 V185 H247" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M205 262 H226 V220 H247" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M443 185 H460 V153 H479" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M443 220 H460 V262 H479" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M695 153 H740" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M695 262 H740" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M857 217 V199" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <rect x="27" y="106" width="178" height="93" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="41" y="134" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">外部原始资料</text>
+    <text x="41" y="159" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">财报、官方统计</text>
+    <text x="41" y="180" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">市场数据、证券资料</text>
+    <rect x="27" y="217" width="178" height="98" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="41" y="245" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">config/</text>
+    <text x="41" y="270" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">企业样本与分类规则</text>
+    <rect x="248" y="155" width="195" height="96" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="262" y="183" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">refresh.py</text>
+    <text x="262" y="208" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">pipeline/ · 采集与计算</text>
+    <text x="262" y="229" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">verify.py · 数据校验</text>
+    <rect x="480" y="106" width="215" height="93" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="494" y="134" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">浏览器 JSON</text>
+    <text x="494" y="159" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">dist/data/ · dist/research/</text>
+    <rect x="480" y="217" width="215" height="98" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="494" y="245" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">warehouse/</text>
+    <text x="494" y="270" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">DuckDB 执行筛选查询</text>
+    <text x="494" y="291" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">Parquet 存储列式数据</text>
+    <rect x="741" y="106" width="232" height="93" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="755" y="134" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">dist/ · 浏览器前端</text>
+    <text x="755" y="159" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">表格、Canvas 图表</text>
+    <text x="755" y="180" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">浏览器存储工作台状态</text>
+    <rect x="741" y="217" width="232" height="98" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="755" y="245" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">serve.py · 本地服务</text>
+    <text x="755" y="270" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">高级筛选、股价</text>
+    <text x="755" y="291" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">local_services.py · AI</text>
+    <text x="27" y="340" fill="#465d77" font-size="16" font-weight="400" text-anchor="start">生成的数据文件、数据库与原始缓存在本地准备。</text>
+  </g>
+</svg>

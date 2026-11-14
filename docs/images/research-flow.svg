@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="346" viewBox="0 0 1000 346" role="img" aria-labelledby="title desc">
+  <title id="title">趋势对照与工作台</title>
+  <desc id="desc">数据表序列进入趋势图并可保存，保存的图表可以由 AI 分析，也可在图表工作台并排或按行合并。企业可以加入自选。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#6b8eb5"/></marker></defs>
+  <g font-family="system-ui,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif">
+    <rect x="1" y="1" width="998" height="344" rx="18" fill="#f1f5fb" stroke="#d2deee"/>
+    <rect x="23" y="25" width="354" height="298" rx="10" fill="#eaf1fb" stroke="#d2deee"/>
+    <rect x="406" y="25" width="571" height="298" rx="10" fill="#eaf1fb" stroke="#d2deee"/>
+    <text x="42" y="60" fill="#182b43" font-size="22" font-weight="650" text-anchor="start">全球行业数据图谱</text>
+    <text x="424" y="60" fill="#182b43" font-size="22" font-weight="650" text-anchor="start">我的工作台</text>
+    <path d="M192 130 H211" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M357 130 H424" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <text x="390" y="119" fill="#1f4f9c" font-size="14" font-weight="650" text-anchor="middle">保存</text>
+    <path d="M642 130 H722" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M676 130 V254 H722" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M840 215 V178" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <text x="852" y="201" fill="#1f4f9c" font-size="14" font-weight="400" text-anchor="start">合并后可分析</text>
+    <path d="M192 254 H424" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <rect x="42" y="91" width="150" height="86" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="56" y="119" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">数据表查询</text>
+    <text x="56" y="144" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">选中数据系列</text>
+    <rect x="212" y="91" width="145" height="86" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="226" y="119" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">趋势对照</text>
+    <text x="226" y="144" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">折线图与数值表</text>
+    <rect x="42" y="215" width="150" height="86" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="56" y="243" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">企业信息</text>
+    <text x="56" y="268" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">点星标</text>
+    <rect x="425" y="91" width="217" height="86" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="439" y="119" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">已保存图表</text>
+    <text x="439" y="144" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">分类夹与拖动排序</text>
+    <rect x="723" y="91" width="235" height="86" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="737" y="119" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">AI 分析</text>
+    <text x="737" y="144" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">分析角度与荧光标记</text>
+    <rect x="425" y="215" width="217" height="86" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="439" y="243" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">自选企业</text>
+    <text x="439" y="268" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">数据展台 · 对照指标</text>
+    <rect x="723" y="215" width="235" height="86" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="737" y="243" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">图表工作台</text>
+    <text x="737" y="268" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">多图并排 · 按行合并保存</text>
+  </g>
+</svg>

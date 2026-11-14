@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="671" viewBox="0 0 1000 671" role="img" aria-labelledby="title desc">
+  <title id="title">数据表查询</title>
+  <desc id="desc">行业查询与企业查询在行业财务交叉。图中列出六个数据表及其分类方式、指标示例和企业详情。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#6b8eb5"/></marker></defs>
+  <g font-family="system-ui,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif">
+    <rect x="1" y="1" width="998" height="669" rx="18" fill="#f1f5fb" stroke="#d2deee"/>
+    <text x="28" y="48" fill="#182b43" font-size="26" font-weight="650" text-anchor="start">数据表查询</text>
+    <path d="M314 126 V143 M100 143 H546 M686 126 V143 M611 143 H897" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M260 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M419 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M546 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M611 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M738 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M897 143 V163" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M100 260 V286 H738 V260 M260 260 V286 M419 260 V286 M578 260 V286" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M339 286 V308" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <path d="M897 260 V308" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <rect x="173" y="80" width="282" height="46" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="187" y="108" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">行业查询</text>
+    <rect x="545" y="80" width="282" height="46" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="559" y="108" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">企业查询</text>
+    <rect x="27" y="164" width="149" height="96" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="41" y="192" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">行业基准</text>
+    <text x="41" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">Damodaran</text>
+    <text x="41" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">原始行业分组</text>
+    <rect x="187" y="164" width="149" height="96" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="201" y="192" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">官方统计</text>
+    <text x="201" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">各机构统计分类</text>
+    <text x="201" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">如 ISIC、NACE</text>
+    <rect x="346" y="164" width="149" height="96" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="360" y="192" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">产品市场</text>
+    <text x="360" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">产品 × 地区</text>
+    <text x="360" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">如 EV × 中国</text>
+    <rect x="505" y="164" width="149" height="96" rx="10" fill="#e2edfb" stroke="#afc7e5"/>
+    <text x="519" y="192" fill="#1f4f9c" font-size="18" font-weight="650" text-anchor="start">行业财务</text>
+    <text x="519" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">ISIC Rev.4</text>
+    <text x="519" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">产业链功能</text>
+    <rect x="665" y="164" width="149" height="96" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="679" y="192" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">企业筛选</text>
+    <text x="679" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">经济体、行业</text>
+    <text x="679" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">指标规则</text>
+    <rect x="824" y="164" width="149" height="96" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="838" y="192" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">证券目录</text>
+    <text x="838" y="217" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">交易所、行业</text>
+    <text x="838" y="238" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">上市状态</text>
+    <rect x="27" y="309" width="718" height="125" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="41" y="338" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">指标示例</text>
+    <text x="731" y="338" fill="#1f4f9c" font-size="15" font-weight="650" text-anchor="end">数据来源与计算方法 ↓</text>
+    <text x="41" y="368" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">财务样本</text>
+    <text x="41" y="393" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">营收、毛利率</text>
+    <text x="41" y="414" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">ROE、ROIC</text>
+    <text x="214" y="368" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">行业基准</text>
+    <text x="214" y="393" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">利润率、ROIC</text>
+    <text x="214" y="414" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">WACC、EVA</text>
+    <text x="387" y="368" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">官方统计</text>
+    <text x="387" y="393" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">增加值、就业人数</text>
+    <text x="387" y="414" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">营业收入</text>
+    <text x="560" y="368" fill="#1f4f9c" font-size="16" font-weight="650" text-anchor="start">产品市场</text>
+    <text x="560" y="393" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">EV 销量、渗透率</text>
+    <text x="560" y="414" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">售电 HHI、汽油弹性</text>
+    <rect x="759" y="309" width="214" height="125" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="773" y="337" fill="#182b43" font-size="18" font-weight="650" text-anchor="start">证券信息</text>
+    <text x="773" y="362" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">证券代码、ISIN</text>
+    <text x="773" y="383" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">名称、主要上市地</text>
+    <text x="27" y="475" fill="#465d77" font-size="16" font-weight="650" text-anchor="start">从这些表打开企业详情</text>
+    <rect x="232" y="452" width="116" height="35" rx="7" fill="#ffffff" stroke="#d2deee"/>
+    <text x="290.0" y="475" fill="#1f4f9c" font-size="15" font-weight="650" text-anchor="middle">行业财务</text>
+    <rect x="359" y="452" width="116" height="35" rx="7" fill="#ffffff" stroke="#d2deee"/>
+    <text x="417.0" y="475" fill="#1f4f9c" font-size="15" font-weight="650" text-anchor="middle">企业筛选</text>
+    <rect x="486" y="452" width="214" height="35" rx="7" fill="#ffffff" stroke="#d2deee"/>
+    <text x="593.0" y="475" fill="#1f4f9c" font-size="15" font-weight="650" text-anchor="middle">证券目录 · 已匹配企业</text>
+    <path d="M290 487 V501 H593 V487 M417 487 V501" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M417 501 V515" fill="none" stroke="#6b8eb5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+    <rect x="27" y="516" width="946" height="128" rx="10" fill="#ffffff" stroke="#d2deee"/>
+    <text x="43" y="548" fill="#182b43" font-size="20" font-weight="650" text-anchor="start">企业信息</text>
+    <text x="43" y="582" fill="#1f4f9c" font-size="17" font-weight="650" text-anchor="start">企业简介</text>
+    <text x="43" y="611" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">业务与网站</text>
+    <text x="233" y="582" fill="#1f4f9c" font-size="17" font-weight="650" text-anchor="start">股价走势</text>
+    <text x="233" y="611" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">周频复权价格</text>
+    <text x="420" y="582" fill="#1f4f9c" font-size="17" font-weight="650" text-anchor="start">同业对照</text>
+    <text x="420" y="611" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">雷达指标与组内排名</text>
+    <text x="613" y="582" fill="#1f4f9c" font-size="17" font-weight="650" text-anchor="start">十年财务</text>
+    <text x="613" y="611" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">主要报表指标</text>
+    <text x="790" y="582" fill="#1f4f9c" font-size="17" font-weight="650" text-anchor="start">计算明细</text>
+    <text x="790" y="611" fill="#465d77" font-size="15" font-weight="400" text-anchor="start">公式、代入值及来源</text>
+  </g>
+</svg>
