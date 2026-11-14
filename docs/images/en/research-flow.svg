@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="346" viewBox="0 0 1000 346" role="img" aria-labelledby="title desc">
+  <title id="title">Trend comparison and workbench</title>
+  <desc id="desc">Add table series to trends, save charts, analyze with AI or arrange and merge rows in the workbench. Star companies to add them to the watchlist.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#747e8a"/></marker></defs>
+  <g font-family="Georgia, Times New Roman, serif">
+    <rect width="1000" height="346" fill="#fff"/>
+    <rect x="23" y="25" width="350" height="298" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <rect x="410" y="25" width="567" height="298" rx="2" fill="#f5f7f9" stroke="#d0d5db"/>
+    <text x="200" y="60" fill="#273443" font-size="22" font-weight="650" text-anchor="middle">Global Industry Data Atlas</text>
+    <text x="691.5" y="60" fill="#273443" font-size="22" font-weight="650" text-anchor="middle">My workbench</text>
+    <path d="M192 130 H211" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <path d="M357 130 H424" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <text x="391.5" y="119" fill="#244c77" font-size="14" font-weight="650" text-anchor="middle">Save</text>
+    <path d="M642 130 H722" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <path d="M676 130 V254 H722" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <path d="M840 215 V178" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <text x="852" y="201" fill="#244c77" font-size="14" font-weight="400" text-anchor="start">Analyze merged charts</text>
+    <path d="M192 254 H424" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
+    <text x="308" y="245" fill="#244c77" font-size="14" font-weight="650" text-anchor="middle">Add to watchlist</text>
+    <rect x="42" y="91" width="150" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
+    <text x="117" y="129" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Data tables</text>
+    <text x="117" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Select data series</text>
+    <rect x="212" y="91" width="145" height="86" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
+    <text x="284.5" y="128" fill="#244c77" font-size="14" font-weight="650" text-anchor="middle">Trend comparison</text>
+    <text x="284.5" y="153" fill="#4c5662" font-size="13" font-weight="400" text-anchor="middle">Line charts and values</text>
+    <rect x="42" y="215" width="150" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
+    <text x="117" y="253" fill="#273443" font-size="16" font-weight="650" text-anchor="middle">Company profile</text>
+    <text x="117" y="278" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Star a company</text>
+    <rect x="425" y="91" width="217" height="86" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
+    <text x="533.5" y="129" fill="#244c77" font-size="18" font-weight="650" text-anchor="middle">Saved charts</text>
+    <text x="533.5" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Folders and drag to reorder</text>
+    <rect x="723" y="91" width="235" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
+    <text x="840.5" y="129" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI analysis</text>
+    <text x="840.5" y="154" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Prompts and highlights</text>
+    <rect x="425" y="215" width="217" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
+    <text x="533.5" y="253" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Watchlist</text>
+    <text x="533.5" y="278" fill="#4c5662" font-size="13" font-weight="400" text-anchor="middle">Data gallery · compare metrics</text>
+    <rect x="723" y="215" width="235" height="86" rx="2" fill="#ffffff" stroke="#d0d5db"/>
+    <text x="840.5" y="253" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Chart workbench</text>
+    <text x="840.5" y="278" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Side by side · merge chart rows</text>
+  </g>
+</svg>

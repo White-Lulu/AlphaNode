@@ -388,11 +388,11 @@ body:not(.profile-open) [data-resize=profile-width] { display:none; }
 #workspace[data-collection-split] [data-resize=collection-work-area] { display:block; }
 @media(max-width:1080px) {
   #workspace[data-collection-split] #work-area {
-    grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(180px,1fr) minmax(210px,1fr); gap:8px; overflow:auto;
+    grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(180px,1fr) minmax(210px,1fr); gap:var(--splitter-size); overflow:auto;
   }
   #workspace[data-collection-split] [data-resize=collection-work-area] { display:none; }
 }
-#collection { display:grid; grid-template-columns:minmax(0,1fr); align-content:start; gap:12px; min-height:0; overflow:auto; scrollbar-gutter:stable; }
+#collection { display:grid; grid-template-columns:minmax(0,1fr); align-content:start; gap:12px; min-height:0; overflow:auto; }
 #collection > details { min-width:0; }
 #collection > details > summary { display:flex; align-items:center; flex-wrap:wrap; gap:8px;
   padding:12px 14px; font-size:15px; font-weight:650; cursor:pointer; }
