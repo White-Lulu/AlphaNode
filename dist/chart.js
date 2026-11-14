@@ -54,6 +54,14 @@ export function chartRows(charts) {
 export function canMoveChart(rows,index,direction) {
   return Boolean(rows[index+direction])||(rows.length===1&&rows[index].length>1);
 }
+export function insertChartBelow(charts,source,copy) {
+  const rows=chartRows(charts),index=rows.findIndex(row=>row.includes(source));
+  rows.splice(index+1,0,[copy]);
+  return numberChartRows(rows);
+}
+function numberChartRows(rows) {
+  return rows.flatMap((row,index)=>row.map(item=>Object.assign(item,{row:index})));
+}
 export function moveChartInRows(charts,chart,direction) {
   const rows=chartRows(charts);
   const index=rows.findIndex(row=>row.includes(chart)),current=rows[index],adjacent=rows[index+direction];
@@ -69,7 +77,7 @@ export function moveChartInRows(charts,chart,direction) {
     adjacent.forEach(item=>delete item.weight);
     rows.splice(index,1);
   }
-  return rows.flatMap((row,index)=>row.map(item=>Object.assign(item,{row:index})));
+  return numberChartRows(rows);
 }
 export const chartRowKey=row=>row.map(chart=>chart.id).join("|");
 export const chartParts=chart=>chart.parts??[chart];
@@ -96,11 +104,13 @@ function plotHTML(chart,plot,meta,live,valuesOpen) {
     '</summary><div class="chart-numbers-scroll" tabindex="0" aria-label="'+esc(pair("图表数值","Chart values"))+'"></div></details>';
 }
 function chartActions(rows,index,chart,live) {
+  const copyIcon='<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M6 13H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="7" width="10" height="10" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
   const saveIcon='<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M4 3.5h10l2.5 2.5v10.5h-13v-13h.5Zm2.5 0V8h7V3.5m-7 13V11h7v5.5" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.4"/></svg>';
   return '<div class="chart-actions"><div class="chart-move">'+
     moveButton(-1,canMoveChart(rows,index,-1),pair("上移图表","Move chart up"))+
     moveButton(1,canMoveChart(rows,index,1),pair("下移图表","Move chart down"))+'</div>'+
-    (live?chartButton("data-save-chart"+(chart.pins.length?"":" disabled"),pair("保存图表","Save chart"),saveIcon):"")+
+    (live?chartButton("data-copy-chart",pair("复制图表","Duplicate chart"),copyIcon)+
+      chartButton("data-save-chart"+(chart.pins.length?"":" disabled"),pair("保存图表","Save chart"),saveIcon):"")+
     chartButton("data-chart-remove",pair("移除图表","Remove chart"),"×")+'</div>';
 }
 function rowSelection(row,selected) {

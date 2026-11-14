@@ -1,7 +1,7 @@
 import {$,bindSearch,downloadCSV,esc,api,research,modes,modeLabel,modeTerm,options,finite,annual,measure,qualityNotes,observation,format,unitLabel,link,scale} from "./model.js";
 import {applyStatic,setLanguage,prefs,save,languages,scopeLabel,countryName,companyLocation,locale,pair,prose,nameOf,companyNames,paragraphs} from "./i18n.js";
 import {bindGlossary,glossary,metricLabel,renderGlossarySettings,setAllHints} from "./glossary.js";
-import {renderCharts,redraw,moveChartInRows} from "./chart.js";
+import {renderCharts,redraw,insertChartBelow,moveChartInRows} from "./chart.js";
 import {initialScreen,matchesScreen,matchesIndustry,issuerFilterOptions,renderRules,presetOptions,presetFor,savePreset,deletePreset,isWatched,toggleWatch,pagerHTML,peerStats,tablePageSize} from "./screener.js";
 import {renderDirectory} from "./directory.js";
 import {renderAdvanced,requestAdvanced} from "./advanced.js";
@@ -1542,6 +1542,13 @@ function wire() {
     const b=e.target.closest("button"),chart=state.charts.find(c=>c.id===Number(b?.closest("[data-chart]")?.dataset.chart));
     if (!b||!chart) return;
     if (b.hasAttribute("data-locate-series")) {void locateSeries(chart.pins[Number(b.dataset.locateSeries)],b);return;}
+    if (b.hasAttribute("data-copy-chart")) {
+      const copy={...chart,id:state.nextChart++,pins:[...chart.pins],defaultPins:false,weight:undefined};
+      state.charts=insertChartBelow(state.charts,chart,copy);
+      showCharts(true);
+      $("charts").querySelector('[data-chart="'+copy.id+'"] [data-chart-metric]').focus();
+      return;
+    }
     if (b.hasAttribute("data-save-chart")) {if (chart.pins.length) openSaveChart(chart);return;}
     if (b.hasAttribute("data-move-chart")) state.charts=moveChartInRows(state.charts,chart,Number(b.dataset.moveChart));
     if (b.hasAttribute("data-chart-active")) state.active=chart.id;

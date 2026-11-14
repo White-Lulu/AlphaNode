@@ -197,7 +197,7 @@ main { display:grid; grid-template-rows:minmax(345px,1fr) auto; min-height:0; mi
 .chart-row { display:flex; align-items:flex-start; gap:10px; min-width:0; }
 .chart-row > .chart { flex:var(--chart-weight,1) 1 0; min-width:0; }
 .chart-actions,.legend-item,.legend-static { display:inline-flex; align-items:center; }
-.chart-controls:has(.chart-actions) { position:relative; padding-inline-end:92px; min-height:28px; }
+.chart-controls:has(.chart-actions) { position:relative; padding-inline-end:124px; min-height:28px; }
 .chart-actions { gap:4px; position:absolute; inset-block-start:0; inset-inline-end:0; }
 .chart-actions > button { display:grid; place-items:center; width:28px; height:28px; flex:none; padding:0; }
 .chart-move { display:grid; grid-template-rows:1fr 1fr; flex:none; width:23px; height:28px; }
