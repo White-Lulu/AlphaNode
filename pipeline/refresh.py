@@ -1,10 +1,6 @@
-"""Refresh source caches and publish a local snapshot."""
+"""Refresh source caches and rebuild the local datasets."""
 import argparse
 import os
-from pathlib import Path
-import sys
-
-sys.path.insert(0,str(Path(__file__).resolve().parent/"pipeline"))
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)

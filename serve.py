@@ -15,7 +15,7 @@ from pathlib import Path
 import threading
 import webbrowser
 
-from local_services import ServiceError, analyze, public_settings, remove_legacy_custom_settings, stock_price
+from server.local_services import ServiceError, analyze, public_settings, remove_legacy_custom_settings, stock_price
 
 ASSET_PREFIX = "/_ui/"
 WORKBENCH_HEADER = "X-IndustryLab-Workbench"
@@ -188,7 +188,7 @@ def main():
     sys.path.insert(0,str(project/"pipeline"))
     root=project/"dist"
     if not (root/"data/meta.json").is_file():
-        parser.error("Data snapshot is missing. Run python refresh.py first.")
+        parser.error("Generated data is missing. Run python pipeline/refresh.py first.")
     remove_legacy_custom_settings()
     frontend=Frontend(root)
     handler=partial(WorkbenchHandler,directory=str(root),frontend=frontend)

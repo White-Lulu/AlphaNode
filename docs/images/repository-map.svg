@@ -29,7 +29,7 @@
     <text x="41" y="260" fill="#273443" font-size="18" font-weight="650" text-anchor="start">config/</text>
     <text x="41" y="285" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">企业样本与分类规则</text>
     <rect x="248" y="155" width="195" height="96" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="262" y="186" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">refresh.py</text>
+    <text x="262" y="186" fill="#244c77" font-size="18" font-weight="650" text-anchor="start">pipeline/refresh.py</text>
     <text x="262" y="211" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">pipeline/ · 采集与计算</text>
     <text x="262" y="232" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">verify.py · 数据校验</text>
     <rect x="480" y="106" width="215" height="93" rx="2" fill="#ffffff" stroke="#d0d5db"/>
@@ -46,7 +46,7 @@
     <rect x="741" y="217" width="232" height="98" rx="2" fill="#ffffff" stroke="#d0d5db"/>
     <text x="755" y="249" fill="#273443" font-size="18" font-weight="650" text-anchor="start">serve.py · 本地服务</text>
     <text x="755" y="274" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">高级筛选、股价</text>
-    <text x="755" y="295" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">local_services.py · AI</text>
+    <text x="755" y="295" fill="#4c5662" font-size="15" font-weight="400" text-anchor="start">server/ · AI</text>
     </g>
   </g>
 </svg>

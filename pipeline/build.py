@@ -287,7 +287,7 @@ def build():
             for y,v in scope.items() if START<=y<=END for k in v))
         report["start"],report["end"]=START,END
         if not report["companies"] or not market_rows:
-            raise RuntimeError("Public source caches are incomplete. Run refresh.py first.")
+            raise RuntimeError("Public source caches are incomplete. Run python pipeline/refresh.py first.")
         metadata={"schemaVersion":2,"built":built,
             "years":list(range(START,END+1)),"taxonomy":ts,"metrics":METRICS,
             "finColumns":FIN_METRICS,"marketColumns":MARKET_METRICS,"stats":STATS,

@@ -56,9 +56,9 @@ Expand **Information and communication → Publishing activities → Software pu
 
 Information and communication leads by **3.85 percentage points** with capital weights and trails by **0.55 points** with equal weights. In the distribution previews below, bar height is company ROIC. The top panel gives companies equal width and uses a teal mean line. The bottom panel gives each company a width proportional to its invested capital and uses a purple weighted mean line. Interactive distributions are planned for a future version.
 
-![Information and communication ROIC distributions for 63 companies, with equal-width and capital-weighted bars.](docs/images/roic-distribution-information.png)
+![Information and communication ROIC distributions for 63 companies, with equal-width and capital-weighted bars.](docs/images/en/roic-distribution-information.png)
 
-![Manufacturing ROIC distributions for 313 companies on the same basis.](docs/images/roic-distribution-manufacturing.png)
+![Manufacturing ROIC distributions for 313 companies on the same basis.](docs/images/en/roic-distribution-manufacturing.png)
 
 The medians are **13.62%** for information and communication and **11.60%** for manufacturing. A group of high-return manufacturers lifts the manufacturing mean above its median. To inspect the contributors, click the industry's ROIC value and expand **Company inputs and filings**. Open a company and use the calculation details to find its average invested capital. Convert the amounts to USD before recomputing the weights.
 
@@ -146,7 +146,7 @@ The frontend uses JavaScript, CSS and Canvas. Workbench state lives in the brows
 ![Repository structure and generated data flow from sources to the browser and local service.](docs/images/en/repository-map.svg)
 
 - [config/](config/) holds company samples and classification rules. [pipeline/](pipeline/) collects, computes and validates data.
-- [dist/](dist/) contains the frontend. [serve.py](serve.py) and [local_services.py](local_services.py) run the local service.
+- [dist/](dist/) contains the frontend. [serve.py](serve.py) and [server/local_services.py](server/local_services.py) run the local service.
 
 ### Run locally
 
@@ -154,12 +154,12 @@ Install Git and Python 3.13. If you already have a generated data bundle, unpack
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python.exe setup-upstream.py --runtime
-.venv/Scripts/python.exe -m pip install -r requirements-runtime.txt
+.venv/Scripts/python.exe scripts/setup-upstream.py --runtime
+.venv/Scripts/python.exe -m pip install -r requirements/runtime.txt
 .venv/Scripts/python.exe serve.py
 ```
 
-Open `http://127.0.0.1:8766/`. Use `--port 8767` to change the port. On macOS and Linux, use `.venv/bin/python` in the commands above. On Windows, you can use [启动工作台.cmd](启动工作台.cmd) after setup. Existing annual data is available offline. Price data, updates and AI analysis require network access. For local default AI, set `ALPHANODE_ARK_API_KEY`, or enter a provider, key and model in **Settings → AI chart analysis**.
+Open `http://127.0.0.1:8766/`. Use `--port 8767` to change the port. On macOS and Linux, use `.venv/bin/python` in the commands above. On Windows, you can use [Start-AlphaNode.cmd](Start-AlphaNode.cmd) after setup. Existing annual data is available offline. Price data, updates and AI analysis require network access. For local default AI, set `ALPHANODE_ARK_API_KEY`, or enter a provider, key and model in **Settings → AI chart analysis**.
 
 ### Rebuild from sources
 
@@ -167,15 +167,15 @@ The first rebuild requires network access. Set `SEC_USER_AGENT` to an applicatio
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python.exe setup-upstream.py
-.venv/Scripts/python.exe -m pip install -r requirements-sources.txt
-.venv/Scripts/python.exe refresh.py
+.venv/Scripts/python.exe scripts/setup-upstream.py
+.venv/Scripts/python.exe -m pip install -r requirements/sources.txt
+.venv/Scripts/python.exe pipeline/refresh.py
 .venv/Scripts/python.exe pipeline/verify.py
 ```
 
-- `refresh.py --cached` rebuilds from existing source files. `--force` checks the sources again and keeps cached files when downloads fail.
+- `pipeline/refresh.py --cached` rebuilds from existing source files. `--force` checks the sources again and keeps cached files when downloads fail.
 - `pipeline/build.py --economic-functions` recalculates groups from the rules in `config/economic-function-*.txt`.
-- `node build-upstream.mjs` rebuilds the Superset common-baseline module with Node.js 22.18 or newer. Normal use loads the bundled module.
+- `node scripts/build-upstream.mjs` rebuilds the Superset common-baseline module with Node.js 22.18 or newer. Normal use loads the bundled module.
 
 ### Upstream projects
 

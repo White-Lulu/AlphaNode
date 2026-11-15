@@ -155,10 +155,10 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 
 浏览器端用原生 JavaScript、CSS 和 Canvas 实现表格与图表，工作台状态存于本地浏览器。Python 将公开披露和统计原表整理成供浏览器读取的 JSON 文件，并生成 DuckDB 数据库和 Parquet 文件。高级表达式通过 Crible 编译为参数化 SQL，在本机 DuckDB 上执行。Python 服务监听回环地址，适用于单用户运行。
 
-![仓库结构与数据流。refresh.py 与 pipeline 处理原始资料，输出浏览器 JSON 和 DuckDB／Parquet。serve.py 提供前端与接口，dist 内包含表格、图表及浏览器工作台。](docs/images/repository-map.svg)
+![仓库结构与数据流。pipeline/refresh.py 与 pipeline 处理原始资料，输出浏览器 JSON 和 DuckDB／Parquet。serve.py 提供前端与接口，dist 内包含表格、图表及浏览器工作台。](docs/images/repository-map.svg)
 
 - [config/](config/) 包含企业样本与分类规则，[pipeline/](pipeline/) 负责采集、计算和验证。
-- [dist/](dist/) 存放前端，[serve.py](serve.py) 和 [local_services.py](local_services.py) 负责本地服务。原始缓存与生成的数据文件在运行和构建时按需准备。
+- [dist/](dist/) 存放前端，[serve.py](serve.py) 和 [server/local_services.py](server/local_services.py) 负责本地服务。原始缓存与生成的数据文件在运行和构建时按需准备。
 
 ### 本地启动
 
@@ -166,12 +166,12 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python.exe setup-upstream.py --runtime
-.venv/Scripts/python.exe -m pip install -r requirements-runtime.txt
+.venv/Scripts/python.exe scripts/setup-upstream.py --runtime
+.venv/Scripts/python.exe -m pip install -r requirements/runtime.txt
 .venv/Scripts/python.exe serve.py
 ```
 
-Windows 完成安装后也可双击「启动工作台.cmd」。macOS 和 Linux 将上述命令中的 `.venv/Scripts/python.exe` 换成 `.venv/bin/python`。本地默认地址为 `http://127.0.0.1:8766/`，可用 `--port 8767` 换端口。已有年度数据可离线浏览，股价、AI 分析和数据更新需要联网。本地默认AI接口使用环境变量 `ALPHANODE_ARK_API_KEY`，也可在「设置 → AI 图表分析」填写自定义接口、密钥与模型。
+Windows 完成安装后也可双击「Start-AlphaNode.cmd」。macOS 和 Linux 将上述命令中的 `.venv/Scripts/python.exe` 换成 `.venv/bin/python`。本地默认地址为 `http://127.0.0.1:8766/`，可用 `--port 8767` 换端口。已有年度数据可离线浏览，股价、AI 分析和数据更新需要联网。本地默认AI接口使用环境变量 `ALPHANODE_ARK_API_KEY`，也可在「设置 → AI 图表分析」填写自定义接口、密钥与模型。
 
 ### 从数据源重建
 
@@ -179,15 +179,15 @@ Windows 完成安装后也可双击「启动工作台.cmd」。macOS 和 Linux �
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python.exe setup-upstream.py
-.venv/Scripts/python.exe -m pip install -r requirements-sources.txt
-.venv/Scripts/python.exe refresh.py
+.venv/Scripts/python.exe scripts/setup-upstream.py
+.venv/Scripts/python.exe -m pip install -r requirements/sources.txt
+.venv/Scripts/python.exe pipeline/refresh.py
 .venv/Scripts/python.exe pipeline/verify.py
 ```
 
-- `refresh.py --cached` 用已有原始资料重建。 `--force` 重新检查来源，下载失败时保留可用缓存。
+- `pipeline/refresh.py --cached` 用已有原始资料重建。 `--force` 重新检查来源，下载失败时保留可用缓存。
 - `pipeline/build.py --economic-functions` 根据 `config/economic-function-*.txt` 和现有财务数据重算自定义分类。
-- `node build-upstream.mjs` 重新编译 Superset 的共同基年变换模块，需要 Node.js 22.18 或更新版本。日常运行使用仓库内的已编译模块。
+- `node scripts/build-upstream.mjs` 重新编译 Superset 的共同基年变换模块，需要 Node.js 22.18 或更新版本。日常运行使用仓库内的已编译模块。
 
 ### 接入与参考项目
 

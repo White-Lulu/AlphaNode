@@ -14,7 +14,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
-CONFIG = Path(__file__).resolve().parent / "cache" / "analysis-settings.json"
+CONFIG = Path(__file__).resolve().parents[1] / "cache" / "analysis-settings.json"
 ARK_BASE = "https://ark.cn-beijing.volces.com/api/v3"
 ARK_MODEL = "doubao-seed-2-1-lite-260915"
 PRICE_TTL = 3600

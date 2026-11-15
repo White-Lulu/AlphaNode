@@ -1,7 +1,7 @@
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { stripTypeScriptTypes } from "node:module";
 
-const root = new URL("./", import.meta.url);
+const root = new URL("../", import.meta.url);
 const source = new URL("upstream/superset/", root);
 const output = new URL("dist/vendor/superset/", root);
 const path = new URL("superset-frontend/plugins/plugin-chart-echarts/src/Timeseries/percentChange.ts", source);
