@@ -1,0 +1,4 @@
+# The application source lives directly in dist/; vendored bundles live below dist/vendor/.
+dist/*.js -linguist-generated -linguist-vendored
+dist/*.css -linguist-generated -linguist-vendored
+dist/*.html -linguist-generated -linguist-vendored
