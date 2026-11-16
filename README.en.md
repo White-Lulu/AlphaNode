@@ -34,11 +34,9 @@ Compare multiple pathways from the catalog. Click a node for its inputs, outputs
 
 ### Adjust the display
 
-![Settings for display preferences, peer radar metrics, term explanations and AI analysis.](docs/images/en/settings-map.svg)
+![Settings for display preferences, value chain layout and matching nodes, peer radar metrics, term explanations and AI analysis.](docs/images/en/settings-map.svg)
 
 Set the interface language, theme and table alignment. Choose peer radar metrics, enable explanations on hover, and configure the AI provider and analysis prompt.
-
-In **Settings → Value chain graph**, choose a layout, color order and company scope, and decide whether to merge matching nodes.
 
 ## 3. Worked example
 
@@ -131,6 +129,12 @@ For Atlassian, track cloud revenue and the count of customers with more than $10
 #### ⑤ Trace a server back to its components
 
 After comparing software companies, Xiaoba wants to see what goes into the servers they run on. In the **Value Chain Atlas**, he adds **Wafers, chips and servers** from **Industry paths**. He clicks **Printed circuit board** and follows copper-clad laminate and copper foil back to copper ore. The side panel links to sources for the process. He then clicks **+** beside the lithography system to see how its optics, light source and final assembly fit into the same graph.
+
+[![Xiaoba traces a printed circuit board through copper-clad laminate and plated vias. The side panel shows inputs, uses and a manufacturing source.](docs/images/en/value-chain-pcb.png)](docs/images/en/value-chain-pcb.png)
+
+He also adds **Wheat to bread**, **Dairy cold chain**, and **Coffee and cocoa** to the same canvas to compare how the three pathways process their inputs.
+
+[![Three food-production pathways on one canvas, with visible nodes for wheat flour, bread, yogurt, ground coffee and chocolate.](docs/images/en/value-chain-comparison.png)](docs/images/en/value-chain-comparison.png)
 
 This first version is ready for learning how processes, inputs and outputs fit together. Coverage of company disclosures and detailed production steps will grow, and the layout of larger graphs will improve. Follow a node’s sources to verify a specific supplier relationship.
 

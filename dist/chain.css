@@ -46,7 +46,7 @@
 #chain-page [aria-pressed=true].quiet { color:var(--accent-text,var(--surface)); background:var(--accent); border-color:var(--accent); }
 .chain-canvas { position:relative; display:flex; flex-direction:column; flex:1; min-height:0; }
 .chain-viewport { position:relative; container-type:size; flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; border-bottom:1px solid var(--border);
-  touch-action:pinch-zoom; cursor:grab; user-select:none;
+  touch-action:none; cursor:grab; user-select:none;
   background-color:var(--surface);
   background-image:radial-gradient(color-mix(in srgb,var(--border) 65%,var(--surface)) .7px,transparent .7px);
   background-size:16px 16px; }

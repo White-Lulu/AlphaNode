@@ -1,30 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="233" viewBox="0 0 1000 233" role="img" aria-labelledby="title desc">
   <title id="title">Settings</title>
-  <desc id="desc">Settings include display preferences, peer radar charts, term explanations and AI chart analysis.</desc>
-  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 Z" fill="#747e8a"/></marker></defs>
-  <g font-family="Georgia, Times New Roman, serif">
+  <desc id="desc">Settings include display preferences, the Value Chain Atlas, peer radar charts, term explanations and AI chart analysis.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#747e8a"/></marker></defs>
+  <g font-family="Georgia, Times New Roman, serif" text-anchor="middle">
     <rect width="1000" height="233" fill="#fff"/>
     <rect x="433" y="24" width="134" height="43" rx="2" fill="#eaf2fd" stroke="#9db6d3"/>
-    <text x="500" y="54" fill="#244c77" font-size="21" font-weight="650" text-anchor="middle">Settings</text>
-    <path d="M500 67 V91 H137 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
-    <path d="M500 91 H863 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
-    <path d="M379 91 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
-    <path d="M621 91 V110" fill="none" stroke="#747e8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="miter" marker-end="url(#arrow)"/>
-    <rect x="27" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="137" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Display preferences</text>
-    <text x="137" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Language, theme, typeface</text>
-    <text x="137" y="191" fill="#4c5662" font-size="12" font-weight="400" text-anchor="middle">Alignment, level colors, heatmap</text>
-    <rect x="269" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="379" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Peer radar chart</text>
-    <text x="379" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Choose comparison metrics</text>
-    <text x="379" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Reset to six defaults</text>
-    <rect x="511" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="621" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">Term explanations</text>
-    <text x="621" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Enable individual terms</text>
-    <text x="621" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Hover to see formulas</text>
-    <rect x="753" y="111" width="220" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
-    <text x="863" y="145" fill="#273443" font-size="18" font-weight="650" text-anchor="middle">AI chart analysis</text>
-    <text x="863" y="170" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Default or custom provider</text>
-    <text x="863" y="191" fill="#4c5662" font-size="15" font-weight="400" text-anchor="middle">Model and analysis prompt</text>
+    <text x="500" y="54" fill="#244c77" font-size="21" font-weight="650">Settings</text>
+    <path d="M500 67V91M114 91H886" fill="none" stroke="#747e8a" stroke-width="1.6"/>
+    <path d="M114 91V110" stroke="#747e8a" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <rect x="24" y="111" width="180" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <text x="114" y="142" fill="#273443" font-size="16" font-weight="650">Display preferences</text>
+    <text x="114" y="169" fill="#4c5662" font-size="12.5">Language, theme, typeface</text>
+    <text x="114" y="189" fill="#4c5662" font-size="11.5">Alignment, level colors, heatmap</text>
+    <path d="M307 91V110" stroke="#747e8a" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <rect x="217" y="111" width="180" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <text x="307" y="142" fill="#273443" font-size="17" font-weight="650">Value Chain Atlas</text>
+    <text x="307" y="162" fill="#4c5662" font-size="12.5">Layout and color order</text>
+    <text x="307" y="179" fill="#4c5662" font-size="12.5">Company scope</text>
+    <text x="307" y="196" fill="#4c5662" font-size="12.5">Merge matching nodes</text>
+    <path d="M500 91V110" stroke="#747e8a" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <rect x="410" y="111" width="180" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <text x="500" y="142" fill="#273443" font-size="17" font-weight="650">Peer radar chart</text>
+    <text x="500" y="169" fill="#4c5662" font-size="12.5">Choose comparison metrics</text>
+    <text x="500" y="189" fill="#4c5662" font-size="12.5">Reset to six defaults</text>
+    <path d="M693 91V110" stroke="#747e8a" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <rect x="603" y="111" width="180" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <text x="693" y="142" fill="#273443" font-size="17" font-weight="650">Term explanations</text>
+    <text x="693" y="169" fill="#4c5662" font-size="12.5">Enable individual terms</text>
+    <text x="693" y="189" fill="#4c5662" font-size="12.5">Hover to see formulas</text>
+    <path d="M886 91V110" stroke="#747e8a" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <rect x="796" y="111" width="180" height="100" rx="2" fill="#f7f8fa" stroke="#d0d5db"/>
+    <text x="886" y="142" fill="#273443" font-size="17" font-weight="650">AI chart analysis</text>
+    <text x="886" y="169" fill="#4c5662" font-size="12.5">Default or custom provider</text>
+    <text x="886" y="189" fill="#4c5662" font-size="12.5">Model and analysis prompt</text>
   </g>
 </svg>

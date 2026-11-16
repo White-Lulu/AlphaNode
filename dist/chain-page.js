@@ -64,7 +64,7 @@ const shell=()=>`
     <div id="chain-active" class="chain-active"></div>
     <div class="chain-divider"></div>
     <div class="chain-canvas">
-      <div id="chain-viewport" class="chain-viewport" role="region" tabindex="0" aria-label="${text("产业链关系图，滚轮缩放，按住拖动平移|Value chain graph. Scroll to zoom, press and drag to pan")}">
+      <div id="chain-viewport" class="chain-viewport" role="region" tabindex="0" aria-label="${text("产业链关系图，可用滚轮或双指缩放，拖动平移|Value chain graph. Use the wheel or pinch to zoom, drag to pan")}">
         <div id="chain-space" class="chain-space"><svg id="chain-graph" xmlns="http://www.w3.org/2000/svg" role="group"></svg></div>
       </div>
       <div class="chain-float chain-float-zoom">
@@ -311,15 +311,16 @@ function renderCanvas() {
   refreshDetail();
   if (wasHidden!==inspector.hidden) moveDiagram(...position);
 }
-function setZoom(value, centered=false, point=null) {
-  const vp=viewport(), before=state.zoom;
-  const anchored=centered||point, [left,top]=anchored?diagramPosition():[0,0];
-  const pick=point?[left+point.x,top+point.y]:anchored?[left+vp.clientWidth/2,top+vp.clientHeight/2]:null;
+function setZoom(value, origin=null, target=origin) {
+  const before=state.zoom;
+  const [left,top]=origin?diagramPosition():[0,0];
   state.zoom=Math.max(.06,Math.min(1.65,value));
   svg().setAttribute("width",Math.round(graph.width*state.zoom));
   svg().setAttribute("height",Math.round(graph.height*state.zoom));
-  if (pick) moveDiagram(pick[0]/before*state.zoom-(point?point.x:vp.clientWidth/2),
-    pick[1]/before*state.zoom-(point?point.y:vp.clientHeight/2));
+  if (origin) {
+    const ratio=state.zoom/before;
+    moveDiagram((left+origin.x)*ratio-target.x,(top+origin.y)*ratio-target.y);
+  }
 }
 function fit() {
   const vp=viewport();
@@ -508,7 +509,9 @@ function bindControls() {
     if (chainAction==="branches") {toggleAllBranches();return;}
     if (chainAction==="fit") {fit();return;}
     if (chainAction==="out"||chainAction==="in") {
-      setZoom(state.zoom*(chainAction==="in"?1.2:1/1.2),true);return;
+      const v=viewport();
+      setZoom(state.zoom*(chainAction==="in"?1.2:1/1.2),{x:v.clientWidth/2,y:v.clientHeight/2});
+      return;
     }
     if (chainAction==="full") state.full=!state.full;
     else if (chainPick) {
@@ -529,7 +532,16 @@ function bindControls() {
     focusNode(node.dataset.chainNode,false,true);
   };
   const vp=viewport();
-  let pan=null, suppressClick=false;
+  const touches=new Map();
+  let pan=null, pinch=null, suppressClick=false;
+  const relativePoint=(x,y)=>{
+    const box=vp.getBoundingClientRect();
+    return {x:x-box.left-vp.clientLeft,y:y-box.top-vp.clientTop};
+  };
+  const pinchGeometry=()=>{
+    const [a,b]=touches.values();
+    return {...relativePoint((a.x+b.x)/2,(a.y+b.y)/2),distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};
+  };
   const stop=()=>{
     const id=pan?.id;
     pan=null;
@@ -537,12 +549,32 @@ function bindControls() {
     if (id!==undefined&&vp.hasPointerCapture(id)) vp.releasePointerCapture(id);
   };
   vp.onpointerdown=e=>{
+    if (e.pointerType==="touch") {
+      if (touches.size===2) return;
+      touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if (touches.size===2) {
+        stop();
+        suppressClick=true;
+        pinch=pinchGeometry();
+        for (const id of touches.keys()) vp.setPointerCapture(id);
+        return;
+      }
+    }
     if (!e.isPrimary||e.button!==0) return;
     stop();
     suppressClick=false;
     pan={id:e.pointerId,x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,active:false};
   };
   vp.onpointermove=e=>{
+    if (touches.has(e.pointerId)) {
+      touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if (pinch) {
+        const next=pinchGeometry();
+        setZoom(state.zoom*next.distance/pinch.distance,pinch,next);
+        pinch=next;
+        return;
+      }
+    }
     if (pan?.id!==e.pointerId) return;
     const dx=e.clientX-pan.x, dy=e.clientY-pan.y;
     if (!(e.buttons&1)) {stop();return;}
@@ -554,14 +586,24 @@ function bindControls() {
     }
     vp.scrollTo(pan.left-dx,pan.top-dy);
   };
-  vp.onpointerup=vp.onpointercancel=vp.onlostpointercapture=e=>{
-    if (pan?.id===e.pointerId&&(e.type!=="lostpointercapture"||e.target===vp)) stop();
+  vp.onpointerup=vp.onpointercancel=e=>{
+    const ended=touches.delete(e.pointerId);
+    if (ended&&pinch) {
+      pinch=null;
+      const [remaining]=touches;
+      if (remaining&&e.type==="pointerup") {
+        const [id,{x,y}]=remaining;
+        pan={id,x,y,left:vp.scrollLeft,top:vp.scrollTop,active:true};
+        vp.classList.add("dragging");
+      }
+    }
+    if (pan?.id===e.pointerId) stop();
   };
+  vp.onlostpointercapture=e=>{if(e.target===vp&&pan?.id===e.pointerId) stop();};
   vp.onpointerleave=()=>{if(pan&&!pan.active) stop();};
   vp.addEventListener("wheel",e=>{
     e.preventDefault();
-    const box=vp.getBoundingClientRect();
-    setZoom(state.zoom*Math.exp(-e.deltaY*.0018),false,{x:e.clientX-box.left,y:e.clientY-box.top});
+    setZoom(state.zoom*Math.exp(-e.deltaY*.0018),relativePoint(e.clientX,e.clientY));
   },{passive:false});
   vp.addEventListener("click",e=>{
     if (!suppressClick||e.detail===0) return;

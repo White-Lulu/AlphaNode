@@ -24,6 +24,7 @@ const benchmarkPeriod={mode:"level",years:new Map()};
 const statisticsPeriods=new Map(),statisticsCoverage=new Map();
 let financialPeriod;
 const paneOrder={atlas:["data","trends"],collection:["data","charts"]};
+const phoneLayout=matchMedia("(max-width:700px), (max-width:1000px) and (pointer:coarse)");
 const sources={
   unido:["UNIDO · 工业调查","UNIDO · Industrial survey"],
   ama:["联合国 · 国民账户","United Nations · National accounts"],
@@ -1202,11 +1203,15 @@ function handleGrid(event) {
 }
 function paneSelection(module=state.module) {
   if (module==="atlas"&&["#data","#trends"].includes(location.hash)) return [location.hash.slice(1)];
-  const items=(paneOrder[module]??[]).filter(key=>prefs.modulePanels?.[module]?.includes(key));
-  if (items.length) return items;
-  if (module==="atlas") return ["data","trends"];
+  const allowed=paneOrder[module]??[];
+  if (!allowed.length) return [];
+  const items=allowed.filter(key=>prefs.modulePanels?.[module]?.includes(key));
   const old=prefs.chartWorkbench?.view;
-  return old==="split"?["data","charts"]:old==="charts"?["charts"]:["data"];
+  const defaults=module==="atlas"||old==="split"?allowed:old==="charts"?["charts"]:["data"];
+  const selected=items.length?items:defaults;
+  if (!phoneLayout.matches) return selected;
+  const preferred=prefs.phonePanels?.[module];
+  return [allowed.includes(preferred)?preferred:selected[0]];
 }
 function updateViewPanel(key,visible=!paneSelection().includes(key)) {
   if (!paneOrder[state.module]?.includes(key)) return false;
@@ -1217,7 +1222,8 @@ function updateViewPanel(key,visible=!paneSelection().includes(key)) {
   if (state.module==="atlas"&&["#data","#trends"].includes(location.hash)) {
     history.replaceState(null,"",location.pathname+location.search);
   }
-  prefs.modulePanels={...prefs.modulePanels,[state.module]:[...selected]};
+  if (phoneLayout.matches) prefs.phonePanels={...prefs.phonePanels,[state.module]:key};
+  else prefs.modulePanels={...prefs.modulePanels,[state.module]:[...selected]};
   save();
   setWorkspaceView();
   return true;
@@ -1604,6 +1610,7 @@ $("settings").onclick=()=>{
     else setWorkspaceView();
   };
   window.addEventListener("hashchange",syncWorkspace);
+  phoneLayout.addEventListener("change",syncWorkspace);
   syncWorkspace();
   $("add-chart").onclick=()=>{
     const chart={id:state.nextChart++,row:nextChartRow(),metric:columns()[0]??"revenue",mode:state.mode,pins:[]};
