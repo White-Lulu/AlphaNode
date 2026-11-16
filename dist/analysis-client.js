@@ -1,5 +1,10 @@
 import {prose} from "./i18n.js";
 const responseMessages={
+  AI_WEB_UNAVAILABLE:["网站版暂未启用 AI 分析。","AI analysis is currently unavailable on the website."],
+  AI_WEB_SETTINGS_LOCKED:["网站使用 AlphaNode 提供的默认 AI。","The website uses AlphaNode's default AI."],
+  AI_WEB_BUSY:["分析服务正忙，请稍后再试。","Analysis is busy. Try again shortly."],
+  AI_DAILY_LIMIT:["今天的免费分析次数已用完，北京时间零点恢复。","Today's free analyses are used up. They reset at midnight Beijing time."],
+  AI_NETWORK_LIMIT:["当前网络今日的分析请求较多，请明天再试。","This network has reached its request limit for today. Try again tomorrow."],
   ARK_KEY_REQUIRED:["默认接口尚未配置方舟 API Key，可切换到自定义接口。","The default provider has no Volcengine API key. You can switch to a custom provider."],
   AI_MODEL_REQUIRED:["请填写或选择模型。","Enter or select a model."],
   INVALID_AI_KEY:["API Key 含空格或无效字符。","The API key contains spaces or invalid characters."],
@@ -27,7 +32,7 @@ export async function request(path,body) {
   const options=body?{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify(body)}:{headers};
   const response=await fetch(path,options);
   const result=await response.json().catch(()=>({}));
-  if (!response.ok) throw new Error(result.error||"LOCAL_SERVICE_UNAVAILABLE");
+  if (!response.ok) throw Object.assign(new Error(result.error||"LOCAL_SERVICE_UNAVAILABLE"),{remaining:result.remaining});
   return result;
 }
 export function message(error) {

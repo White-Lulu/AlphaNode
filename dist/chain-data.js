@@ -1,0 +1,260 @@
+// A repeated item label refers to the same material or tool across pathways.
+// ^ marks a durable tool, ~ marks an outcome a person can use directly.
+export const items = {
+  quartz:"石英原料|Quartz feedstock", silicon:"金属硅|Metallurgical silicon", poly:"多晶硅|Polysilicon",
+  wafer:"电子级硅片|Electronic-grade silicon wafer", solarWafer:"光伏硅片|Solar wafer",
+  chip:"逻辑裸片|Logic die", hbm:"高带宽内存|HBM stack", gpu:"GPU 加速器|GPU accelerator",
+  steel:"钢材|Steel", alloy:"铝材|Aluminium", plastic:"聚合物树脂|Polymer resin",
+  pan:"^炊具|Cookware", washer:"^洗衣机|Washing machine", cloth:"~成衣|Clothing",
+  wheat:"小麦|Wheat", flour:"小麦面粉|Wheat flour", milk:"生乳|Raw milk", butter:"黄油|Butter",
+  bread:"~面包|Bread", battery:"电池包|Battery pack", cell:"锂离子电芯|Li-ion cell",
+  server:"^数据中心服务器|Data center server",
+  grid:"电网电力|Grid electricity", motor:"电机|Electric motor", fasteners:"紧固件与五金|Fasteners and fittings",
+  board:"印刷电路板|Printed circuit board", paper:"纸浆与纸板|Pulp and paperboard",
+  crude:"原油|Crude oil", naphtha:"石脑油|Naphtha", gas:"天然气|Natural gas", olefins:"基础烯烃|Basic olefins",
+  ore:"铁矿石|Iron ore", alloyOre:"铝土矿|Bauxite", copper:"铜材|Copper",
+  fiber:"棉纤维|Cotton fiber", fabric:"织物|Fabric", prepreg:"碳纤维预浸料|Carbon-fiber prepreg",
+  food:"包装食品|Packaged groceries", container:"集装箱货物|Containerized cargo",
+};
+
+// The fourth and fifth fields name the organization and the cited disclosure.
+// An unassigned step is an industry pathway and conveys no company relationship.
+export const step = (output, input, tool, owner = "", source = "", note = "") =>
+  ({output, input:[input].flat(), tool, owner, source, note});
+export const source = (title, url) => ({title, url});
+export const path = (id, title, category, sources, steps, note="", extra={}) =>
+  ({id,title,category,sources,steps,note,...extra});
+
+export const categories = {
+  food:"食品与农业|Food & agriculture", home:"衣物与家居|Clothing & home",
+  tech:"计算与电子|Computing & electronics", transport:"交通与装备|Transport & machinery",
+  material:"材料与化工|Materials & chemicals", energy:"能源与电气|Energy & electricity",
+};
+
+const n=items;
+export const upstream = {
+  silicon:[
+    step(n.silicon,n.quartz,"矿热炉与还原剂|Submerged-arc furnace and reductant"),
+    step(n.poly,n.silicon,"化学纯化与沉积|Chemical purification and deposition"),
+    step(n.wafer,n.poly,"拉晶、切片与抛光设备|Crystal growing, slicing and polishing"),
+  ],
+  steel:[
+    step("铁水或直接还原铁|Hot metal or direct-reduced iron",n.ore,"高炉或直接还原设备|Blast furnace or DRI unit"),
+    step(n.steel,["铁水或直接还原铁|Hot metal or direct-reduced iron","废钢|Steel scrap"],"转炉或电弧炉、连铸与轧机|Converter or arc furnace, caster and mill",
+      "", "", "表示可并列使用的工艺路线。原料组合随炉型变化。|Parallel routes are shown. The charge mix depends on the furnace."),
+  ],
+  aluminium:[
+    step("氧化铝|Alumina",n.alloyOre,"拜耳法精炼设备|Bayer refining equipment"),
+    step(n.alloy,["氧化铝|Alumina",n.grid],"电解槽、铸锭与加工设备|Electrolysis cells, casting and fabrication"),
+  ],
+  fabric:[
+    step("纱线|Yarn",n.fiber,"纺纱机|Spinning frame"),
+    step(n.fabric,"纱线|Yarn","织机、针织机与染整设备|Looms, knitting and finishing equipment"),
+  ],
+  battery:[
+    step("锂盐|Lithium salts","锂辉石或含锂卤水|Spodumene or lithium brine","选矿、提取与精炼设备|Concentration, extraction and refining"),
+    step("正极活性材料|Cathode active material",["锂盐|Lithium salts","正极前驱体|Cathode precursor"],"配料与烧结设备|Mixing and calcination equipment"),
+    step(n.cell,["正极活性材料|Cathode active material","石墨负极|Graphite anode","电解液与隔膜|Electrolyte and separator"],"涂布、叠片或卷绕、化成|Coating, stacking or winding and formation"),
+    step(n.battery,[n.cell,"电池管理系统|Battery management system"],"装配、热管理与测试工位|Assembly, thermal management and test"),
+  ],
+  chemical:[
+    step(n.naphtha,n.crude,"炼厂蒸馏|Refinery distillation"),
+    step(n.olefins,n.naphtha,"蒸汽裂解与分离设备|Steam crackers and separation"),
+    step(n.plastic,n.olefins,"聚合与造粒设备|Polymerization and pelletizing"),
+  ],
+};
+
+export const refs = {
+  minerals:source("USGS · 2026 矿产概览|USGS · 2026 mineral commodity summaries","https://pubs.usgs.gov/publication/mcs2026"),
+  wafer:source("SUMCO · 硅片生产流程|SUMCO · Wafer production process","https://www.sumcosi.com/english/products/process/"),
+  tsmc:source("台积电 · 2025 年 20-F|TSMC · 2025 Form 20-F","https://www.sec.gov/Archives/edgar/data/1046179/000162828026025362/tsm-20251231.htm"),
+  tsmcMaterials:source("台积电 · 2025 年报主要原料采购（第 7 页）|TSMC · 2025 report, major raw material supply (PDF p. 7)","https://investor.tsmc.com/static/annualReports/2025/english/pdf/2025_tsmc_ar_e_ch5.pdf#page=7"),
+  cowos:source("台积电 · CoWoS 技术|TSMC · CoWoS technology","https://www.tsmc.com/english/dedicatedFoundry/technology/cowos"),
+  nvidia:source("英伟达 · 2026 财年 10-K|NVIDIA · FY2026 Form 10-K","https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm"),
+  asml:source("ASML · 2025 年报|ASML · 2025 annual report","https://ourbrand.asml.com/m/6ea363f69344ebd4/original/asml-2025-annual-report-based-on-ifrs.pdf"),
+  hynix:source("SK 海力士 · 与台积电合作开发 HBM4|SK hynix · TSMC collaboration on HBM4","https://news.skhynix.com/en/sk-hynix-partners-with-tsmc-to-strengthen-hbm-technological-leadership/"),
+  micron:source("美光 · HBM3E 与英伟达 H200|Micron · HBM3E and NVIDIA H200","https://investors.micron.com/news/press-release/2024/Micron-Commences-Volume-Production-of-Industry-Leading-HBM3E-Solution-to-Accelerate-the-Growth-of-AI-02-26-2024/default.aspx"),
+  bread:source("King Arthur Baking · 三明治面包配方|King Arthur Baking · Sandwich bread recipe","https://www.kingarthurbaking.com/recipes/classic-sandwich-bread-recipe"),
+  dairy:source("达能 · 2025 年综合年报|Danone · 2025 integrated annual report","https://www.danone.com/content/dam/corp/global/danonecom/investors/en-sustainability/reports-and-data/cross-topic/danoneiar2025.pdf.coredownload.pdf"),
+  coffee:source("雀巢 · 咖啡原料采购|Nestlé · Coffee sourcing","https://www.nestle.com/sustainability/responsible-sourcing/coffee"),
+  cocoa:source("雀巢 · 可可原料采购|Nestlé · Cocoa sourcing","https://www.nestle.com/sustainability/responsible-sourcing/cocoa"),
+  coke:source("可口可乐 · 10-K 装瓶体系|Coca-Cola · Form 10-K, bottling system","https://investors.coca-colacompany.com/filings-reports/annual-filings-10-k/content/0000021344-25-000011/ko-20241231.htm"),
+  adm:source("ADM · 年度报告|ADM · Annual reports","https://investors.adm.com/financials/annual-reports/default.aspx"),
+  apple:source("苹果 · 供应链|Apple · Supply chain","https://www.apple.com/supply-chain/"),
+  tesla:source("特斯拉 · 2025 年 10-K|Tesla · 2025 Form 10-K","https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm"),
+  catl:source("宁德时代 · 2025 年报|CATL · 2025 annual report","https://www.catl.com/en/uploads/1/file/public/202603/20260310105310_46xjbwckvn.pdf"),
+  catlRecycle:source("宁德时代 · 电池回收|CATL · Battery recycling","https://www.catl.com/en/solution/recycling/"),
+  byd:source("比亚迪 · e 平台 3.0|BYD · e-Platform 3.0","https://www.byd.com/mea/technology/byd-e-platform-3"),
+  boeing:source("波音 · 787 设计|Boeing · 787 design","https://www.boeing.com/commercial/787/by-design"),
+  toray:source("东丽 · 波音 787 复材长期供货公告|Toray · Boeing 787 composite supply agreement","https://www.toray.com/ir/pdf/lib/lib_a136.pdf"),
+  airbus:source("空客 · A350 系列|Airbus · A350 family","https://www.airbus.com/en/products-services/commercial-aircraft/passenger-aircraft/a350-family"),
+  rr:source("劳斯莱斯 · Trent XWB|Rolls-Royce · Trent XWB","https://www.rolls-royce.com/products-and-services/civil-aerospace/widebody/trent-xwb.aspx"),
+  caterpillar:source("卡特彼勒 · 2025 年 10-K|Caterpillar · 2025 Form 10-K","https://www.sec.gov/Archives/edgar/data/18230/000001823026000008/cat-20251231.htm"),
+  deere:source("迪尔 · 全球厂区及业务|Deere · Worldwide facilities and operations","https://www.deere.com/assets/pdfs/common/our-company/about/jd-world-locations.pdf"),
+  uniqlo:source("迅销 · 优衣库业务模式|Fast Retailing · Uniqlo business model","https://www.fastretailing.com/eng/group/strategy/uniqlobusiness.html"),
+  nike:source("耐克 · 供应商关系|Nike · Supplier relationships","https://about.nike.com/en/resources/supplier-relationships"),
+  ikea:source("宜家 · 木材使用与采购|IKEA · Wood sourcing","https://www.ikea.com/global/en/our-business/sustainability/wood/"),
+  haier:source("海尔 · GE Appliances 洗衣设备工厂|Haier · GE Appliances laundry factory","https://www.haier.com/global/press-events/news/20250627_266217.shtml"),
+  rio:source("力拓 · 年度报告|Rio Tinto · Annual report","https://www.riotinto.com/en/invest/reports/annual-report"),
+  mittal:source("安赛乐米塔尔 · 2025 年 20-F|ArcelorMittal · 2025 Form 20-F","https://cms.arcelormittal.com/media/g5obzl05/annual-report-2025.pdf"),
+  basf:source("巴斯夫 · 蒸汽裂解与一体化基地|BASF · Steam crackers and Verbund","https://www.basf.com/global/en/who-we-are/organization/locations/europe/german-sites/ludwigshafen/the-site/production/the-production-verbund/Steamcracker"),
+  exxon:source("埃克森美孚 · 2025 年 10-K|ExxonMobil · 2025 Form 10-K","https://investor.exxonmobil.com/sec-filings/all-sec-filings/content/0000034088-26-000045/xom-20251231.htm"),
+  longi:source("隆基 · 光伏供应链追溯|LONGi · Solar supply chain traceability","https://wf-eu.longi.com/esg/supply-chain-transparency-and-traceability"),
+  vestas:source("维斯塔斯 · 2025 年报|Vestas · 2025 annual report","https://www.vestas.com/content/dam/vestas-com/global/en/investor/reports-and-presentations/financial/2025/fy-2025/Vestas%20Annual%20Report%202025.pdf.coredownload.inline.pdf"),
+  orsted:source("沃旭 · 海上风电项目开发施工|Ørsted · Offshore wind development and construction","https://orsted.com/en/offshore-wind/development-and-construction"),
+  eia:source("美国 EIA · 电力送达消费者|US EIA · Electricity delivery to consumers","https://www.eia.gov/energyexplained/electricity/delivery-to-consumers.php"),
+  imaging:source("西门子医疗 · 2025 财年披露|Siemens Healthineers · FY2025 results","https://www.siemens-healthineers.com/press/releases/2025q4"),
+  water:source("美国环保署 · 公共供水系统|US EPA · Public water systems","https://www.epa.gov/ground-water-and-drinking-water/how-does-your-water-system-work-text-only"),
+  cement:source("美国水泥协会 · 水泥制造过程|American Cement Association · Cement manufacturing","https://www.cement.org/cement-concrete/how-cement-is-made/"),
+  buhler:source("布勒 · 企业简介|Bühler · About us","https://www.buhlergroup.com/global/en/about-us.html"),
+  buhlerMill:source("布勒 · Dolomit 辊式磨粉机|Bühler · Dolomit roller mill","https://www.buhlergroup.com/global/en/products/dolomit_mill.html"),
+  rademaker:source("Rademaker · 工业面包生产线|Rademaker · Industrial bread line","https://rademaker.com/bakery-equipment/rademaker/bread-line/"),
+  kaak:source("Royal Kaak · 烘焙设备|Royal Kaak · Baking equipment","https://kaak.com/processes/baking/"),
+  siemensCnc:source("西门子 · SINUMERIK ONE 数控系统|Siemens · SINUMERIK ONE CNC system","https://www.siemens.com/en-us/products/sinumerik/one/"),
+  rockwell:source("罗克韦尔自动化 · 2025 年报|Rockwell Automation · 2025 annual report","https://www.sec.gov/Archives/edgar/data/1024478/000130817925000664/rok015024-ars.pdf"),
+  kingArthur:source("King Arthur Baking · 企业简介|King Arthur Baking · Company overview","https://www.kingarthurbaking.com/impact/who-we-are"),
+  starbucks:source("星巴克 · 2025 财年 10-K|Starbucks · FY2025 Form 10-K","https://www.sec.gov/Archives/edgar/data/829224/000082922425000114/sbux-20250928.htm"),
+  thermoplan:source("Thermoplan · 企业简介|Thermoplan · About us","https://www.thermoplan.ch/en/thermoplan/about-us"),
+  thermoplanSBUX:source("Thermoplan · 与星巴克合作|Thermoplan · Starbucks partnership","https://www.thermoplan.ch/en/news/news-media/starbucks-visit"),
+  cups:source("胡塔玛基 · 热饮纸杯和杯盖|Huhtamaki · Hot paper cups and lids","https://www.huhtamaki.com/en/foodservice/products/paper-hot-cups-and-lids/"),
+  corning:source("康宁 · 光纤制造|Corning · Optical fiber manufacturing","https://www.corning.com/optical-communications/worldwide/en/home/products/fiber/manufacturing-excellence.html"),
+  corningCable:source("康宁 · 光缆|Corning · Fiber optic cables","https://www.corning.com/optical-communications/worldwide/en/home/products/fiber-optic-cables.html"),
+  americanWater:source("美国水务 · 企业资料|American Water · Corporate information","https://amwater.com/corp/about-us/corporate"),
+  heidelberg:source("海德堡材料 · 2025 年报|Heidelberg Materials · 2025 annual report","https://www.heidelbergmaterials.com/system/files/2026-03/HM_ASR25_en.pdf"),
+  sumco:source("SUMCO · 企业资料|SUMCO · Corporate data","https://www.sumcosi.com/english/corporate/profile.html"),
+  lodge:source("Lodge · 铸铁炊具生产|Lodge · Cast iron cookware manufacturing","https://www.lodgecastiron.com/pages/about-lodge-how-its-made"),
+};
+
+export const industries = [
+  path("bread","小麦到面包|Wheat to bread","food",["bread","adm","dairy"],[
+    step(n.wheat,["种子与耕地|Seed and farmland","灌溉用水|Irrigation water"],"播种机、收割机与农工|Seed drill, harvester and farm labor"),
+    step(n.flour,n.wheat,"清选与辊式面粉机|Grain cleaning and roller mill"),
+    step("奶油|Cream",n.milk,"离心分离机|Cream separator"),
+    step(n.butter,"奶油|Cream","搅乳机|Butter churn"),
+    step("面团|Dough",[n.flour,n.butter,"水与酵母|Water and yeast"],"揉面机与面包师|Dough mixer and baker"),
+    step(n.bread,"面团|Dough","发酵箱与烤炉|Proofer and oven"),
+  ]),
+  path("dairy","乳品冷链|Dairy cold chain","food",["dairy"],[
+    step(n.milk,"奶牛与饲料|Dairy herd and feed","挤奶机、农场人力与冷却罐|Milking equipment, labor and chillers"),
+    step("标准化乳液|Standardized milk",n.milk,"过滤、分离与杀菌设备|Filtration, separation and pasteurization"),
+    step("包装酸奶|Packaged yogurt",["标准化乳液|Standardized milk","发酵菌种|Starter cultures"],"发酵罐、灌装与冷却设备|Fermentation, filling and cooling equipment"),
+    step("~酸奶|Yogurt","包装酸奶|Packaged yogurt","冷藏车、冷库与门店冷柜|Refrigerated trucks, warehouse and display"),
+  ]),
+  path("coffee","咖啡与可可|Coffee and cocoa","food",["coffee","cocoa","starbucks","thermoplan","cups"],[
+    step("生咖啡豆|Green coffee","咖啡鲜果|Coffee cherries","去果皮、干燥与分级|Pulping, drying and grading"),
+    step("烘焙咖啡|Roasted coffee","生咖啡豆|Green coffee","烘焙机与研磨设备|Roaster and grinder"),
+    step("研磨咖啡|Ground coffee","烘焙咖啡|Roasted coffee","咖啡研磨机|Coffee grinder"),
+    step("~杯装咖啡|Cup of coffee",["研磨咖啡|Ground coffee","饮用水|Drinking water","^商用咖啡机|Commercial espresso machine","外带纸杯|Takeaway paper cup"],"门店冲煮、包装与售卖|Store brewing, packing and sales"),
+    step("可可豆|Cocoa beans","可可果|Cocoa pods","采收、发酵与干燥|Harvesting, fermentation and drying"),
+    step("可可液块|Cocoa liquor","可可豆|Cocoa beans","焙炒与研磨|Roasting and grinding"),
+    step("~巧克力|Chocolate",["可可液块|Cocoa liquor","糖与乳成分|Sugar and dairy ingredients"],"精磨、精炼与模具|Refining, conching and molding"),
+  ]),
+  path("beverage","浓缩液到瓶装饮料|Concentrate to bottled drink","food",["coke"],[
+    step("饮料浓缩液|Beverage concentrate","风味与配方原料|Flavor ingredients","配料和质量控制|Blending and quality control"),
+    step("饮料瓶|Beverage bottle",n.plastic,"注塑与吹塑设备|Injection and blow molding"),
+    step("包装饮料|Packaged beverages",["饮料浓缩液|Beverage concentrate","饮料瓶|Beverage bottle","饮用水|Drinking water"],"水处理、混合与灌装线|Water treatment, mixing and filling"),
+    step("~即饮饮料|Ready-to-drink beverage","包装饮料|Packaged beverages","仓配与零售冷柜|Distribution and retail refrigeration"),
+  ]),
+  path("clothing","成衣与洗护循环|Clothing and the laundry loop","home",["uniqlo","haier","mittal"],[
+    ...upstream.fabric,
+    step(n.cloth,n.fabric,"裁床、缝纫机与服装工人|Cutting tables, sewing machines and labor"),
+    step(n.washer,[n.steel,n.motor,n.board],"钣金、注塑与整机装配|Sheet-metal forming, molding and assembly"),
+    step("待洗衣物|Worn garments",n.cloth,"穿着与收集|Wear and collect"),
+    step("~洁净衣物|Clean clothing",["待洗衣物|Worn garments","水与洗涤剂|Water and detergent",n.washer,n.grid],
+      "洗衣机、人力与晾晒|Washing machine, labor and drying"),
+    {...step(n.cloth,"~洁净衣物|Clean clothing","再次穿着|Wear again"),loop:true},
+  ]),
+  path("cookware","钢材、炊具与餐食|Steel, cookware and meals","home",["mittal","lodge","eia","bread"],[
+    ...upstream.steel,
+    step(n.pan,[n.steel,"手柄材料|Handle material"],"冲压机、连接工装与检验|Presses, joining fixtures and inspection"),
+    step("~熟食|Cooked meal",["生鲜食材|Fresh ingredients",n.pan,n.grid],"炉灶与厨师|Stove and cook"),
+    step("^铸铁锅|Cast-iron pan",["铸造用铁料|Iron charge for casting","造型砂|Molding sand"],"熔炼、砂型浇铸与检验|Melting, sand casting and inspection"),
+    step("~熟食|Cooked meal",["生鲜食材|Fresh ingredients","^铸铁锅|Cast-iron pan",n.grid],"炉灶与家庭烹调|Stove and household cooking"),
+  ],"炊具是工具端产物，经多次使用支持膳食生产。|Cookware is a durable tool that supports repeated meal preparation."),
+  path("furniture","木材到家具|Wood to furniture","home",["ikea"],[
+    step("锯材|Sawn timber","林木|Forest timber","伐采设备、运输与锯木机|Harvesting equipment, transport and sawmill"),
+    step("干燥板材|Dry wood panels",["锯材|Sawn timber","木纤维与胶黏剂|Wood fiber and adhesives"],"干燥窑或压板设备|Kilns or board presses"),
+    step("家具部件|Furniture parts",["干燥板材|Dry wood panels",n.fasteners],"数控设备与表面处理|CNC machinery and finishing"),
+    step("平板包装家具|Flat-pack furniture","家具部件|Furniture parts","组合包装、仓储与零售配送|Packing, storage and retail distribution"),
+    step("~可用家具|Usable furniture","平板包装家具|Flat-pack furniture","家庭或安装人员组装|Household or installer assembly"),
+  ]),
+  path("semiconductors","硅片、芯片与服务器|Wafers, chips and servers","tech",["minerals","wafer","tsmc","cowos","asml"],[
+    ...upstream.silicon,
+    step("^光刻机|Lithography system",["精密光学组件|Precision optics","光源组件|Light source subsystem"],"精密集成与校准|Precision integration and calibration"),
+    step(n.chip,[n.wafer,"芯片设计与光罩|Chip design and masks","^光刻机|Lithography system"],"晶圆厂光刻、刻蚀与沉积|Fab lithography, etch and deposition"),
+    step(n.hbm,["DRAM 裸片|DRAM dies","内存基底裸片|Memory base die"],"键合、堆叠与测试|Bonding, stacking and testing"),
+    step(n.gpu,[n.chip,n.hbm,"封装载板|Package substrate"],"先进封装与终测|Advanced packaging and final test"),
+    step(n.server,[n.gpu,n.board,"网络与电源组件|Network and power components"],"服务器装配与验证|Server assembly and validation"),
+  ]),
+  path("ev","电池、电动车与充电|Batteries, EVs and charging","transport",["minerals","catl","byd","tesla","eia"],[
+    ...upstream.battery,
+    step("电动车总成|Electric vehicle assembly",[n.battery,n.motor,n.steel,n.board],"车身、总装与检测线|Body shop, final assembly and testing"),
+    step("^电动车|Electric vehicle","电动车总成|Electric vehicle assembly","交付、充电与维护|Delivery, charging and maintenance"),
+    step("~个人出行|Passenger mobility",["^电动车|Electric vehicle",n.grid],"充电设施与驾驶|Charging and driving"),
+    step("回收锂盐|Recovered lithium salts","退役电池|End-of-life battery","拆解、分选与再生设备|Disassembly, sorting and recovery"),
+    {...step("锂盐|Lithium salts","回收锂盐|Recovered lithium salts","回配正极材料链|Return to cathode supply"),loop:true},
+  ]),
+  path("aircraft","材料到客机|Materials to passenger aircraft","transport",["boeing","airbus","rr","toray"],[
+    step(n.prepreg,["碳纤维|Carbon fiber","树脂体系|Resin system"],"浸渍与卷材加工|Impregnation and tape processing"),
+    step("飞机机体|Aircraft structures",[n.prepreg,n.alloy],"铺放、固化与机体装配|Layup, curing and structural assembly"),
+    step("^民航发动机|Civil aero engine","涡轮与风扇部件|Turbine and fan components","机加工、发动机装配与试车|Machining, assembly and engine test"),
+    step("^客机|Passenger aircraft",["飞机机体|Aircraft structures","^民航发动机|Civil aero engine","航电与客舱系统|Avionics and cabin systems"],"总装、试飞与交付|Final assembly, flight test and delivery"),
+  ]),
+  path("machines","工程机械与农业装备|Construction and farm equipment","transport",["caterpillar","deere","mittal"],[
+    step("机械结构件|Machinery structures",n.steel,"切割、焊接与夹具|Cutting, welding and fixtures"),
+    step("传动与液压部件|Drivetrain and hydraulics","铸锻件|Castings and forgings","机床、热处理与检验|Machine tools, heat treatment and inspection"),
+    step("^挖掘机|Excavator",["机械结构件|Machinery structures","传动与液压部件|Drivetrain and hydraulics"],"机械总装与测试|Machinery final assembly and testing"),
+    step("^农机|Farm machinery",["机械结构件|Machinery structures","传动与液压部件|Drivetrain and hydraulics"],"装配与农场试验|Assembly and field validation"),
+    step(n.wheat,["^农机|Farm machinery","种子与耕地|Seed and farmland"],"实际耕作与收获人力|Field operations and harvest labor"),
+  ]),
+  path("metals","矿石到钢铝|Ore to steel and aluminium","material",["minerals","rio","mittal"],[
+    ...upstream.steel,...upstream.aluminium,
+    step("机械结构件|Machinery structures",[n.steel,n.alloy],"切割、冲压和机加工|Cutting, stamping and machining"),
+  ]),
+  path("chemicals","炼化、塑料与使用后回收|Refining, plastics and recycling","material",["exxon","basf"],[
+    ...upstream.chemical,
+    step("饮料瓶|Beverage bottle",n.plastic,"吹塑成型|Blow molding"),
+    step("回收聚合物|Recovered polymer","废塑料|Discarded plastics","分拣、清洗与再造粒|Sorting, washing and repelletizing"),
+    {...step(n.plastic,"回收聚合物|Recovered polymer","回用与配混|Reuse and blending"),loop:true},
+  ]),
+  path("fuels","原油炼制与运输燃料|Oil refining and transport fuels","material",["exxon"],[
+    step(n.crude,"油气储层|Oil and gas reservoirs","钻井与采收设备|Drilling and production equipment"),
+    ...upstream.chemical.slice(0,1),
+    step("航空燃料|Jet fuel",n.crude,"蒸馏、加氢与调合|Distillation, hydrotreating and blending"),
+    step("配送燃料|Distributed fuel",["航空燃料|Jet fuel","成品汽柴油|Finished gasoline and diesel"],"管道、油库与槽车|Pipelines, terminals and tank trucks"),
+  ]),
+  path("solar","硅料到光伏发电|Silicon to solar electricity","energy",["minerals","longi","eia"],[
+    ...upstream.silicon.slice(0,2),
+    step(n.solarWafer,n.poly,"铸锭或拉晶与切片|Ingot growth and wafer slicing"),
+    step("太阳能电池片|Solar cells",n.solarWafer,"制绒、沉积与金属化|Texturing, deposition and metallization"),
+    step("^光伏组件|Solar module",["太阳能电池片|Solar cells","玻璃与封装材料|Glass and encapsulants",n.alloy],"串焊、层压与测试|Stringing, lamination and testing"),
+    step(n.grid,["^光伏组件|Solar module","阳光|Sunlight","^逆变器|Inverter"],"电站施工、并网与运维|Installation, interconnection and maintenance"),
+  ]),
+  path("wind","风机到用电|Wind turbines to electricity use","energy",["vestas","orsted","eia"],[
+    step("风机叶片|Wind turbine blades","玻纤与树脂|Glass fibers and resin","叶片模具、灌注与固化|Blade molds, infusion and curing"),
+    step("塔筒|Turbine tower",n.steel,"卷板与焊接设备|Plate rolling and welding"),
+    step("^风机|Wind turbine",["风机叶片|Wind turbine blades","塔筒|Turbine tower","机舱与发电机|Nacelle and generator"],"工厂装配与吊装|Factory assembly and erection"),
+    step(n.grid,["^风机|Wind turbine","风能|Wind resource"],"风场运营、升压与输电|Wind farm operation, transformation and transmission"),
+    step("~家庭照明与用电|Lighting and household electricity use",n.grid,"配电线、灯具与家用设备|Distribution lines, lighting and appliances"),
+  ]),
+  path("imaging","磁共振设备制造|MRI equipment manufacturing","tech",["imaging"],[
+    step("磁体与射频部件|Magnet and RF components",["磁体材料|Magnet materials",n.copper],"线圈加工与组件测试|Coil production and component testing"),
+    step("^磁共振设备|MRI scanner",["磁体与射频部件|Magnet and RF components",n.board],"集成、校准与质量控制|System integration, calibration and quality control"),
+  ]),
+  path("housing","水泥、混凝土与住宅|Cement, concrete and housing","material",["cement","mittal"],[
+    step("均化生料|Homogenized raw meal",["石灰石|Limestone","黏土与校正原料|Clay and corrective materials"],"采石、破碎和生料粉磨|Quarrying, crushing and raw grinding"),
+    step("水泥熟料|Cement clinker","均化生料|Homogenized raw meal","预热器与回转窑|Preheater and rotary kiln"),
+    step("水泥|Cement",["水泥熟料|Cement clinker","石膏与掺合料|Gypsum and blending materials"],"终粉磨与储运|Finish grinding and shipping"),
+    step("预拌混凝土|Ready-mixed concrete",["水泥|Cement","骨料与水|Aggregates and water"],"搅拌站、搅拌车与泵|Batch plant, mixer trucks and pumps"),
+    step("建筑结构|Building structure",["预拌混凝土|Ready-mixed concrete",n.steel],"模板、钢筋、吊装与工人|Formwork, reinforcement, cranes and workers"),
+    step("~可居住住宅|Habitable home",["建筑结构|Building structure","机电及卫浴部件|Building systems and fixtures"],"建筑安装、验收与交付|Installation, inspection and handover"),
+  ]),
+  path("water","原水到饮用水|Raw water to drinking water","material",["water"],[
+    step("取用原水|Withdrawn raw water","地表水或地下水|Surface water or groundwater","取水井、泵与管道|Intake, pumps and pipes"),
+    step("处理后饮用水|Treated drinking water","取用原水|Withdrawn raw water","净水厂、监测设备与运营人员|Treatment works, monitoring and operators"),
+  ],"处理工序因水源和地区而异。|Treatment processes depend on the water source and region."),
+  path("broadband","光纤与光缆制造|Optical fiber and cable manufacturing","tech",["corning","corningCable","minerals"],[
+    step("光纤|Optical fiber","高纯二氧化硅原料|High-purity silica","预制棒制造、拉丝与涂覆|Preform manufacture, drawing and coating"),
+    step("光缆|Fiber-optic cable",["光纤|Optical fiber",n.plastic],"成缆、护套挤出与测试|Cabling, jacket extrusion and test"),
+  ]),
+];

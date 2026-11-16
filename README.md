@@ -6,6 +6,8 @@
 
 AlphaNode（全球行业数据图谱）是一个用来学习、分析市场基本面的数据看板。我们从经营数据入手，观察行业发展趋势、企业靠什么赚钱、投入的资本能带来多少回报，以及这些差异能否持续。
 
+产业链图谱把这个问题延伸到生产环节，沿着原材料、零部件、工具和成品，查看产品怎样做出来，以及企业在哪些环节参与。
+
 首版财务数据覆盖 **2016–2025 年**，包含 **1,208 家企业、42 个经营归属经济体和 11,354 个企业年度**。证券目录包含 **121,601 条上市或历史记录**，其中 **1,165 家**已匹配本地财报。
 
 ## 2. 功能
@@ -24,9 +26,17 @@ AlphaNode（全球行业数据图谱）是一个用来学习、分析市场基�
 
 - 趋势图支持切换指标、时间基准和共同基年，展开数值表，拖动分隔线调整布局。点击图例可回到数据表里的对应行，或在页面右侧显示企业介绍。
 
+### 产业链图谱
+
+![产业链图谱流程。选择行业或企业路径，查看物料、工具和直接消费品，沿图中连线追踪上下游，展开设备制造支链，并在节点详情核对代表企业和出处。](docs/images/value-chain-flow.svg)
+
+- 左侧目录可同时加入多条路径。点击节点查看上下游、代表企业和出处。工具支链可在画布上逐级展开，也可批量展开和收起。滚轮以鼠标位置为中心缩放，按住拖动画布。
+
 ### 设置
 
 ![设置功能图。可配置语言、主题与表格外观，选择同业对照雷达指标，开启术语公式解释并配置 AI 图表分析。](docs/images/settings-map.svg)
+
+「设置 → 产业链图谱」可调整布局、热力色顺序和企业路径的展示范围，也可合并同名节点。
 
 ## 3. 使用示例
 
@@ -128,7 +138,13 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 
 ![我的工作台。左侧是 Adobe、Atlassian、合并图表和示例研究笔记。右侧首行对照两家公司的经营利润率与自由现金流率，下面还有营收、毛利率、净利率和行业 ROIC。](docs/images/workbench.png)
 
-#### ⑤ 辅助学习
+#### ⑤ 从服务器追到它的零部件
+
+看完软件企业的经营数据，小八又想知道，支撑软件运行的服务器要用到哪些零部件。他打开「产业链图谱」，在左侧的「行业路径」加入「硅片、芯片与服务器」。点击「印刷电路板」，就能沿着覆铜板和铜箔继续追到铜矿石，也能在右侧查到关键工序的出处。点击光刻机旁的「＋」，还能在同一张图里展开光学组件、光源与设备装配。
+
+这是图谱的初版，已经可以用来学习工序、投入与产出之间的关系。后续会逐步补充企业披露和细分环节，并改进大图布局。核对具体厂商的供货关系时，可以从节点详情回到原始披露。
+
+#### ⑥ 辅助学习
 
 小八最近对经济学和财务分析充满兴趣，但读英文资料时，常遇到 ROIC 这样的缩写，认出中文名后，还想弄懂指标怎么算。小八的视力还不太好，又习惯在晚上做研究。
 
@@ -146,6 +162,7 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 | 官方统计 | 来自 [联合国国民账户](https://unstats.un.org/unsd/snaama/downloads)、[UNIDO](https://stat.unido.org/unido-statistics-portal-api)、[Eurostat](https://ec.europa.eu/eurostat/databrowser/view/sbs_ovw_act/default/table)、[国家统计局](https://www.stats.gov.cn/xxgk/sjfb/zxfb2020/202601/t20260127_1962382.html)、[美联储 H.15](https://www.federalreserve.gov/releases/h15/) 和 [ECB](https://data.ecb.europa.eu/data/datasets/YC/YC.B.U2.EUR.4F.G_N_A.SV_C_YM.PY_10Y)。保留各机构的统计范围，并计算部分区域汇总、占比和利差。 |
 | 产品市场 | 读取 [IEA 电动车数据](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer)、[EIA-861](https://www.eia.gov/electricity/data/eia861/) 和 EIA 汽油数据。项目据此计算海外 EV 渗透率、州级售电 HHI 和市占率，并用 EIA 月度数据和 CPI 回归估算汽油需求弹性。 |
 | 证券目录和股价 | 目录来自锁定版本的 [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase)，推定主上市及财报链接由项目生成。股价按需读取 Yahoo Finance 的周频复权数据。 |
+| 产业链图谱 | 工序和投入参考 [美国地质调查局矿产资料](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries)、[美国能源部电池供应链](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15)、[ASML 芯片制造流程](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) 和企业年报。节点详情标注通用工艺示例及有披露支持的企业关系，并附原始链接。 |
 
 行业财务的「全球」指纳入样本中的全球企业。官方统计保留各机构的调查范围，产品市场保留各自的分母。行业财务金额同比在共同样本上计算，利润率同比用百分点表示。缺报、无效基数和不适用指标保留空值。页面右下角的「数据说明」与表格数值明细提供更具体的出处与公式。
 
@@ -157,6 +174,7 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 
 - [config/](config/) 包含企业样本与分类规则，[pipeline/](pipeline/) 负责采集、计算和验证。
 - [dist/](dist/) 存放前端，[serve.py](serve.py) 和 [server/local_services.py](server/local_services.py) 负责本地服务。原始缓存与生成的数据文件在运行和构建时按需准备。
+- 产业链图谱用 SVG 绘制。工序、上游投入和出处由前端数据模块维护，[布局模块](dist/chain-graph.js)负责节点排布与支链接入。
 
 ### 本地启动
 

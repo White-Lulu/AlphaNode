@@ -33,9 +33,10 @@ export function paragraphs(zh,en=zh) {
   return prose(zh,en);
 }
 const countryFormatter={zh:new Intl.DisplayNames(["zh-CN"],{type:"region"}),en:new Intl.DisplayNames(["en-US"],{type:"region"})};
+export const chineseEconomyName=code=>code==="TW"?"台湾地区":countryFormatter.zh.of(code);
 export const countryName=code=>{
   if (!code) return "";
-  return pair(countryFormatter.zh.of(code),countryFormatter.en.of(code));
+  return pair(chineseEconomyName(code),countryFormatter.en.of(code));
 };
 export function companyLocation(row) {
   return [countryName(row.country),row.profile?.city].filter(Boolean).join(" · ");

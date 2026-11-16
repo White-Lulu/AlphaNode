@@ -11,6 +11,8 @@ import socket
 import sys
 from urllib.parse import parse_qs, urlsplit
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from ipaddress import ip_address
+import os
 from pathlib import Path
 import threading
 import webbrowser
@@ -56,7 +58,7 @@ class Frontend:
             if len(self.revisions) > 8:
                 self.revisions.popitem(last=False)
         prefix = (ASSET_PREFIX + revision + "/").encode("ascii")
-        for name in (b"app.js", b"styles.css", b"research.css", b"theme-preview.css"):
+        for name in (b"app.js", b"styles.css", b"research.css", b"theme-preview.css", b"chain.css"):
             page = page.replace(b'"' + name + b'"', b'"' + prefix + name + b'"')
         return page
 
@@ -67,8 +69,10 @@ class Frontend:
 
 
 class WorkbenchHandler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, frontend, **kwargs):
+    def __init__(self, *args, frontend, web_analysis=None, **kwargs):
         self.frontend = frontend
+        self.web_analysis = web_analysis
+        self.visitor_cookie = None
         super().__init__(*args, **kwargs)
 
     def send_head(self):
@@ -99,6 +103,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             code = parse_qs(url.query).get("code", [""])[0]
             return self.local_service(lambda: stock_price(code))
         if url.path == "/api/analysis-settings":
+            if self.web_analysis:
+                if url.query:
+                    return self.reply(403, {"error": "AI_WEB_SETTINGS_LOCKED"})
+                return self.web_analysis_service()
             if not self.same_origin_service():
                 return self.reply(403, {"error": "LOCAL_ORIGIN_REQUIRED"})
             return self.local_service(public_settings)
@@ -135,20 +143,49 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 and origin in (None, "http://" + host) and self.headers.get("X-AlphaNode-Local") == "1")
 
     def do_POST(self):
-        if urlsplit(self.path).path != "/api/chart-analysis":
+        path = urlsplit(self.path).path
+        if self.web_analysis:
+            if path == "/api/chart-analysis":
+                return self.web_analysis_service(run=True)
+            return self.reply(403, {"error": "AI_WEB_SETTINGS_LOCKED"})
+        if path != "/api/chart-analysis":
             return self.reply(404, {"error": "UNKNOWN_ENDPOINT"})
         if not self.same_origin_service():
             return self.reply(403, {"error": "LOCAL_ORIGIN_REQUIRED"})
+        return self.local_service(lambda: analyze(self.read_analysis_body()))
+
+    def read_analysis_body(self):
         try:
             length = int(self.headers.get("Content-Length", 0))
             if not 0 < length <= 256_000:
-                return self.reply(413, {"error": "REQUEST_SIZE"})
+                raise ServiceError(413, "REQUEST_SIZE")
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError
-        except (ValueError, UnicodeError):
-            return self.reply(400, {"error": "INVALID_JSON"})
-        return self.local_service(lambda: analyze(data))
+        except (ValueError, UnicodeError) as error:
+            raise ServiceError(400, "INVALID_JSON") from error
+        return data
+
+    def web_analysis_service(self, run=False):
+        try:
+            address = str(ip_address(self.headers.get("X-Alphanode-Visitor-IP", "")))
+        except ValueError:
+            return self.reply(403, {"error": "AI_WEB_ORIGIN_REQUIRED"})
+        host = self.headers.get("Host")
+        origin = self.headers.get("Origin")
+        if (self.headers.get("X-AlphaNode-Local") != "1" or
+                (run and (not host or origin != "https://" + host))):
+            return self.reply(403, {"error": "AI_WEB_ORIGIN_REQUIRED"})
+        visitor, self.visitor_cookie = self.web_analysis.visitor(self.headers.get("Cookie", ""))
+        if not run:
+            return self.local_service(lambda: self.web_analysis.settings(visitor))
+        try:
+            return self.reply(200, self.web_analysis.run(self.read_analysis_body(), visitor, address))
+        except ServiceError as error:
+            return self.reply(error.status, {"error": str(error), **self.web_analysis.allowance(visitor)})
+        except Exception as error:
+            logging.error("Web analysis failed (%s)", type(error).__name__)
+            return self.reply(503, {"error": "LOCAL_SERVICE_UNAVAILABLE"})
 
     def local_service(self, action):
         try:
@@ -164,6 +201,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
+        if self.visitor_cookie:
+            self.send_header("Set-Cookie", self.visitor_cookie)
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -183,6 +222,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port",type=int,default=8766)
     parser.add_argument("--no-browser",action="store_true")
+    parser.add_argument("--web-analysis-state", type=Path, help="Enable hosted AI behind a trusted proxy")
     args=parser.parse_args()
     project=Path(__file__).resolve().parent
     sys.path.insert(0,str(project/"pipeline"))
@@ -191,7 +231,14 @@ def main():
         parser.error("Generated data is missing. Run python pipeline/refresh.py first.")
     remove_legacy_custom_settings()
     frontend=Frontend(root)
-    handler=partial(WorkbenchHandler,directory=str(root),frontend=frontend)
+    web_analysis=None
+    if args.web_analysis_state:
+        from server.web_analysis import WebAnalysis
+        key=os.environ.get("ALPHANODE_ARK_API_KEY","")
+        if not key:
+            parser.error("Hosted AI requires ALPHANODE_ARK_API_KEY")
+        web_analysis=WebAnalysis(args.web_analysis_state,key)
+    handler=partial(WorkbenchHandler,directory=str(root),frontend=frontend,web_analysis=web_analysis)
     try:
         server=WorkbenchServer(("127.0.0.1",args.port),handler)
     except OSError as error:

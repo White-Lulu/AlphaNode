@@ -10,7 +10,7 @@ import {companyEvidence,seriesEvidence,benchmarkEvidence,aggregateEvidence,timeE
 import {wireLayout,updateFilterLayout,refreshSplitters,columnResizeHandle} from "./layout.js";
 import {renderStockPrice,disposeStockPrice} from "./stock-price.js";
 import {wireCollection,renderCollection,loadAISettings,resetAISettings} from "./collection.js";
-import {openSaveChart,repaintSavedChart,getWorkbenchChart,syncWorkbenchVisibility,persistWorkbench} from "./saved-charts.js";
+import {openSaveChart,repaintSavedChart,getWorkbenchChart,persistWorkbench} from "./saved-charts.js";
 import {wireWatchlist,renderWatchlist} from "./watchlist.js";
 import {renderFilterPicker} from "./filter-picker.js";
 
@@ -23,7 +23,7 @@ let meta,benchmark,directory,hideTip=()=>{},tabToken=0,advancedToken=0,classific
 const benchmarkPeriod={mode:"level",years:new Map()};
 const statisticsPeriods=new Map(),statisticsCoverage=new Map();
 let financialPeriod;
-const narrow=matchMedia("(max-width: 1080px)");
+const paneOrder={atlas:["data","trends"],collection:["data","charts"]};
 const sources={
   unido:["UNIDO · 工业调查","UNIDO · Industrial survey"],
   ama:["联合国 · 国民账户","United Nations · National accounts"],
@@ -466,11 +466,28 @@ function showProfile(id,requestedMetric=null,requestedYear=null,mode="level",tri
   state.profile={id,group,mode,metric,year:requestedYear??state.year,source,
     peerScheme:industryViews.has(preferredScheme)?preferredScheme:state.classification};
   panel.hidden=false;
-  document.body.classList.add("profile-open");
+  if (state.module!=="chains") setWorkspaceView();
   if (state.module==="atlas") renderTable(state.located===id?id:null);
   renderProfile(fresh);
   if (fresh) panel.querySelector("[data-profile-close]").focus({preventScroll:true});
   if (!industryViews.has(preferredScheme)) void setProfilePeerScheme(preferredScheme);
+}
+function chainCompanyRow(tickers) {
+  if (!tickers?.length) return null;
+  const view=industryView("isic");
+  return view?.companies.find(company=>[company.code,...(company.aliases??[]).map(a=>a.code)]
+    .some(code=>tickers.includes(code)))??null;
+}
+function chainCompanyWatched(tickers) {
+  const row=chainCompanyRow(tickers);
+  return Boolean(row&&isWatched(row));
+}
+function showChainCompany(tickers,trigger) {
+  const row=chainCompanyRow(tickers);
+  if (!row||state.module!=="chains") return false;
+  $("chain-inspector").append($("profile-panel"));
+  showProfile(row.id,null,null,"level",trigger,{scheme:"isic"});
+  return true;
 }
 let peerSchemeToken=0;
 async function setProfilePeerScheme(scheme) {
@@ -511,9 +528,13 @@ function closeProfile(restoreFocus=false) {
   disposeStockPrice();
   panel.hidden=true;
   panel.removeAttribute("data-related-view");
-  document.body.classList.remove("profile-open");
   hideTip();
+  if (state.module!=="chains") setWorkspaceView();
   if (restoreFocus) {
+    if (state.module==="chains") {
+      $("chain-page").dispatchEvent(new Event("chain-profile-close"));
+      return;
+    }
     if (state.module==="atlas") renderTable();
     const target=profileTrigger?.isConnected?profileTrigger:gridBody.querySelector('[data-row="'+CSS.escape(id)+'"] [data-open-profile]');
     target?.focus({preventScroll:true});
@@ -771,7 +792,7 @@ async function switchTab(tab,config={}) {
   const token=++tabToken;
   if (config.keepProfile) {
     $("profile-panel").setAttribute("data-related-view","");
-    if ($("workspace").dataset.view==="trends") selectWorkspaceView("data");
+    updateViewPanel("data",true);
   } else closeProfile();
   const fromPublished=["benchmark","statistics"].includes(state.tab),toPublished=["benchmark","statistics"].includes(tab);
   if (state.tab==="benchmark") benchmarkPeriod.mode=state.mode;
@@ -900,7 +921,7 @@ async function locateSeries(pin,trigger) {
   for (const parent of industryPath(row.parent)) state.expanded.add(parent.id);
   state.detail=null;
   state.located=row.id;
-  if ($("workspace").dataset.view==="trends") selectWorkspaceView(narrow.matches?"data":"split");
+  updateViewPanel("data",true);
   syncControls();
   if (company) showProfile(row.id,null,null,"level",trigger);
   else renderTable(row.id);
@@ -1061,6 +1082,7 @@ function rerenderLanguage(lang) {
   if (state.tab==="directory"&&directory) renderDirectory(directory,showProfile,industryView("isic").companies);else renderTable();
   showCharts();
   if (state.module==="collection") renderCollection();
+  if (state.module==="chains") showChainPage(true);
   if ($("settings-dialog").open) {
     renderGlossarySettings();
     renderRadarSettings();
@@ -1178,23 +1200,72 @@ function handleGrid(event) {
     renderTable();
   }
 }
-function setWorkspaceView(view) {
-  const collecting=state.module==="collection";
-  const active=view==="split"&&narrow.matches?"data":view;
-  $("workspace").dataset.view=active;
-  $("workspace").dataset.module=state.module;
-  syncWorkbenchVisibility();
-  $("explorer").hidden=collecting||active==="trends";
-  $("comparison").hidden=collecting||active==="data";
-  $("atlas-heading").hidden=$("atlas-views").hidden=collecting;
-  $("collection-heading").hidden=$("collection-views").hidden=!collecting;
-  for (const button of document.querySelectorAll("[data-workspace-view]")) {
-    button.setAttribute("aria-pressed",String(button.dataset.workspaceView===active));
+function paneSelection(module=state.module) {
+  if (module==="atlas"&&["#data","#trends"].includes(location.hash)) return [location.hash.slice(1)];
+  const items=(paneOrder[module]??[]).filter(key=>prefs.modulePanels?.[module]?.includes(key));
+  if (items.length) return items;
+  if (module==="atlas") return ["data","trends"];
+  const old=prefs.chartWorkbench?.view;
+  return old==="split"?["data","charts"]:old==="charts"?["charts"]:["data"];
+}
+function updateViewPanel(key,visible=!paneSelection().includes(key)) {
+  if (!paneOrder[state.module]?.includes(key)) return false;
+  const selected=new Set(paneSelection());
+  if (visible===selected.has(key)||(!visible&&selected.size===1)) return false;
+  if (visible) selected.add(key);
+  else selected.delete(key);
+  if (state.module==="atlas"&&["#data","#trends"].includes(location.hash)) {
+    history.replaceState(null,"",location.pathname+location.search);
   }
+  prefs.modulePanels={...prefs.modulePanels,[state.module]:[...selected]};
+  save();
+  setWorkspaceView();
+  return true;
+}
+function setWorkspaceView() {
+  const collecting=state.module==="collection",chains=state.module==="chains";
+  const workspace=$("workspace");
+  workspace.hidden=chains;
+  $("chain-page").hidden=!chains;
+  $("chain-heading").hidden=!chains;
+  $("atlas-heading").hidden=$("atlas-views").hidden=collecting||chains;
+  $("collection-heading").hidden=$("collection-views").hidden=!collecting;
+  if (chains) return;
+  const active=paneSelection(), has=key=>active.includes(key);
+  const primary=collecting?"charts":"trends";
+  const split=has("data")&&has(primary);
+  workspace.dataset.view=!collecting&&split?"split":has("data")?"data":"trends";
+  workspace.dataset.module=state.module;
+  workspace.toggleAttribute("data-collection-split",collecting&&split);
+  workspace.toggleAttribute("data-profile-visible",!!state.profile);
+  for (const button of $(state.module+"-views").querySelectorAll("[data-view-panel]")) {
+    button.setAttribute("aria-pressed",String(has(button.dataset.viewPanel)));
+  }
+  $("explorer").hidden=collecting||!has("data");
+  $("comparison").hidden=collecting||!has("trends");
+  $("collection").hidden=!collecting||!has("data");
+  $("collection-workbench").hidden=!collecting||!has("charts");
+  $("profile-panel").hidden=!state.profile;
   refreshSplitters();
-  requestAnimationFrame(()=>{if (collecting) repaintSavedChart();else redraw($("charts"),state.charts,meta);});
+  requestAnimationFrame(()=>{if (collecting) repaintSavedChart();else if(has("trends")) redraw($("charts"),state.charts,meta);});
 }
 const modulePositions=new Map();
+let atlasHash="",chainPage;
+function showChainPage(relocalize=false) {
+  chainPage??=import("./chain-page.js");
+  void chainPage.then(({renderChainPage})=>{
+    if (state.module!=="chains") return;
+    renderChainPage($("chain-page"),relocalize,{showChainCompany,closeProfile,watched:chainCompanyWatched});
+    if (state.profile) {
+      $("chain-inspector").append($("profile-panel"));
+      if (!relocalize) renderProfile(true);
+    }
+  }).catch(error=>{
+    chainPage=undefined;
+    console.error(error);
+    $("chain-page").textContent=pair("产业链图谱载入失败。","The value chain atlas could not load.");
+  });
+}
 const profileScrollSelectors=["#profile-body","#profile-peers .radar-values","#profile-history .profile-grid"];
 const readScroll=element=>element?[element.scrollLeft,element.scrollTop]:null;
 function restoreScroll(element,position) {
@@ -1213,6 +1284,13 @@ function selectModule(module,keepProfile=false) {
     profileScroll:profileScrollSelectors.map(selector=>readScroll(document.querySelector(selector)))
   });
   if (!keepProfile) closeProfile();
+  if (state.module==="chains") $("workspace").append($("profile-panel"));
+  if (module==="chains"&&location.hash!=="#chains") {
+    atlasHash=location.hash;
+    history.replaceState(null,"",location.pathname+location.search+"#chains");
+  } else if (state.module==="chains"&&location.hash==="#chains") {
+    history.replaceState(null,"",location.pathname+location.search+atlasHash);
+  }
   state.module=module;
   for (const button of document.querySelectorAll(".module-nav [data-module]")) {
     if (button.dataset.module===module) button.setAttribute("aria-current","page");
@@ -1226,10 +1304,10 @@ function selectModule(module,keepProfile=false) {
       profileTrigger=saved.trigger;
       $("profile-panel").hidden=false;
       $("profile-panel").toggleAttribute("data-related-view",saved.related);
-      document.body.classList.add("profile-open");
     }
   }
-  setWorkspaceView(currentWorkspaceView());
+  setWorkspaceView();
+  if (module==="chains") {showChainPage();return;}
   if (module==="collection") renderCollection();
   else renderTable();
   if (!keepProfile&&state.profile) {
@@ -1242,18 +1320,9 @@ function selectModule(module,keepProfile=false) {
     restoreScroll(targetCharts.querySelector('[data-chart="'+CSS.escape(id)+'"] [data-chart-part="'+part+'"] .chart-numbers-scroll'),position);
   }
 }
-function currentWorkspaceView() {
-  if (location.hash==="#trends") return "trends";
-  if (location.hash==="#data") return "data";
-  return "split";
-}
-function selectWorkspaceView(view) {
-  history.replaceState(null,"",location.pathname+location.search+(view==="split"?"":"#"+view));
-  setWorkspaceView(view);
-}
 function wire() {
   hideTip=bindGlossary();
-  wireCollection({meta,financialGroups:profileGroups,levelOf:outlineLevel,
+  wireCollection({meta,financialGroups:profileGroups,levelOf:outlineLevel,showWorkbench:()=>updateViewPanel("charts",true),
     onSaved:title=>status(pair("已保存至工作台","Saved to workbench")+" · "+title)});
   wireWatchlist({meta,records,getView:industryView,getInitialScheme:()=>state.classification,
     getYear:()=>["benchmark","statistics"].includes(state.tab)?financialPeriod?.year??state.year:state.year,
@@ -1420,6 +1489,15 @@ function wire() {
     applyTableDisplay();
     save();
   };
+  $("chain-settings-grid").onchange=()=>{
+    prefs.chainExplorer={...(prefs.chainExplorer??{}),
+      direction:$("chain-setting-direction").value,
+      lightFirst:$("chain-setting-ramp").value==="light",
+      owned:$("chain-setting-owned").value==="own",
+      shared:$("chain-setting-shared").checked};
+    save();
+    document.dispatchEvent(new CustomEvent("chain-settings-change"));
+  };
   $("radar-metric-list").onchange=e=>{
     const metric=e.target.dataset.radarMetric;
     if (!metric) return;
@@ -1435,8 +1513,15 @@ function wire() {
     renderRadarSettings();
     refreshProfileRadar();
   };
-  $("settings").onclick=()=>{
-    $("hover-enabled").checked=prefs.hover;renderGlossarySettings();renderRadarSettings();$("settings-dialog").showModal();
+  function syncChainSettings() {
+  const p=prefs.chainExplorer??{};
+  $("chain-setting-direction").value=["adaptive","horizontal","vertical"].includes(p.direction)?p.direction:"adaptive";
+  $("chain-setting-ramp").value=p.lightFirst===true?"light":"dark";
+  $("chain-setting-owned").value=p.owned===true?"own":"full";
+  $("chain-setting-shared").checked=p.shared===true;
+}
+$("settings").onclick=()=>{
+    $("hover-enabled").checked=prefs.hover;renderGlossarySettings();renderRadarSettings();syncChainSettings();$("settings-dialog").showModal();
     void loadAISettings();
   };
   $("hover-enabled").onchange=e=>{prefs.hover=e.target.checked;save();};
@@ -1512,9 +1597,12 @@ function wire() {
       if (state.module==="atlas") renderTable();
     }
   };
-  document.querySelectorAll("[data-workspace-view]").forEach(button=>button.onclick=()=>selectWorkspaceView(button.dataset.workspaceView));
-  const syncWorkspace=()=>setWorkspaceView(currentWorkspaceView());
-  narrow.addEventListener("change",syncWorkspace);
+  document.querySelectorAll("[data-view-panel]").forEach(button=>button.onclick=()=>updateViewPanel(button.dataset.viewPanel));
+  const syncWorkspace=()=>{
+    if (location.hash==="#chains"&&state.module!=="chains") selectModule("chains");
+    else if (location.hash!=="#chains"&&state.module==="chains") selectModule("atlas");
+    else setWorkspaceView();
+  };
   window.addEventListener("hashchange",syncWorkspace);
   syncWorkspace();
   $("add-chart").onclick=()=>{
@@ -1575,6 +1663,8 @@ async function init() {
   applyTableDisplay();
   document.documentElement.dataset.uiTheme=theme;
   if (prefs.font) document.documentElement.dataset.font=prefs.font;
+  document.querySelector('[data-module="chains"]').onclick=()=>selectModule("chains");
+  if (location.hash==="#chains") selectModule("chains");
   status(prose("正在读取数据快照…","Loading the data snapshot…"));
   try {
     const [m,f,markets,x]=await Promise.all([api("meta"),api("financial"),api("markets"),research("index").catch(()=>null)]);
@@ -1586,6 +1676,7 @@ async function init() {
     registerMarkets(markets);
     await restoreTrendCharts();
     syncControls();renderMethods();wire();renderTable();showCharts();
+    if (state.module==="chains") showChainPage();
     $("classification").disabled=false;
     $("add-chart").disabled=false;
   } catch (error) {

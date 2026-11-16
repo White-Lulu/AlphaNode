@@ -6,6 +6,8 @@
 
 AlphaNode is a dashboard for studying market fundamentals. Compare industries side by side, then look at the companies behind the averages to see how they earn profits and turn invested capital into returns.
 
+The Value Chain Atlas follows production from raw materials and components through tools to finished goods. It also shows where representative companies participate.
+
 The initial financial dataset covers **2016–2025**, with **1,208 companies**, **42 economies** and **11,354 company-years**. The securities directory has **121,601 current and historical listing records**, with **1,165 companies** matched to local financial data.
 
 ## 2. What you can do
@@ -24,11 +26,19 @@ The initial financial dataset covers **2016–2025**, with **1,208 companies**, 
 
 Add a series with **+**, set a metric and time basis, or compare against a common base year. Drag panel dividers to resize the view. Click a legend item to locate the series in the table or open the company profile. Save charts, organize them into folders, and compare or merge chart rows in the Workbench. Star a company to add it to the watchlist.
 
+### Explore value chains
+
+![Value Chain Atlas workflow. Select industry or company pathways, trace the inputs and outputs of a node, expand equipment manufacturing branches, and check companies and sources.](docs/images/en/value-chain-flow.svg)
+
+Compare multiple pathways from the catalog. Click a node for its inputs, outputs, companies and sources. Expand equipment branches in place, individually or in bulk. Use the wheel to zoom around the pointer and drag to pan.
+
 ### Adjust the display
 
 ![Settings for display preferences, peer radar metrics, term explanations and AI analysis.](docs/images/en/settings-map.svg)
 
 Set the interface language, theme and table alignment. Choose peer radar metrics, enable explanations on hover, and configure the AI provider and analysis prompt.
+
+In **Settings → Value chain graph**, choose a layout, color order and company scope, and decide whether to merge matching nodes.
 
 ## 3. Worked example
 
@@ -118,7 +128,13 @@ Try asking the chart analysis:
 
 For Atlassian, track cloud revenue and the count of customers with more than $10,000 in Cloud ARR, then follow R&D intensity, margins, free cash flow, stock-based compensation and deferred revenue. R&D may take years to affect revenue, and consolidated statements rarely show costs and returns by project. [Key business metrics](https://www.sec.gov/Archives/edgar/data/1650372/000165037225000060/team2025annualreport.pdf#page=52) · [Income statement](https://www.sec.gov/Archives/edgar/data/1650372/000165037225000060/team2025annualreport.pdf#page=70) · [Cash flow statement](https://www.sec.gov/Archives/edgar/data/1650372/000165037225000060/team2025annualreport.pdf#page=73)
 
-#### ⑤ Read financial terms in a high-contrast theme
+#### ⑤ Trace a server back to its components
+
+After comparing software companies, Xiaoba wants to see what goes into the servers they run on. In the **Value Chain Atlas**, he adds **Wafers, chips and servers** from **Industry paths**. He clicks **Printed circuit board** and follows copper-clad laminate and copper foil back to copper ore. The side panel links to sources for the process. He then clicks **+** beside the lithography system to see how its optics, light source and final assembly fit into the same graph.
+
+This first version is ready for learning how processes, inputs and outputs fit together. Coverage of company disclosures and detailed production steps will grow, and the layout of larger graphs will improve. Follow a node’s sources to verify a specific supplier relationship.
+
+#### ⑥ Read financial terms in a high-contrast theme
 
 Xiaoba often researches at night and prefers a high-contrast display. In **Settings**, choose **English** and the pure-black high-contrast theme. Turn on **Term explanations → Show on hover**. Point at the **ROIC** column to see the definition and formula for return on invested capital. **English (中文)** also shows the Chinese equivalent.
 
@@ -134,10 +150,11 @@ Xiaoba often researches at night and prefers a high-contrast display. In **Setti
 | Official statistics | [UN National Accounts](https://unstats.un.org/unsd/snaama/downloads), [UNIDO](https://stat.unido.org/unido-statistics-portal-api), [Eurostat](https://ec.europa.eu/eurostat/databrowser/view/sbs_ovw_act/default/table), China's [National Bureau of Statistics](https://www.stats.gov.cn/xxgk/sjfb/zxfb2020/202601/t20260127_1962382.html), [Federal Reserve H.15](https://www.federalreserve.gov/releases/h15/) and the [ECB](https://data.ecb.europa.eu/data/datasets/YC/YC.B.U2.EUR.4F.G_N_A.SV_C_YM.PY_10Y). AlphaNode calculates selected regional aggregates, shares and spreads. |
 | Product markets | [IEA EV data](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer), [EIA-861](https://www.eia.gov/electricity/data/eia861/) and EIA gasoline data. AlphaNode estimates EV shares outside China, state-level electricity retail shares and HHI, and gasoline demand elasticity using monthly EIA data and CPI. |
 | Securities directory and stock prices | The directory uses a pinned version of [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase), with inferred primary listings and filing links. Adjusted weekly stock prices are requested on demand from Yahoo Finance. |
+| Value Chain Atlas | Processes and materials draw on [USGS mineral summaries](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries), [US Department of Energy battery supply chains](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15), [ASML’s chipmaking guide](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) and company filings. Node details link to sources for typical processes and disclosed company relationships. |
 
 Worldwide company totals cover the project's sample. Official statistics retain the source's coverage. Year-over-year growth in industry amounts uses a matched sample, and changes in profitability ratios use percentage points. Missing reports, invalid denominators and inapplicable metrics appear as blank values. Use **Methodology** or click a table value for its source and calculation.
 
-See the [data redistribution audit (Chinese)](docs/data-redistribution.md) for source terms and permissions that remain open.
+The original sources set the terms for using and redistributing third-party data.
 
 ## 5. Run and build
 
@@ -147,6 +164,7 @@ The frontend uses JavaScript, CSS and Canvas. Workbench state lives in the brows
 
 - [config/](config/) holds company samples and classification rules. [pipeline/](pipeline/) collects, computes and validates data.
 - [dist/](dist/) contains the frontend. [serve.py](serve.py) and [server/local_services.py](server/local_services.py) run the local service.
+- The Value Chain Atlas renders in SVG. Frontend data modules record steps, upstream inputs and sources. The [graph layout module](dist/chain-graph.js) positions nodes and connects equipment branches.
 
 ### Run locally
 

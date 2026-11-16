@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="research.css">
   <link rel="stylesheet" href="theme-preview.css">
+  <link rel="stylesheet" href="chain.css">
   <script type="module" src="app.js"></script>
 </head>
 <body>
@@ -25,11 +26,16 @@
         <h1 data-zh="我的工作台" data-en="My workbench"></h1>
         <span class="intro-subtitle" data-zh="自选企业与已保存图表" data-en="Watchlist and saved charts"></span>
       </div>
+      <div id="chain-heading" class="intro-title" hidden>
+        <h1 data-zh="产业链图谱" data-en="Value Chain Atlas"></h1>
+        <span class="intro-subtitle" data-zh="物料、工具与直接消费" data-en="Materials, tools and direct consumption"></span>
+      </div>
     </div>
     <div class="top-actions">
       <nav class="module-nav" data-aria-zh="页面" data-aria-en="Pages">
         <button type="button" class="quiet" data-module="atlas" aria-current="page" data-zh="全球行业数据图谱" data-en="Industry Data Atlas"></button>
         <button type="button" class="quiet" data-module="collection" data-zh="工作台" data-en="Workbench"></button>
+        <button type="button" class="quiet" data-module="chains" data-zh="产业链图谱" data-en="Value Chain Atlas"></button>
       </nav>
       <button type="button" id="settings" class="quiet" data-zh="设置" data-en="Settings"></button>
     </div>
@@ -240,19 +246,18 @@
       <aside id="profile-panel" class="panel" aria-labelledby="profile-title" hidden><div id="profile"></div></aside>
     </div>
 
+    <div id="chain-page" hidden aria-labelledby="chain-heading"></div>
     <footer id="workspace-footer">
       <nav id="atlas-views" class="workspace-nav" data-aria-zh="图谱视图" data-aria-en="Atlas views">
         <div class="view-tabs">
-          <button class="quiet" type="button" data-workspace-view="split" data-zh="表格与趋势" data-en="Table and trends"></button>
-          <button class="quiet" type="button" data-workspace-view="data" data-zh="数据表" data-en="Data table"></button>
-          <button class="quiet" type="button" data-workspace-view="trends" data-zh="趋势页" data-en="Trends"></button>
+          <button class="quiet" type="button" data-view-panel="data" aria-controls="explorer" data-zh="数据表" data-en="Data table"></button>
+          <button class="quiet" type="button" data-view-panel="trends" aria-controls="comparison" data-zh="趋势对照" data-en="Trend comparison"></button>
         </div>
       </nav>
       <nav id="collection-views" class="workspace-nav" data-aria-zh="工作台视图" data-aria-en="Workbench views" hidden>
         <div class="view-tabs">
-          <button class="quiet" type="button" data-collection-view="split" aria-controls="collection collection-workbench" data-zh="数据与图表工作台" data-en="Data and chart workbench"></button>
-          <button class="quiet" type="button" data-collection-view="data" aria-controls="collection" data-zh="数据展台" data-en="Data gallery"></button>
-          <button class="quiet" type="button" data-collection-view="charts" aria-controls="collection-workbench" data-zh="图表工作台" data-en="Chart workbench"></button>
+          <button class="quiet" type="button" data-view-panel="data" aria-controls="collection" data-zh="数据展台" data-en="Data gallery"></button>
+          <button class="quiet" type="button" data-view-panel="charts" aria-controls="collection-workbench" data-zh="图表工作台" data-en="Chart workbench"></button>
         </div>
       </nav>
       <a class="footer-project" href="https://github.com/White-Lulu/AlphaNode" target="_blank" rel="noopener"
@@ -296,6 +301,23 @@
           </div>
         </div>
       </div>
+    </div>
+    <h3 class="settings-block" data-zh="产业链图谱" data-en="Value chain graph"></h3>
+    <div class="settings-grid" id="chain-settings-grid">
+      <label class="control"><span data-zh="布局" data-en="Layout"></span><select id="chain-setting-direction">
+        <option value="adaptive" data-zh="自适应" data-en="Adaptive"></option>
+        <option value="horizontal" data-zh="横向" data-en="Horizontal"></option>
+        <option value="vertical" data-zh="纵向" data-en="Vertical"></option>
+      </select></label>
+      <label class="control"><span data-zh="热力色顺序" data-en="Color order"></span><select id="chain-setting-ramp">
+        <option value="dark" data-zh="由深到浅" data-en="Dark to light"></option>
+        <option value="light" data-zh="由浅到深" data-en="Light to dark"></option>
+      </select></label>
+      <label class="control"><span data-zh="企业范围" data-en="Company scope"></span><select id="chain-setting-owned">
+        <option value="full" data-zh="完整链条" data-en="Full pathway"></option>
+        <option value="own" data-zh="仅企业环节" data-en="Company operations only"></option>
+      </select></label>
+      <label class="toggle"><input type="checkbox" id="chain-setting-shared"><span data-zh="合并同名节点" data-en="Merge matching nodes"></span></label>
     </div>
     <h3 class="settings-block" id="radar-settings-title" data-zh="同业对照雷达图" data-en="Peer radar chart"></h3>
     <div class="pref-toolbar">

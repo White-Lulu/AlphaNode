@@ -13,8 +13,8 @@ const find=id=>saved().find(chart=>chart.id===id);
 const findFolder=id=>folders().find(folder=>folder.id===id);
 const expanded=new Set(),closedFolders=new Set(),previews=new Map(),inProgress=new Set(),errors=new Map();
 const selectedRows=new Set();
-let meta,financialGroups,levelOf,onSaved,prepareAnalysis,pendingSave,editing,drag,dropMarker,analysisSettings;
-let bench=[],benchView=prefs.chartWorkbench?.view??"data",choosingRows=false;
+let meta,financialGroups,levelOf,onSaved,prepareAnalysis,showWorkbench,pendingSave,editing,drag,dropMarker,analysisSettings;
+let bench=[],choosingRows=false;
 const svgPaths={
   add:"M10 4v12M4 10h12",
   gear:"M8.2 3h3.6l.5 2.1 1.5.8 2.1-.6 1.8 3.1-1.6 1.5v1.6l1.6 1.5-1.8 3.1-2.1-.6-1.5.8-.5 2H8.2l-.5-2-1.5-.8-2.1.6-1.8-3.1 1.6-1.5v-1.6L2.3 8.4l1.8-3.1 2.1.6 1.5-.8.5-2.1ZM12.4 10.7a2.4 2.4 0 1 0-4.8 0 2.4 2.4 0 1 0 4.8 0Z",
@@ -299,18 +299,8 @@ async function analyzeChart(chart) {
 
 export function getWorkbenchChart(id) {return bench.find(chart=>chart.id===id);}
 export function persistWorkbench() {
-  prefs.chartWorkbench={view:benchView,entries:bench.map(({sourceId,row,height,weight})=>({sourceId,row,height,weight}))};
+  prefs.chartWorkbench={...prefs.chartWorkbench,entries:bench.map(({sourceId,row,height,weight})=>({sourceId,row,height,weight}))};
   save();
-}
-export function syncWorkbenchVisibility() {
-  const workspace=$("workspace"),collecting=workspace.dataset.module==="collection";
-  workspace.toggleAttribute("data-collection-split",collecting&&benchView==="split");
-  $("collection").hidden=!collecting||benchView==="charts";
-  $("collection-workbench").hidden=!collecting||benchView==="data";
-  for (const button of $("collection-views").querySelectorAll("[data-collection-view]")) {
-    button.setAttribute("aria-pressed",String(button.dataset.collectionView===benchView));
-  }
-  refreshSplitters();
 }
 function updateMergeButton() {
   const count=selectedRows.size,button=$("merge-saved-charts"),toggle=$("select-bench-rows");
@@ -332,20 +322,13 @@ function renderWorkbench() {
   if (!bench.length) root.innerHTML='<p class="bench-empty">'+esc(pair("从数据展台的已保存图表添加图表。","Add charts from Saved charts in the Data gallery."))+'</p>';
   refreshSplitters();
 }
-function selectCollectionView(view) {
-  if (benchView===view) return;
-  benchView=view;
-  persistWorkbench();
-  syncWorkbenchVisibility();
-  requestAnimationFrame(repaintSavedChart);
-}
 function addToWorkbench(id) {
   const chart=find(id);
   if (!chart) return;
   if (!bench.some(card=>card.sourceId===id)) bench.push({...chart,id:"bench-"+id,sourceId:id,row:(bench.at(-1)?.row??-1)+1});
-  if (benchView==="data") selectCollectionView("charts");
+  showWorkbench?.();
   renderSavedCharts();
-  $("collection-views").querySelector('[aria-pressed="true"]').focus({preventScroll:true});
+  $("collection-views").querySelector('[data-view-panel="charts"]').focus({preventScroll:true});
 }
 export function repaintSavedChart() {
   for (const [id,view] of previews) {
@@ -485,7 +468,7 @@ function wireLibrary(root) {
   wireDrag(root);
 }
 export function wireSavedCharts(config) {
-  ({meta,financialGroups,levelOf,onSaved,prepareAnalysis}=config);
+  ({meta,financialGroups,levelOf,onSaved,prepareAnalysis,showWorkbench}=config);
   const previous=prefs.chartWorkbench;
   bench=(previous?.entries??[]).flatMap(entry=>{
     const chart=find(entry.sourceId);
@@ -509,9 +492,6 @@ export function wireSavedCharts(config) {
     if (!title||!store("savedChartFolders",[...folders(),{id:crypto.randomUUID(),title}])) return;
     input.value="";event.target.hidden=true;renderSavedList();
   };
-  for (const button of $("collection-views").querySelectorAll("[data-collection-view]")) {
-    button.onclick=()=>selectCollectionView(button.dataset.collectionView);
-  }
   $("select-bench-rows").onclick=()=>{
     choosingRows=!choosingRows;
     selectedRows.clear();

@@ -1,5 +1,5 @@
 import {esc,$,options,link,bindSearch} from "./model.js";
-import {pair,locale,companyNames} from "./i18n.js";
+import {pair,locale,companyNames,chineseEconomyName} from "./i18n.js";
 import {pagerHTML,tablePageSize} from "./screener.js";
 
 const sectorZh={"Communication Services":"通信服务","Consumer Discretionary":"可选消费","Consumer Staples":"必需消费",
@@ -33,11 +33,10 @@ const industryZh={
   "Transport Infrastructure":"运输基础设施","Water Utilities":"水务","Wholesale Distributors":"批发经销",
   "Wireless Telecom":"无线通信"
 };
-const chineseRegion=new Intl.DisplayNames(["zh-CN"],{type:"region"});
 const englishRegion=new Intl.DisplayNames(["en-US"],{type:"region"});
 const countryCodes="CN US GB DE JP KR HK MO TW BR NL FR NO CH IN CA ES IT IE BE IL DK SE FI CO AR AU ZA CL LU MX UY SG GR CY PA PH ID PE VN MY TH NZ PT TR SA AE QA KW EG MA KE NG GH PK BD LK RU UA PL CZ SK HR HU RO BG LT LV EE IS SI AT MT RS BA BY KZ UZ AM GE AZ GT DO CR SV EC BO PY VE BM KY VG BS IM JE GG PR MU SC TN DZ JO OM BH IQ IR NP MM KH MN AI BS BB BZ BW CW FK FO GF GA GI GL CI KG LR LI MK MH MC ME MZ NA PG CG SN SX SR TZ ZM".split(" ");
-const countryZh=Object.fromEntries(countryCodes.map(c=>[englishRegion.of(c),chineseRegion.of(c)]));
-Object.assign(countryZh,{"Taiwan":chineseRegion.of("TW"),"Hong Kong":chineseRegion.of("HK"),"Macau":chineseRegion.of("MO"),
+const countryZh=Object.fromEntries(countryCodes.map(c=>[englishRegion.of(c),chineseEconomyName(c)]));
+Object.assign(countryZh,{"Taiwan":chineseEconomyName("TW"),"Hong Kong":chineseEconomyName("HK"),"Macau":chineseEconomyName("MO"),
   "Czech Republic":"捷克","United Kingdom":"英国","South Korea":"韩国","Ivory Coast":"科特迪瓦","Macedonia":"北马其顿",
   "Republic of the Congo":"刚果共和国","Turkey":"土耳其","Falkland Islands":"福克兰群岛"});
 const state={q:"",country:"",sector:"",industry:"",exchange:"",status:"",matched:false,primary:false,page:0};
