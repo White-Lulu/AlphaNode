@@ -65,17 +65,25 @@ const matchers=[
   [/逻辑裸片|logic die/i,"chips"],
   [/机械|设备|工位|车床|工具|装配|equipment|station|machine|fixtures|assembly/i,"machine"],
 ];
+const matchEquipment=label=>recipes[matchers.find(([pattern])=>pattern.test(label))?.[1]];
+const equipmentOutput=(recipe,identity)=>recipe.steps.some(s=>s.output===identity)?identity:
+  recipe.id==="tool-oven"?oven:recipe.steps.at(-1).output;
+
 export function equipmentFor(node, currentId) {
   if (node.type==="material"&&node.identity!==n.chip) return null;
   if (node.type==="consumption") return null;
-  const id=matchers.find(([pattern])=>pattern.test(node.label))?.[1];
-  const recipe=recipes[id];
-  return recipe?.id===currentId?null:recipe;
+  const recipe=matchEquipment(node.label);
+  if (!recipe||recipe.id===currentId) return null;
+  if (node.type==="operation") {
+    const output=equipmentOutput(recipe,node.identity);
+    const sameTool=item=>item===output||(item.startsWith("^")&&matchEquipment(item)===recipe&&equipmentOutput(recipe,item)===output);
+    if (node.stages.some(stage=>sameTool(stage.output)||stage.input.some(sameTool))) return null;
+  }
+  return recipe;
 }
 
 export function equipmentUpstream(recipe, node) {
-  const output=recipe.steps.some(s=>s.output===node.identity)?node.identity:
-    recipe.id==="tool-oven"?oven:recipe.steps.at(-1).output;
+  const output=equipmentOutput(recipe,node.identity);
   const inputs=new Set([output]);
   const steps=[];
   for (const s of [...recipe.steps].reverse()) {

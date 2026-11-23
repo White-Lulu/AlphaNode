@@ -150,6 +150,21 @@ export function unitLabel(metric,mode,meta,currency="USD") {
   if (unit==="money") return pair({USD:"亿美元",EUR:"亿欧元",CNY:"亿元人民币"}[currency]??"亿 "+currency,currency+" × 100m");
   return pair(...units[unit]);
 }
+export function heatExtent(values) {
+  values.sort((a,b)=>a-b);
+  const lo=values[Math.floor((values.length-1)*.05)], hi=values[Math.ceil((values.length-1)*.95)];
+  return hi>lo?[lo,hi]:null;
+}
+export function heatColor(value,range,reversed=false,base="") {
+  if (!range||!finite(value)) return "";
+  let f=Math.max(0,Math.min(1,(value-range[0])/(range[1]-range[0])));
+  if (reversed) f=1-f;
+  if (Math.abs(f-.5)<.05) return "";
+  const tone="var("+(f>.5?"--heat-hi,223,70,77":"--heat-lo,57,112,216")+")";
+  const strength=.05+Math.abs(f-.5)*.40;
+  if (base) return "color-mix(in srgb,rgb("+tone+") "+(strength*100).toFixed(1)+"%,"+base+")";
+  return "rgba("+tone+","+strength.toFixed(3)+")";
+}
 export function scale(value,metric,mode,meta) {
   return value/({money:1e8,people:1e4,vehicles:1e4,mwh:1e6,pct:.01,pp:.01}[resultUnit(metric,mode,meta)]??1);
 }

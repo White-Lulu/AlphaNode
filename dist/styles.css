@@ -42,7 +42,7 @@ input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; m
 .search-control { margin-left: auto; flex: 0 1 275px; min-width: 200px; }
 .table-tools { min-width:0; padding:7px 11px; }
 .table-context { display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:thin; white-space:nowrap; font-size:12px; }
-.table-context > span { flex:none; color:var(--accent); font-weight:650; background:var(--soft); border-radius:2px; padding:4px 7px; }
+.table-context > :is(span,button) { flex:none; color:var(--accent); font-weight:650; background:var(--soft); border:0; border-radius:2px; padding:4px 7px; }
 .quiet, .primary { border-radius: 4px; padding: 5px 8px; border: 1px solid var(--border); background: #fff; color: var(--accent); font-size: 12px; font-weight: 550; white-space: nowrap; }
 .quiet:not([popovertarget]):hover { background: var(--soft); }
 .primary { background: var(--accent); color: white; border-color: var(--accent); padding: 7px 10px; }

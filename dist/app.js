@@ -1,4 +1,4 @@
-import {$,bindSearch,downloadCSV,esc,api,research,modes,modeLabel,modeTerm,options,finite,annual,measure,qualityNotes,observation,format,unitLabel,link,scale} from "./model.js";
+import {$,bindSearch,downloadCSV,esc,api,research,modes,modeLabel,modeTerm,options,finite,annual,measure,qualityNotes,observation,format,unitLabel,link,scale,heatExtent,heatColor} from "./model.js";
 import {applyStatic,setLanguage,prefs,save,languages,scopeLabel,countryName,companyLocation,locale,pair,prose,nameOf,companyNames,paragraphs} from "./i18n.js";
 import {bindGlossary,glossary,metricLabel,renderGlossarySettings,setAllHints} from "./glossary.js";
 import {renderCharts,redraw,insertChartBelow,moveChartInRows} from "./chart.js";
@@ -24,6 +24,9 @@ const benchmarkPeriod={mode:"level",years:new Map()};
 const statisticsPeriods=new Map(),statisticsCoverage=new Map();
 let financialPeriod;
 const paneOrder={atlas:["data","trends"],collection:["data","charts"]};
+const graphModules=new Set(["chains","chain-values"]);
+const graphModuleFromHash=()=>graphModules.has(location.hash.slice(1))?location.hash.slice(1):"";
+let lastGraphModule="chains";
 const phoneLayout=matchMedia("(max-width:700px), (max-width:1000px) and (pointer:coarse)");
 const sources={
   unido:["UNIDO · 工业调查","UNIDO · Industrial survey"],
@@ -89,13 +92,17 @@ function registerIndustryView(scheme,taxonomy,companies,aggregates,coverage) {
   register("finance-"+scheme,[...nodes,...companies]);
   register("screen-"+scheme,companies,false);
 }
+async function loadEconomicData(financialMeta) {
+  const data=await api("economic-functions");
+  if (data.version!==1||data.builtFrom!==financialMeta.built) {
+    throw new Error("The economic-function dataset does not match the financial dataset.");
+  }
+  return data;
+}
 async function loadEconomicView() {
   if (industryViews.has("economic")) return;
-  const data=await api("economic-functions");
+  const data=await loadEconomicData(meta);
   if (industryViews.has("economic")) return;
-  if (data.version!==1||data.builtFrom!==meta.built) {
-    throw new Error("The economic-function dataset does not match the financial snapshot.");
-  }
   const original=industryView("isic").companies;
   const companies=[],byId=new Map();
   for (const row of original) {
@@ -279,9 +286,8 @@ function heatRanges(entries,cols,read=(entry,col)=>value(entry.row,col)) {
       groups.get(level).push(v);
     }
     for (const [level,arr] of groups) {
-      arr.sort((a,b)=>a-b);
-      const lo=arr[Math.floor((arr.length-1)*.05)],hi=arr[Math.ceil((arr.length-1)*.95)];
-      if (hi>lo) result.set(col+"-"+level,[lo,hi]);
+      const range=heatExtent(arr);
+      if (range) result.set(col+"-"+level,range);
     }
   }
   return result;
@@ -289,10 +295,9 @@ function heatRanges(entries,cols,read=(entry,col)=>value(entry.row,col)) {
 function heat(v,range,metric,mode=state.mode) {
   if (!range) return "";
   if (["hhi","elasticity","capitalIntensity","researchIntensity","firms","currentRatio","quickRatio","equityMultiplier","treasury2","treasury10","yieldSlope"].includes(metric)&&mode!=="vol") return "";
-  let f=Math.max(0,Math.min(1,(v-range[0])/(range[1]-range[0])));
-  if (mode==="vol"||((mode==="level"||mode.startsWith("avg"))&&["wacc","debtAssets","zmijewski"].includes(metric))) f=1-f;
-  if (Math.abs(f-.5)<.05) return "";
-  return ' style="background-color:rgba(var('+(f>.5?"--heat-hi,223,70,77":"--heat-lo,57,112,216")+'),'+(.05+Math.abs(f-.5)*.40).toFixed(3)+')"';
+  const reversed=mode==="vol"||((mode==="level"||mode.startsWith("avg"))&&["wacc","debtAssets","zmijewski"].includes(metric));
+  const color=heatColor(v,range,reversed);
+  return color?' style="background-color:'+color+'"':"";
 }
 function status(text){$("status").textContent=text;}
 function rowSub(row) {
@@ -1084,6 +1089,7 @@ function rerenderLanguage(lang) {
   showCharts();
   if (state.module==="collection") renderCollection();
   if (state.module==="chains") showChainPage(true);
+  if (state.module==="chain-values") showChainValues();
   if ($("settings-dialog").open) {
     renderGlossarySettings();
     renderRadarSettings();
@@ -1229,14 +1235,20 @@ function updateViewPanel(key,visible=!paneSelection().includes(key)) {
   return true;
 }
 function setWorkspaceView() {
-  const collecting=state.module==="collection",chains=state.module==="chains";
+  const collecting=state.module==="collection",graphing=graphModules.has(state.module);
   const workspace=$("workspace");
-  workspace.hidden=chains;
-  $("chain-page").hidden=!chains;
-  $("chain-heading").hidden=!chains;
-  $("atlas-heading").hidden=$("atlas-views").hidden=collecting||chains;
+  workspace.hidden=graphing;
+  $("chain-page").hidden=$("chain-heading").hidden=state.module!=="chains";
+  $("chain-values-page").hidden=$("chain-values-heading").hidden=state.module!=="chain-values";
+  $("atlas-heading").hidden=$("atlas-views").hidden=state.module!=="atlas";
   $("collection-heading").hidden=$("collection-views").hidden=!collecting;
-  if (chains) return;
+  $("chain-views").hidden=!graphing;
+  if (graphing) {
+    for (const button of $("chain-views").querySelectorAll("[data-chain-view]")) {
+      button.setAttribute("aria-pressed",String(button.dataset.chainView===state.module));
+    }
+    return;
+  }
   const active=paneSelection(), has=key=>active.includes(key);
   const primary=collecting?"charts":"trends";
   const split=has("data")&&has(primary);
@@ -1256,7 +1268,7 @@ function setWorkspaceView() {
   requestAnimationFrame(()=>{if (collecting) repaintSavedChart();else if(has("trends")) redraw($("charts"),state.charts,meta);});
 }
 const modulePositions=new Map();
-let atlasHash="",chainPage;
+let atlasHash="",chainPage,chainValues;
 function showChainPage(relocalize=false) {
   chainPage??=import("./chain-page.js");
   void chainPage.then(({renderChainPage})=>{
@@ -1270,6 +1282,21 @@ function showChainPage(relocalize=false) {
     chainPage=undefined;
     console.error(error);
     $("chain-page").textContent=pair("产业链图谱载入失败。","The value chain atlas could not load.");
+  });
+}
+function showChainValues() {
+  const page=$("chain-values-page");
+  if (!chainValues) {
+    page.textContent=pair("正在读取行业数据…","Loading industry data…");
+    chainValues=Promise.all([import("./chain-values.js"),api("meta")])
+      .then(async ([view,m])=>[view,m,await loadEconomicData(m)]);
+  }
+  void chainValues.then(([view,m,data])=>{
+    if (state.module==="chain-values") view.renderChainValues(page,m,data);
+  }).catch(error=>{
+    chainValues=undefined;
+    console.error(error);
+    if (state.module==="chain-values") page.textContent=pair("产业链数值图谱载入失败。","Value Chain Metrics could not load.");
   });
 }
 const profileScrollSelectors=["#profile-body","#profile-peers .radar-values","#profile-history .profile-grid"];
@@ -1291,15 +1318,16 @@ function selectModule(module,keepProfile=false) {
   });
   if (!keepProfile) closeProfile();
   if (state.module==="chains") $("workspace").append($("profile-panel"));
-  if (module==="chains"&&location.hash!=="#chains") {
-    atlasHash=location.hash;
-    history.replaceState(null,"",location.pathname+location.search+"#chains");
-  } else if (state.module==="chains"&&location.hash==="#chains") {
+  if (graphModules.has(module)&&location.hash!=="#"+module) {
+    if (!graphModules.has(state.module)&&!graphModuleFromHash()) atlasHash=location.hash;
+    history.replaceState(null,"",location.pathname+location.search+"#"+module);
+  } else if (!graphModules.has(module)&&graphModules.has(state.module)&&graphModuleFromHash()) {
     history.replaceState(null,"",location.pathname+location.search+atlasHash);
   }
   state.module=module;
+  if (graphModules.has(module)) lastGraphModule=module;
   for (const button of document.querySelectorAll(".module-nav [data-module]")) {
-    if (button.dataset.module===module) button.setAttribute("aria-current","page");
+    if (button.dataset.module===module||button.dataset.module==="chains"&&graphModules.has(module)) button.setAttribute("aria-current","page");
     else button.removeAttribute("aria-current");
   }
   const saved=modulePositions.get(module);
@@ -1314,6 +1342,7 @@ function selectModule(module,keepProfile=false) {
   }
   setWorkspaceView();
   if (module==="chains") {showChainPage();return;}
+  if (module==="chain-values") {showChainValues();return;}
   if (module==="collection") renderCollection();
   else renderTable();
   if (!keepProfile&&state.profile) {
@@ -1335,7 +1364,7 @@ function wire() {
     getColumns:()=>columns("watchlist"),loadEconomic:loadEconomicView,onColumns:()=>openColumns("watchlist"),
     heatRanges,heat,heatEnabled:()=>state.heat,hideTip,
     onProfile:(id,trigger,source,year)=>showProfile(id,null,year,"level",trigger,source)});
-  document.querySelectorAll(".module-nav [data-module]").forEach(button=>button.onclick=()=>selectModule(button.dataset.module));
+  document.querySelectorAll('.module-nav [data-module]:not([data-module="chains"])').forEach(button=>button.onclick=()=>selectModule(button.dataset.module));
   wireLayout(id=>getWorkbenchChart(id)??state.charts.find(chart=>chart.id===Number(id)),()=>hideTip(),
     handle=>{
       if (handle.closest("#collection-workbench")) persistWorkbench();
@@ -1605,8 +1634,9 @@ $("settings").onclick=()=>{
   };
   document.querySelectorAll("[data-view-panel]").forEach(button=>button.onclick=()=>updateViewPanel(button.dataset.viewPanel));
   const syncWorkspace=()=>{
-    if (location.hash==="#chains"&&state.module!=="chains") selectModule("chains");
-    else if (location.hash!=="#chains"&&state.module==="chains") selectModule("atlas");
+    const module=graphModuleFromHash();
+    if (module&&state.module!==module) selectModule(module);
+    else if (!module&&graphModules.has(state.module)) selectModule("atlas");
     else setWorkspaceView();
   };
   window.addEventListener("hashchange",syncWorkspace);
@@ -1670,8 +1700,10 @@ async function init() {
   applyTableDisplay();
   document.documentElement.dataset.uiTheme=theme;
   if (prefs.font) document.documentElement.dataset.font=prefs.font;
-  document.querySelector('[data-module="chains"]').onclick=()=>selectModule("chains");
-  if (location.hash==="#chains") selectModule("chains");
+  document.querySelector('.module-nav [data-module="chains"]').onclick=()=>selectModule(lastGraphModule);
+  for (const button of $("chain-views").querySelectorAll("[data-chain-view]")) button.onclick=()=>selectModule(button.dataset.chainView);
+  const graphModule=graphModuleFromHash();
+  if (graphModule) selectModule(graphModule);
   status(prose("正在读取数据快照…","Loading the data snapshot…"));
   try {
     const [m,f,markets,x]=await Promise.all([api("meta"),api("financial"),api("markets"),research("index").catch(()=>null)]);

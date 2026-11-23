@@ -1,13 +1,19 @@
 const cellWidth=236, cellHeight=116, columnGap=58, padding=30;
 
+export function chainLayoutPreferences(preference={}) {
+  const {direction,shared}=preference;
+  return {direction:["horizontal","vertical"].includes(direction)?direction:"adaptive",shared:shared===true};
+}
+
 export function itemType(name) {
   return name.startsWith("^")?"tool":name.startsWith("~")?"consumption":"material";
 }
 
-export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=()=>[],itemOwners=()=>[],scope="",parallel=false}={}) {
+export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=()=>[],itemOwners=()=>[],scope="",parallel=false,inlineTools=false}={}) {
   const nodes=new Map(), links=[], forward=new Map(), seen=new Set(), uses=new Map(), copies=[];
+  const scopedKey=key=>scope?JSON.stringify([scope,key]):key;
   const put=(key,type,label,identity)=> {
-    if (scope) key=JSON.stringify([scope,key]);
+    key=scopedKey(key);
     if (!nodes.has(key)) {
       nodes.set(key,{key,type,label,identity,paths:new Set(),stages:[],owners:new Set(),rank:0,scope});
       forward.set(key,new Set());
@@ -21,7 +27,7 @@ export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=
     if (isInput) uses.set(base,usesSoFar+1);
     const key=!shared&&usesSoFar?base+"#"+usesSoFar:base;
     const node=put(key,type,type==="material"?label:label.slice(1),label);
-    if (!shared&&usesSoFar) copies.push([node,scope?JSON.stringify([scope,base]):base]);
+    if (!shared&&usesSoFar) copies.push([node,scopedKey(base)]);
     node.paths.add(context.id);
     for (const owner of itemOwners(label,context)) node.owners.add(owner);
     return node;
@@ -42,13 +48,15 @@ export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=
     if (type!=="loop") forward.get(from.key).add(to.key);
   }
   for (const context of paths) for (const stage of context.steps) {
-    const input=stage.input.map(name=>item(name,context,true)), output=item(stage.output,context);
     const identity=JSON.stringify([stage.owner,stage.tool,stage.input,stage.output]);
     const key=shared?identity:JSON.stringify([context.id,identity]);
+    const input=stage.input.map(name=>item(name,context,true));
+    const output=item(stage.output,context);
     const node=put(key,"operation",stage.tool,stage.tool);
     node.paths.add(context.id);
     const owners=stageOwners(stage,context);
     const entry={...stage,context,owners};
+    if (inlineTools) {entry.inputNodes=input;entry.outputNode=output;}
     node.stages.push(entry);
     output.stages.push(entry);
     for (const o of owners) {node.owners.add(o);output.owners.add(o);}
@@ -72,6 +80,7 @@ export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=
     for (const owner of original.owners) node.owners.add(owner);
     for (const edge of incoming) link(edge.from,node,edge.type==="loop"||reaches(node.key,edge.from.key)?"loop":edge.type);
   }
+  if (inlineTools) return layoutToolChains(nodes,links,productions,direction);
   if (!parallel || !nodes.size) return layout(nodes,links,direction);
   const vertical=direction==="vertical", neighbors=new Map([...nodes.values()].map(n=>[n,[]]));
   for (const edge of links) {
@@ -101,6 +110,32 @@ export function makeGraph(paths,{shared=true,direction="horizontal",stageOwners=
     height=vertical?Math.max(height,part.height):height+part.height;
   }
   return {nodes,links,width,height,vertical,maxDepth:Math.max(0,...[...nodes.values()].map(n=>n.depth))};
+}
+
+function layoutToolChains(nodes,links,productions,direction) {
+  const operations=new Map(), toolTargets=new Map(), equipment=[];
+  const inputs=new Set(links.map(edge=>edge.from));
+  for (const node of nodes.values()) {
+    if (node.type!=="operation") continue;
+    if (!operations.has(node.identity)) operations.set(node.identity,[]);
+    operations.get(node.identity).push(node);
+  }
+  for (const [key,makes] of productions) {
+    const product=nodes.get(key);
+    const uses=operations.get(product.identity)?.filter(node=>!node.stages[0].input.includes(product.identity));
+    if (!uses?.length) continue;
+    for (const {from} of makes) for (const to of uses) {
+      if (from!==to) equipment.push({from,to,type:"equipment",toTriangle:true});
+    }
+    if (!inputs.has(product)&&makes.every(({from})=>uses.some(to=>to!==from))) {
+      nodes.delete(key);
+      toolTargets.set(key,uses);
+    }
+  }
+  const flow=links.filter(edge=>nodes.has(edge.to.key));
+  const graph=layout(nodes,flow,direction);
+  // Equipment can be used to manufacture equipment further upstream.
+  return {...graph,links:[...equipment,...flow],toolTargets};
 }
 
 function traceDepths(nodes, links) {
@@ -258,6 +293,11 @@ function returnPath(edge, graph, order) {
 }
 
 function edgePath(edge, graph) {
+  if (edge.toTriangle) {
+    const start=nodeRight(edge.from), y=nodeY(edge.from);
+    const x=edge.to.x+29, end=edge.to.y+74;
+    return `M${start} ${y}C${start+32} ${y} ${x} ${end+22} ${x} ${end}`;
+  }
   const a=nodeRight(edge.from), b=nodeLeft(edge.to), y=nodeY(edge.from), z=nodeY(edge.to);
   if (graph.vertical&&y===z) {
     const rightward=a<b;
@@ -286,9 +326,13 @@ function wrapped(label, max=23) {
   return lines.map(s=>s.trim());
 }
 
-export const graphDefs='<defs><marker id="chain-arrow" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L9 4.5L0 9z" fill="context-stroke"/></marker></defs>';
+export function graphDefs(arrow="chain-arrow") {
+  return '<defs><marker id="'+arrow+'" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L9 4.5L0 9z" fill="context-stroke"/></marker></defs>';
+}
 
-export function graphMarkup(graph, label, ownerName, esc, picked, nodeIds,{company="",recipes=()=>false,expanded=()=>false,showOwnership=false,lightFirst=false}={}) {
+export function graphMarkup(graph, label, ownerName, esc, picked, nodeIds,{
+  company="",recipes=()=>false,expanded=()=>false,showOwnership=false,lightFirst=false,arrow="chain-arrow",annotate,layered=false
+}={}) {
   const {nodes,links}=graph;
   const selected=new Set([...nodes.values()].filter(n=>company?n.owners.has(company):picked&&n.identity===picked.identity).map(n=>n.key));
   const related=new Set(selected);
@@ -303,7 +347,8 @@ export function graphMarkup(graph, label, ownerName, esc, picked, nodeIds,{compa
   const lines=links.map(edge=>{
     const highlighted=selected.has(edge.from.key)||selected.has(edge.to.key);
     return '<path class="chain-link '+edge.type+(highlighted?" is-highlighted":"")+'" d="'+
-      (edge.type==="loop"?returnPath(edge,graph,loop++):edgePath(edge,graph))+'" marker-end="url(#chain-arrow)"/>';
+      (edge.type==="loop"?returnPath(edge,graph,loop++):edgePath(edge,graph))+'"'+
+      (edge.toTriangle?"":' marker-end="url(#'+arrow+')"')+'/>';
   }).join("");
   const elements=values.map(node=>{
     const operation=node.type==="operation", stage=node.stages[0];
@@ -311,31 +356,39 @@ export function graphMarkup(graph, label, ownerName, esc, picked, nodeIds,{compa
     const owner=operation&&(ownedStage?ownerName(ownedStage.owner):stage?.owner?ownerName(stage.owner):company&&selected.has(node.key)?ownerName(company):"");
     const name=label(node.label), nodeClass=node.type+(selected.has(node.key)?" is-selected":picked&&!company&&related.has(node.key)?" is-neighbor":"")+
       (ownedStage?" is-own-stage":"")+(selected.size&&!related.has(node.key)&&!relatedScopes.has(node.scope)&&!ownedStage?" is-dimmed":"");
+    const annotation=annotate?.(node);
     const at=`translate(${node.x} ${node.y})`;
     const drillId=recipes(node)?' data-chain-drill="'+nodeIds.get(node.key)+'"':"";
     const depth=node.depth/Math.max(1,graph.maxDepth);
     const tone=12+30*(lightFirst?depth:1-depth);
     const text=(lines,x,y,anchor="middle")=>'<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'">'+
       lines.map((line,i)=>'<tspan x="'+x+'" dy="'+(i?"16":"0")+'">'+esc(line)+'</tspan>').join("")+'</text>';
+    const caption=(x,y,w,h)=>'<foreignObject x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'">'+
+      '<div xmlns="http://www.w3.org/1999/xhtml" class="value-node-text">'+
+      (annotation.note?'<small>'+esc(annotation.note)+'</small>':"")+'<span>'+esc(name)+
+      '</span><strong class="value-number">'+esc(annotation.value)+'</strong></div></foreignObject>';
     let shape;
     if (operation) {
       const ownerLine=wrapped(owner,28)[0];
       shape=(owner?'<rect class="chain-owner-frame" x="1" y="0" width="234" height="110" rx="5"/><text class="chain-owner-label" x="10" y="16">'+esc(ownerLine)+'</text>':
         '<rect x="1" y="35" width="234" height="73" fill="transparent"/>')+
         '<path class="chain-operation-line" d="M2 45H234"/><path class="chain-tool-shape"'+drillId+' d="M16 74l13-21 13 21z"/>'+
-        text(wrapped(name,24).slice(0,3),50,62,"start");
+        (annotation?caption(49,51,180,60):text(wrapped(name,24).slice(0,3),50,62,"start"));
     } else {
       const tool='<path class="chain-tool-shape"'+drillId+' d="M23 60l19-32 19 32z"/>';
       const labelLines=wrapped(name,node.type==="tool"?20:25).slice(0,3);
       const y=49-(labelLines.length-1)*8;
-      shape=node.type==="consumption"?'<ellipse class="chain-item-shape" cx="118" cy="45" rx="108" ry="32"/>'+text(labelLines,118,y):
+      const itemLabel=annotation?caption(31,18,174,54):text(labelLines,118,y);
+      shape=node.type==="consumption"?'<ellipse class="chain-item-shape" cx="118" cy="45" rx="108" ry="32"/>'+itemLabel:
         node.type==="tool"?'<rect x="10" y="15" width="216" height="60" fill="transparent"/>'+tool+text(labelLines,72,y,"start"):
-        '<rect class="chain-item-shape" x="10" y="15" width="216" height="60" rx="3"/>'+text(labelLines,118,y);
+        '<rect class="chain-item-shape" x="10" y="15" width="216" height="60" rx="3"/>'+itemLabel;
     }
-    const hint=owner?owner+" · "+name:name;
+    const hint=annotation?[name,annotation.value,annotation.note].filter(Boolean).join(" · "):owner?owner+" · "+name:name;
     const drill=drillId?'<g class="chain-expand"'+drillId+' aria-hidden="true"><rect x="201" y="1" width="24" height="23" rx="3"/><text x="213" y="17" text-anchor="middle">'+(expanded(node)?"−":"+")+'</text></g>':"";
     return '<g class="chain-node '+nodeClass+'" transform="'+at+'" data-chain-node="'+nodeIds.get(node.key)+
-      '" role="button" tabindex="0" aria-label="'+esc(hint)+'" style="--chain-tone:'+tone.toFixed(1)+'%"><title>'+esc(hint)+'</title>'+shape+drill+'</g>';
+      '" role="button" tabindex="0" aria-label="'+esc(hint)+'" style="'+
+      (annotation?(annotation.tint?'--value-tint:'+esc(annotation.tint):""):'--chain-tone:'+tone.toFixed(1)+'%')+'"><title>'+esc(hint)+'</title>'+shape+drill+'</g>';
   }).join("");
-  return lines+elements;
+  return layered?'<g class="chain-lines">'+lines+'</g><g class="chain-nodes">'+elements+
+    '</g><g class="chain-raised-lines"></g>':lines+elements;
 }

@@ -5,7 +5,8 @@ import {companies} from "./chain-companies.js";
 import {disclosedSuppliers,directory,productExamples,recordedOwners,stageOwners,toolExamples} from "./chain-directory.js";
 import {equipmentFor,equipmentUpstream} from "./chain-equipment.js";
 import {originKind,upstreamRefs,withUpstream} from "./chain-upstream.js";
-import {boundGraph,graftEquipment,graphDefs,graphMarkup,makeGraph} from "./chain-graph.js";
+import {boundGraph,chainLayoutPreferences,graftEquipment,graphDefs,graphMarkup,makeGraph} from "./chain-graph.js";
+import {bindChainSplitter,bindChainViewport,chainInspectorLimits} from "./chain-viewport.js";
 
 const refs={...catalogRefs,...upstreamRefs};
 const catalog=[...industries,...companies];
@@ -20,13 +21,12 @@ const typeName={
 };
 const validIds=items=>Array.isArray(items)?[...new Set(items.filter(id=>byId.has(id)))].slice(0,8):["bread"];
 const preference=prefs.chainExplorer??{};
-const directions={adaptive:"自适应|Adaptive",horizontal:"横向|Horizontal",vertical:"纵向|Vertical"};
 const state={mode:preference.mode==="companies"?"companies":"industries",category:"",search:"",
   ids:validIds(preference.ids),full:preference.full===true,zoom:.8,node:null,company:"",branches:[],
   expanded:false,lightFirst:preference.lightFirst===true,
   catalogWidth:Number.isFinite(preference.catalogWidth)?preference.catalogWidth:null,
   inspectorWidth:Number.isFinite(preference.inspectorWidth)?preference.inspectorWidth:null,
-  shared:preference.shared===true,owned:preference.owned===true,direction:Object.hasOwn(directions,preference.direction)?preference.direction:"adaptive"};
+  owned:preference.owned===true,...chainLayoutPreferences(preference)};
 let page, graph, sections, shownPaths, nodeIds, nodesById, bridge, nextBranch=0, mapTitle="";
 const get=id=>page.querySelector("#"+id);
 const text=value=>esc(label(value));
@@ -37,9 +37,8 @@ const remember=()=>{
 };
 document.addEventListener("chain-settings-change",()=>{
   const p=prefs.chainExplorer??{};
-  state.shared=p.shared===true;
+  Object.assign(state,chainLayoutPreferences(p));
   state.owned=p.owned===true;
-  state.direction=Object.hasOwn(directions,p.direction)?p.direction:"adaptive";
   state.lightFirst=p.lightFirst===true;
   if (!page) return;
   renderMap(false);
@@ -61,7 +60,18 @@ const shell=()=>`
   <span class="splitter chain-catalog-splitter" role="separator" tabindex="0" aria-orientation="vertical"
     data-resize="chain-catalog" aria-controls="chain-catalog" aria-label="${text("调整路径目录宽度|Resize pathway catalog")}"></span>
   <section id="chain-map" class="chain-map panel" aria-label="${text("产业链画布|Value chain canvas")}">
-    <div id="chain-active" class="chain-active"></div>
+    <div class="chain-map-head">
+      <div id="chain-active" class="table-context chain-active"></div>
+      <button type="button" class="filter-help chain-help" aria-describedby="chain-help-note"
+        aria-label="${text("产业链图谱说明|About the value chain atlas")}">?</button>
+      <div id="chain-help-note" class="filter-note chain-help-note" role="tooltip">
+        <ul>
+          <li>${text("红色表示源材料和中间产物，蓝色表示工具和加工环节，灰色表示直接消费。红蓝深浅随节点在链中的层级变化。|Red marks materials and intermediates, blue marks tools and processing, and gray marks direct consumption. Red and blue shades vary with depth in the chain.")}</li>
+          <li>${text("在「设置 → 产业链图谱 → 热力色顺序」可切换由深到浅或由浅到深。|Choose dark to light or light to dark under Settings → Value chain graph → Color order.")}</li>
+          <li>${text("行业路径由本项目根据公开工艺资料和企业披露重新组织，按产品和生产场景归组。节点详情可查看出处。|The project organizes public process information and company disclosures into pathways grouped by product and production context. Node details link to sources.")}</li>
+        </ul>
+      </div>
+    </div>
     <div class="chain-divider"></div>
     <div class="chain-canvas">
       <div id="chain-viewport" class="chain-viewport" role="region" tabindex="0" aria-label="${text("产业链关系图，可用滚轮或双指缩放，拖动平移|Value chain graph. Use the wheel or pinch to zoom, drag to pan")}">
@@ -224,7 +234,7 @@ function moveDiagram(x,y) {
   viewport().scrollTo(x+parseFloat(style.paddingLeft),y+parseFloat(style.paddingTop));
 }
 const catalogLimits=()=>({min:170,max:Math.max(170,Math.min(420,page.clientWidth*.45))});
-const inspectorLimits=()=>({min:240,max:Math.max(240,Math.min(520,page.clientWidth*.45))});
+const inspectorLimits=()=>chainInspectorLimits(page);
 const clampWidth=(value,{min,max})=>Math.round(Math.max(min,Math.min(max,value)));
 function setPanelWidth(property,width) {
   if (width===null) page.style.removeProperty(property);
@@ -238,56 +248,12 @@ function applyInspectorWidth(value) {
   state.inspectorWidth=value===null?null:clampWidth(value,inspectorLimits());
   setPanelWidth("--chain-inspector-width",state.inspectorWidth);
 }
-function wireSplitter(handle,{limits,value,apply,direction=1}) {
-  const describe=()=>{
-    const {min,max}=limits(), now=Math.round(value());
-    handle.setAttribute("aria-valuemin",String(Math.round(min)));
-    handle.setAttribute("aria-valuemax",String(Math.round(max)));
-    handle.setAttribute("aria-valuenow",String(now));
-    handle.setAttribute("aria-valuetext",now+"px");
-  };
-  let drag=null;
-  const stop=()=>{
-    if (!drag) return;
-    if (handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
-    drag=null;
-    handle.classList.remove("dragging");
-    delete document.body.dataset.resizing;
-    remember();
-  };
-  handle.onpointerdown=e=>{
-    if (e.button!==0||drag) return;
-    e.preventDefault();
-    handle.focus({preventScroll:true});
-    handle.setPointerCapture(e.pointerId);
-    drag={id:e.pointerId,start:e.clientX,value:value()};
-    handle.classList.add("dragging");
-    document.body.dataset.resizing="x";
-  };
-  handle.onpointermove=e=>{
-    if (drag?.id!==e.pointerId) return;
-    apply(drag.value+(e.clientX-drag.start)*direction);
-    describe();
-  };
-  handle.onpointerup=handle.onpointercancel=handle.onlostpointercapture=stop;
-  handle.onkeydown=e=>{
-    const {min,max}=limits(), step=(e.shiftKey?48:12)*direction, now=value();
-    const values={ArrowLeft:now-step,ArrowRight:now+step,Home:min,End:max};
-    if (!(e.key in values)) return;
-    e.preventDefault();
-    apply(values[e.key]);
-    describe();
-    remember();
-  };
-  handle.ondblclick=()=>{apply(null);describe();remember();};
-  describe();
-}
 function bindSplitters() {
-  wireSplitter(page.querySelector(".chain-catalog-splitter"),{
-    limits:catalogLimits,apply:applyCatalogWidth,direction:1,
+  bindChainSplitter(page.querySelector(".chain-catalog-splitter"),{
+    limits:catalogLimits,apply:applyCatalogWidth,remember,
     value:()=>state.catalogWidth??get("chain-catalog").getBoundingClientRect().width});
-  wireSplitter(page.querySelector(".chain-inspector-splitter"),{
-    limits:inspectorLimits,apply:applyInspectorWidth,direction:-1,
+  bindChainSplitter(page.querySelector(".chain-inspector-splitter"),{
+    limits:inspectorLimits,apply:applyInspectorWidth,remember,direction:-1,
     value:()=>state.inspectorWidth??get("chain-inspector").getBoundingClientRect().width});
 }
 
@@ -302,7 +268,7 @@ function syncMapExpansion() {  const expanded=state.expanded, button=page.queryS
 }
 function renderCanvas() {
   const canvas=svg();
-  canvas.innerHTML='<title>'+esc(mapTitle)+'</title>'+graphDefs+graphMarkup(graph,label,ownerName,esc,graph.nodes.get(state.node),nodeIds,{
+  canvas.innerHTML='<title>'+esc(mapTitle)+'</title>'+graphDefs()+graphMarkup(graph,label,ownerName,esc,graph.nodes.get(state.node),nodeIds,{
     company:state.company,recipes:recipeFor,expanded:openBranch,showOwnership:!state.owned,lightFirst:state.lightFirst});
   canvas.setAttribute("aria-label",mapTitle);
   canvas.setAttribute("viewBox","0 0 "+graph.width+" "+graph.height);
@@ -358,7 +324,7 @@ function renderMap(reset=true) {
   const count=shownPaths.length+kept.length;
   get("chain-meta").textContent=pair(count+" 条路径 · "+graph.nodes.size+" 个节点",
     count+(count===1?" pathway · ":" pathways · ")+graph.nodes.size+" nodes");
-  get("chain-active").innerHTML=state.full?"":shownPaths.map(p=>'<button type="button" class="chain-chip" data-chain-path="'+
+  get("chain-active").innerHTML=state.full?"":shownPaths.map(p=>'<button type="button" data-chain-path="'+
     p.id+'" title="'+text("定位到这条路径|Jump to this pathway")+'">'+text(p.title)+'</button>').join("");
   get("chain-empty-canvas").hidden=graph.nodes.size>0;
   page.querySelector('[data-chain-action="full"]').setAttribute("aria-pressed",String(state.full));
@@ -531,85 +497,7 @@ function bindControls() {
     e.preventDefault();
     focusNode(node.dataset.chainNode,false,true);
   };
-  const vp=viewport();
-  const touches=new Map();
-  let pan=null, pinch=null, suppressClick=false;
-  const relativePoint=(x,y)=>{
-    const box=vp.getBoundingClientRect();
-    return {x:x-box.left-vp.clientLeft,y:y-box.top-vp.clientTop};
-  };
-  const pinchGeometry=()=>{
-    const [a,b]=touches.values();
-    return {...relativePoint((a.x+b.x)/2,(a.y+b.y)/2),distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};
-  };
-  const stop=()=>{
-    const id=pan?.id;
-    pan=null;
-    vp.classList.remove("dragging");
-    if (id!==undefined&&vp.hasPointerCapture(id)) vp.releasePointerCapture(id);
-  };
-  vp.onpointerdown=e=>{
-    if (e.pointerType==="touch") {
-      if (touches.size===2) return;
-      touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
-      if (touches.size===2) {
-        stop();
-        suppressClick=true;
-        pinch=pinchGeometry();
-        for (const id of touches.keys()) vp.setPointerCapture(id);
-        return;
-      }
-    }
-    if (!e.isPrimary||e.button!==0) return;
-    stop();
-    suppressClick=false;
-    pan={id:e.pointerId,x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,active:false};
-  };
-  vp.onpointermove=e=>{
-    if (touches.has(e.pointerId)) {
-      touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
-      if (pinch) {
-        const next=pinchGeometry();
-        setZoom(state.zoom*next.distance/pinch.distance,pinch,next);
-        pinch=next;
-        return;
-      }
-    }
-    if (pan?.id!==e.pointerId) return;
-    const dx=e.clientX-pan.x, dy=e.clientY-pan.y;
-    if (!(e.buttons&1)) {stop();return;}
-    if (!pan.active) {
-      if (Math.hypot(dx,dy)<6) return;
-      vp.setPointerCapture(e.pointerId);
-      pan.active=suppressClick=true;
-      vp.classList.add("dragging");
-    }
-    vp.scrollTo(pan.left-dx,pan.top-dy);
-  };
-  vp.onpointerup=vp.onpointercancel=e=>{
-    const ended=touches.delete(e.pointerId);
-    if (ended&&pinch) {
-      pinch=null;
-      const [remaining]=touches;
-      if (remaining&&e.type==="pointerup") {
-        const [id,{x,y}]=remaining;
-        pan={id,x,y,left:vp.scrollLeft,top:vp.scrollTop,active:true};
-        vp.classList.add("dragging");
-      }
-    }
-    if (pan?.id===e.pointerId) stop();
-  };
-  vp.onlostpointercapture=e=>{if(e.target===vp&&pan?.id===e.pointerId) stop();};
-  vp.onpointerleave=()=>{if(pan&&!pan.active) stop();};
-  vp.addEventListener("wheel",e=>{
-    e.preventDefault();
-    setZoom(state.zoom*Math.exp(-e.deltaY*.0018),relativePoint(e.clientX,e.clientY));
-  },{passive:false});
-  vp.addEventListener("click",e=>{
-    if (!suppressClick||e.detail===0) return;
-    suppressClick=false;
-    e.stopPropagation();
-  },true);
+  bindChainViewport(viewport(),(factor,origin,target)=>setZoom(state.zoom*factor,origin,target));
 }
 
 function dismissDetail() {

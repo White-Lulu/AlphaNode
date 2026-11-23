@@ -30,6 +30,10 @@
         <h1 data-zh="产业链图谱" data-en="Value Chain Atlas"></h1>
         <span class="intro-subtitle" data-zh="物料、工具与直接消费" data-en="Materials, tools and direct consumption"></span>
       </div>
+      <div id="chain-values-heading" class="intro-title" hidden>
+        <h1 data-zh="产业链数值图谱" data-en="Value Chain Metrics"></h1>
+        <span class="intro-subtitle" data-zh="按产业链功能比较行业数据" data-en="Compare industry metrics by economic function"></span>
+      </div>
     </div>
     <div class="top-actions">
       <nav class="module-nav" data-aria-zh="页面" data-aria-en="Pages">
@@ -247,6 +251,7 @@
     </div>
 
     <div id="chain-page" hidden aria-labelledby="chain-heading"></div>
+    <section id="chain-values-page" hidden aria-labelledby="chain-values-heading"></section>
     <footer id="workspace-footer">
       <nav id="atlas-views" class="workspace-nav" data-aria-zh="图谱视图" data-aria-en="Atlas views">
         <div class="view-tabs">
@@ -258,6 +263,12 @@
         <div class="view-tabs">
           <button class="quiet" type="button" data-view-panel="data" aria-controls="collection" data-zh="数据展台" data-en="Data gallery"></button>
           <button class="quiet" type="button" data-view-panel="charts" aria-controls="collection-workbench" data-zh="图表工作台" data-en="Chart workbench"></button>
+        </div>
+      </nav>
+      <nav id="chain-views" class="workspace-nav" data-aria-zh="产业链视图" data-aria-en="Value chain views" hidden>
+        <div class="view-tabs">
+          <button class="quiet" type="button" data-chain-view="chains" aria-controls="chain-page" data-zh="产业链图谱" data-en="Value Chain Atlas"></button>
+          <button class="quiet" type="button" data-chain-view="chain-values" aria-controls="chain-values-page" data-zh="数值图谱" data-en="Metrics Atlas"></button>
         </div>
       </nav>
       <a class="footer-project" href="https://github.com/White-Lulu/AlphaNode" target="_blank" rel="noopener"
