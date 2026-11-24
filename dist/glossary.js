@@ -80,7 +80,7 @@ export const glossary={
   benchmark:["行业基准","Industry benchmark","Damodaran 按其行业及区域定义发布的样本数据，年度标签对应次年年初快照。","Damodaran’s regional industry samples in its own taxonomy. The year label corresponds to the snapshot at the start of the following year.","行业基准(行业, 地区, 年度) = Damodaran 次年年初快照中的对应值","Benchmark(industry, region, year) = corresponding Damodaran value from the next year’s opening snapshot"]
 };
 export function metricLabel(key,meta) {
-  return glossary[key] ? pair(...glossary[key].slice(0,2)) : (meta?.metrics[key]?.[0] || key);
+  return glossary[key] ? pair(...glossary[key].slice(0,2)) : meta?.metrics[key]?pair(meta.metrics[key][0],meta.metrics[key][2]):key;
 }
 export function bindGlossary() {
   const tip=$("term-tooltip");

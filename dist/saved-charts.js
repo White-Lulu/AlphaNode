@@ -1,7 +1,7 @@
 import {$,esc,finite,measure,modeLabel,resultUnit,scale,unitLabel} from "./model.js";
 import {companyNames,locale,pair,prefs,prose,save,scopeLabel} from "./i18n.js";
 import {metricLabel} from "./glossary.js";
-import {renderCharts,redraw,seriesName,chartRows,chartRowKey,chartParts,chartObservations,isMergeableRow,moveChartInRows} from "./chart.js";
+import {renderCharts,redraw,seriesName,chartRows,chartRowKey,chartParts,chartObservations,chartMetadata,isMergeableRow,moveChartInRows} from "./chart.js";
 import {refreshSplitters} from "./layout.js";
 import {request,message,analyzeCustomChart} from "./analysis-client.js";
 import {applyAnalysisMarks,remapAnalysisMarks,setAnalysisMark,wireAnalysisSelection} from "./analysis-selection.js";
@@ -45,31 +45,37 @@ function storeChanges(changes) {
   return false;
 }
 const store=(key,value)=>storeChanges({[key]:value});
+export function compactChartSubjects(subjects) {
+  const chosen=subjects.slice(0,3);
+  while (chosen.length>1&&chosen.reduce((sum,item)=>sum+Array.from(item.name).length,0)>prose(20,54)) {
+    const longest=chosen.reduce((best,item)=>Array.from(item.name).length>Array.from(best.name).length?item:best);
+    chosen.splice(chosen.indexOf(longest),1);
+  }
+  return chosen.map(item=>item.name).join("&");
+}
 function chartTitle(chart) {
+  if (chart.macro) return chart.title;
   const rows=[...new Map(chart.pins.map(pin=>[pin.row.id,pin.row])).values()];
   const domains=rows.some(row=>row.kind!=="company");
   const subjects=rows.map(row=>({
     name:row.kind==="company"?prose(...companyNames(row)):prose(row.name,row.en||row.name),level:levelOf(row)
   })).sort((a,b)=>(domains?a.level-b.level:0)||Array.from(a.name).length-Array.from(b.name).length||
-    a.name.localeCompare(b.name,locale())).slice(0,3);
-  while (subjects.length>1&&subjects.reduce((sum,item)=>sum+Array.from(item.name).length,0)>prose(20,54)) {
-    const longest=subjects.reduce((best,item)=>Array.from(item.name).length>Array.from(best.name).length?item:best);
-    subjects.splice(subjects.indexOf(longest),1);
-  }
+    a.name.localeCompare(b.name,locale()));
   const scopes=chart.pins.map(pin=>pin.scope);
   const scope=["world","global","cn","china","ex"].find(key=>scopes.includes(key))??scopes[0];
   const count=domains?prose("等"+rows.length+"个领域"," ("+rows.length+" domains)"):
     prose("等"+rows.length+"家企业"," ("+rows.length+" companies)");
-  return (domains&&scope?scopeLabel(scope)+"-":"")+subjects.map(item=>item.name).join("&")+count+
+  return (domains&&scope?scopeLabel(scope)+"-":"")+compactChartSubjects(subjects)+count+
     "-"+metricLabel(chart.metric,meta)+"·"+modeLabel(chart.mode);
 }
 function snapshot(chart,title) {
-  const years=meta.years.slice();
-  return {id:crypto.randomUUID(),title,created:Date.now(),updated:meta.built,years,
+  const years=(chart.years??meta.years).slice();
+  return {id:crypto.randomUUID(),title,created:Date.now(),updated:chart.built??meta.built,years,
+    ...(chart.macro?{macro:true,type:chart.type,height:chart.height,tags:chart.tags,metricDefinitions:chart.metricDefinitions,scatter:chart.scatter}:{}),
     metric:chart.metric,mode:chart.mode,baseline:chart.baseline??null,pins:chart.pins.map(pin=>({
       row:{id:pin.row.id,kind:pin.row.kind,currency:pin.row.currency||"USD",scheme:pin.row.scheme},
-      scope:pin.scope,aggregate:pin.aggregate,source:pin.source,savedName:seriesName(pin),
-      savedValues:years.map(year=>measure(pin.row,chart.metric,year,pin.scope,pin.aggregate,chart.mode,meta))
+      scope:pin.scope,aggregate:pin.aggregate,isAggregate:pin.isAggregate,source:pin.source,savedName:seriesName(pin),
+      savedValues:pin.savedValues??years.map(year=>measure(pin.row,chart.metric,year,pin.scope,pin.aggregate,chart.mode,meta))
     }))};
 }
 function openNameDialog(name,make,notify) {
@@ -101,8 +107,8 @@ function beginMerge() {
   if (!choosingRows) return;
   const rows=chartRows(bench).filter(row=>selectedRows.has(chartRowKey(row))&&isMergeableRow(row));
   if (!rows.length) return;
-  const parts=rows.flatMap((row,index)=>row.map(({title,metric,mode,baseline,years,pins,weight})=>
-    ({title,metric,mode,baseline,years,pins,weight,row:index})));
+  const parts=rows.flatMap((row,index)=>row.map(({title,metric,mode,baseline,years,pins,weight,macro,type,tags,metricDefinitions,scatter})=>
+    ({title,metric,mode,baseline,years,pins,weight,macro,type,tags,metricDefinitions,scatter,row:index})));
   const name=parts.slice(0,2).map(part=>part.title).join(" / ");
   openNameDialog(name+" · "+pair("合并图表","Merged chart"),title=>({
     id:crypto.randomUUID(),title,created:Date.now(),updated:meta.built,parts
@@ -252,16 +258,28 @@ function renderSavedList() {
 }
 function analysisContext(chart) {
   return {title:chart.title,series:chartParts(chart).flatMap(part=>{
+    const metadata=chartMetadata(part,meta);
+    if(part.scatter) {
+      const spec=part.scatter;
+      const axis=key=>({metric:metricLabel(key,metadata),unit:unitLabel(key,"level",metadata)});
+      return part.pins.map((pin,index)=>({name:seriesName(pin),chartTitle:part.title,chartType:"scatter",view:spec.view,
+        x:axis(spec.x),y:axis(spec.y),frequency:spec.frequency,source:pin.source,isAggregate:pin.isAggregate,
+        observationFields:["period","x","y"],
+        observations:spec.points.filter(point=>point.pin===index).map(point=>[point.period,
+          scale(point.x,spec.x,"level",metadata),scale(point.y,spec.y,"level",metadata)]),
+        interpretation:"Exact-period pairs; no interpolation. Association is not causation. Do not pool time trajectories across economies or overlapping aggregates. Trends and serial dependence may affect correlations."
+      }));
+    }
     const {years,baseline,series}=chartObservations(part,meta);
     return series.map((line,i)=>{
-      const pin=part.pins[i],unit=resultUnit(part.metric,part.mode,meta);
-      return {name:line.name,chartTitle:part.title,metric:metricLabel(part.metric,meta),timeBasis:modeLabel(part.mode),baselineYear:baseline,
+      const pin=part.pins[i],unit=resultUnit(part.metric,part.mode,metadata);
+      return {name:line.name,chartTitle:part.title,metric:metricLabel(part.metric,metadata),timeBasis:part.tags?.join(" · ")??modeLabel(part.mode),baselineYear:baseline,
         region:scopeLabel(pin.scope),classification:pin.row.scheme,source:pin.source,aggregation:pin.aggregate,
-        unit:baseline?"%":unitLabel(part.metric,part.mode,meta,line.currency),
+        unit:baseline?"%":unitLabel(part.metric,part.mode,metadata,line.currency),
         currency:!baseline&&unit==="money"?line.currency:undefined,
         observations:years.map((year,j)=>{
           const {value,note}=line.values[j];
-          return [year,finite(value)?baseline?100*value:scale(value,part.metric,part.mode,meta):null,note];
+          return [year,finite(value)?baseline?100*value:scale(value,part.metric,part.mode,metadata):null,note];
         })};
     });
   })};

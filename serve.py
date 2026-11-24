@@ -58,7 +58,7 @@ class Frontend:
             if len(self.revisions) > 8:
                 self.revisions.popitem(last=False)
         prefix = (ASSET_PREFIX + revision + "/").encode("ascii")
-        for name in (b"app.js", b"styles.css", b"research.css", b"theme-preview.css", b"chain.css"):
+        for name in (b"app.js", b"styles.css", b"research.css", b"theme-preview.css", b"chain.css", b"macro.css"):
             page = page.replace(b'"' + name + b'"', b'"' + prefix + name + b'"')
         return page
 

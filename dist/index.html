@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="research.css">
   <link rel="stylesheet" href="theme-preview.css">
   <link rel="stylesheet" href="chain.css">
+  <link rel="stylesheet" href="macro.css">
   <script type="module" src="app.js"></script>
 </head>
 <body>
@@ -26,6 +27,10 @@
         <h1 data-zh="我的工作台" data-en="My workbench"></h1>
         <span class="intro-subtitle" data-zh="自选企业与已保存图表" data-en="Watchlist and saved charts"></span>
       </div>
+      <div id="macro-heading" class="intro-title" hidden>
+        <h1 data-zh="宏观经济图谱" data-en="Macroeconomic Atlas"></h1>
+        <span class="intro-subtitle" data-zh="增长、通胀、政策与经济体对照" data-en="Growth, inflation, policy and economy comparisons"></span>
+      </div>
       <div id="chain-heading" class="intro-title" hidden>
         <h1 data-zh="产业链图谱" data-en="Value Chain Atlas"></h1>
         <span class="intro-subtitle" data-zh="物料、工具与直接消费" data-en="Materials, tools and direct consumption"></span>
@@ -38,8 +43,9 @@
     <div class="top-actions">
       <nav class="module-nav" data-aria-zh="页面" data-aria-en="Pages">
         <button type="button" class="quiet" data-module="atlas" aria-current="page" data-zh="全球行业数据图谱" data-en="Industry Data Atlas"></button>
-        <button type="button" class="quiet" data-module="collection" data-zh="工作台" data-en="Workbench"></button>
+        <button type="button" class="quiet" data-module="macro" data-zh="宏观经济图谱" data-en="Macroeconomic Atlas"></button>
         <button type="button" class="quiet" data-module="chains" data-zh="产业链图谱" data-en="Value Chain Atlas"></button>
+        <button type="button" class="quiet" data-module="collection" data-zh="工作台" data-en="Workbench"></button>
       </nav>
       <button type="button" id="settings" class="quiet" data-zh="设置" data-en="Settings"></button>
     </div>
@@ -252,6 +258,7 @@
 
     <div id="chain-page" hidden aria-labelledby="chain-heading"></div>
     <section id="chain-values-page" hidden aria-labelledby="chain-values-heading"></section>
+    <section id="macro-page" hidden aria-labelledby="macro-heading"></section>
     <footer id="workspace-footer">
       <nav id="atlas-views" class="workspace-nav" data-aria-zh="图谱视图" data-aria-en="Atlas views">
         <div class="view-tabs">
@@ -269,6 +276,12 @@
         <div class="view-tabs">
           <button class="quiet" type="button" data-chain-view="chains" aria-controls="chain-page" data-zh="产业链图谱" data-en="Value Chain Atlas"></button>
           <button class="quiet" type="button" data-chain-view="chain-values" aria-controls="chain-values-page" data-zh="数值图谱" data-en="Metrics Atlas"></button>
+        </div>
+      </nav>
+      <nav id="macro-views" class="workspace-nav" data-aria-zh="宏观视图" data-aria-en="Macro views" hidden>
+        <div class="view-tabs">
+          <button class="quiet" type="button" data-macro-panel="data" aria-controls="macro-page" data-zh="数据表" data-en="Data table"></button>
+          <button class="quiet" type="button" data-macro-panel="charts" aria-controls="macro-page" data-zh="宏观对照" data-en="Macro comparison"></button>
         </div>
       </nav>
       <a class="footer-project" href="https://github.com/White-Lulu/AlphaNode" target="_blank" rel="noopener"

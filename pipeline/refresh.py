@@ -6,11 +6,16 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cached",action="store_true",help="Rebuild using the available raw caches")
     parser.add_argument("--force",action="store_true",help="Recheck cached URLs, keeping old copies if requests fail")
+    parser.add_argument("--macro-only",action="store_true",help="Update the macro atlas without rebuilding company financials")
     args=parser.parse_args()
     if args.force and args.cached:
         parser.error("--cached and --force are mutually exclusive")
     if args.force:
         os.environ["INDUSTRYLAB_REFRESH"]="1"
+    from macro_atlas import build as build_macro
+    if args.macro_only:
+        build_macro(args.cached)
+        return
     from build import build
     from fetch import catalog,download_companies
     from fetch_china import download_china
@@ -37,6 +42,7 @@ def main():
         download_profiles()
         download_macro()
     build()
+    build_macro(args.cached)
     write_warehouse()
 
 if __name__=="__main__":

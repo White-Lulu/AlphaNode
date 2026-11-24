@@ -1,4 +1,4 @@
-export function bindChainSplitter(handle,{limits,value,apply,remember,direction=1}) {
+export function bindChainSplitter(handle,{limits,value,apply,remember,direction=1,axis="x"}) {
   const describe=()=>{
     const {min,max}=limits(), now=Math.round(value());
     handle.setAttribute("aria-valuemin",String(Math.round(min)));
@@ -20,19 +20,20 @@ export function bindChainSplitter(handle,{limits,value,apply,remember,direction=
     e.preventDefault();
     handle.focus({preventScroll:true});
     handle.setPointerCapture(e.pointerId);
-    drag={id:e.pointerId,start:e.clientX,value:value()};
+    drag={id:e.pointerId,start:axis==="x"?e.clientX:e.clientY,value:value()};
     handle.classList.add("dragging");
-    document.body.dataset.resizing="x";
+    document.body.dataset.resizing=axis;
   };
   handle.onpointermove=e=>{
     if (drag?.id!==e.pointerId) return;
-    apply(drag.value+(e.clientX-drag.start)*direction);
+    apply(drag.value+((axis==="x"?e.clientX:e.clientY)-drag.start)*direction);
     describe();
   };
   handle.onpointerup=handle.onpointercancel=handle.onlostpointercapture=stop;
   handle.onkeydown=e=>{
     const {min,max}=limits(), step=(e.shiftKey?48:12)*direction, now=value();
-    const values={ArrowLeft:now-step,ArrowRight:now+step,Home:min,End:max};
+    const arrows=axis==="x"?{ArrowLeft:now-step,ArrowRight:now+step}:{ArrowUp:now-step,ArrowDown:now+step};
+    const values={Home:min,End:max,...arrows};
     if (!(e.key in values)) return;
     e.preventDefault();
     apply(values[e.key]);

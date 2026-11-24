@@ -1,4 +1,14 @@
 /* Research views and accessibility controls. */
+:root { --pane-header-height:38px; }
+#explorer > .tabs { height:var(--pane-header-height); }
+#comparison > .comparison-head,.macro-comparison > .comparison-head {
+  height:var(--pane-header-height); min-height:var(--pane-header-height); padding:4px 10px; gap:8px; flex-wrap:nowrap; overflow:hidden;
+}
+#comparison > .comparison-head > div { min-width:0; }
+:is(#comparison,.macro-comparison) > .comparison-head h2 {
+  min-width:0; margin:0; font-size:14px; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+:is(#comparison,.macro-comparison) > .comparison-head button { min-height:28px; padding:4px 7px; font-size:11px; line-height:18px; }
 .top-actions select { max-width:168px; }
 .tabs { gap:8px; }
 .tabs button { font-size:13px; }

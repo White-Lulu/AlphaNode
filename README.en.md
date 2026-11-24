@@ -6,7 +6,7 @@
 
 AlphaNode is a dashboard for studying market fundamentals. Compare industries side by side, then look at the companies behind the averages to see how they earn profits and turn invested capital into returns.
 
-The Value Chain Atlas follows production from raw materials and components through tools to finished goods. It also shows where representative companies participate.
+The Value Chain Atlas follows production from raw materials and components through tools to finished goods. It also shows where representative companies participate. The Macroeconomic Atlas compares growth, inflation, employment and interest rates across economies.
 
 The initial financial dataset covers **2016–2025**, with **1,208 companies**, **42 economies** and **11,354 company-years**. The securities directory has **121,601 current and historical listing records**, with **1,165 companies** matched to local financial data.
 
@@ -31,6 +31,14 @@ Add a series with **+**, set a metric and time basis, or compare against a commo
 ![Value Chain Atlas workflow. Select industry or company pathways, trace the inputs and outputs of a node, expand equipment manufacturing branches, and check companies and sources.](docs/images/en/value-chain-flow.svg)
 
 Compare multiple pathways from the catalog. Click a node for its inputs, outputs, companies and sources. Expand equipment branches in place, individually or in bulk. Use the wheel to zoom around the pointer and drag to pan.
+
+### Explore the macroeconomy
+
+![Macroeconomic Atlas workflow. Choose indicators from eight topics, compare economies in a multi-column table, chart time series or paired scatter points, then save them to the Workbench.](docs/images/en/macro-flow.svg)
+
+The Macroeconomic Atlas contains 75 indicators across 59 economies and regional aggregates. Its eight topics cover growth, inflation, labour, money and rates, fiscal policy, external balances, credit and housing, and economic structure. Compare latest, common or specified periods, sort and export the table, and draw line, bar or scatter charts. Scatter plots compare economies in the same period or trace each economy through time, pairing only observations at the same frequency and reference period. Apply year-on-year growth, period changes or a common starting index, then save charts to the Workbench for comparison and AI analysis. Annual, quarterly and monthly series retain their original frequency and missing periods remain empty.
+
+Definitions link to [World Bank WDI](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392), [IMF DataMapper](https://www.imf.org/external/datamapper/api/help), [BIS](https://stats.bis.org/api-doc/v1/) and [FRED](https://fred.stlouisfed.org/), with source standards and terms. Historical IMF data may include estimates. Central and general government series, and economy-specific policy rate definitions, remain separately identified.
 
 ### Adjust the display
 
@@ -138,7 +146,15 @@ He also adds **Wheat to bread**, **Dairy cold chain**, and **Coffee and cocoa** 
 
 This first version is ready for learning how processes, inputs and outputs fit together. Coverage of company disclosures and detailed production steps will grow, and the layout of larger graphs will improve. Follow a node’s sources to verify a specific supplier relationship.
 
-#### ⑥ Read financial terms in a high-contrast theme
+#### ⑥ Put the companies in their macroeconomic setting
+
+Xiaoba opens **Macroeconomic Atlas**, selects real GDP growth, annual average CPI inflation, unemployment, policy rates and government debt in **Columns**, and chooses economies of interest. He sets the observation year to **2024**. Each cell shows its actual reference period, keeping monthly rates distinct from annual statistics.
+
+He plots growth and policy rates through time, then adds a scatter plot with real GDP growth on X and CPI inflation on Y to compare economies in **2024**. He can save either chart to the **Workbench** and place it alongside the industry charts. The scatter plot suggests relationships to investigate; the positions of the points alone do not explain their causes.
+
+![Multiple macroeconomic indicators in the table, growth and policy-rate time series, and a 2024 growth-versus-inflation scatter plot.](docs/images/en/macro.png)
+
+#### ⑦ Read financial terms in a high-contrast theme
 
 Xiaoba often researches at night and prefers a high-contrast display. In **Settings**, choose **English** and the pure-black high-contrast theme. Turn on **Term explanations → Show on hover**. Point at the **ROIC** column to see the definition and formula for return on invested capital. **English (中文)** also shows the Chinese equivalent.
 
@@ -185,6 +201,8 @@ Open `http://127.0.0.1:8766/`. Use `--port 8767` to change the port. On macOS an
 
 ### Rebuild from sources
 
+Update the macro dataset independently with `python pipeline/refresh.py --macro-only --force`, or use `--cached` to rebuild offline from existing downloads. Output goes to `dist/data/macro-atlas/`, with a separate file for each indicator so the browser loads only the series it needs.
+
 The first rebuild requires network access. Set `SEC_USER_AGENT` to an application identifier with a real contact email before downloading SEC data.
 
 ```powershell
@@ -215,7 +233,7 @@ python -m venv .venv
 
 - **Distributions.** Compare companies or industries at the same level, using equal-width or weight-scaled bars, quantiles and sample counts. [Distribution design (Chinese)](docs/distribution-view.md)
 - **Per-share data and valuation.** Add EPS, free cash flow per share, P/E, P/B, EV/EBITDA and dividend yields. Compare valuation over time and explore the assumptions reflected in market prices.
-- **Macroeconomic data.** Expand coverage of GDP, CPI, PPI, employment, industrial production, policy rates, yield curves, exchange rates, trade and public finances.
+- **Macroeconomic data.** ~~Build the Macroeconomic Atlas~~ (complete). Continue with more economy-specific high-frequency indicators, release calendars and revision histories, and compare macro series with industry data on a shared timeline.
 - **AI chart analysis.** Add optional web search with source links and deeper reasoning to the default configuration. Let custom providers accept extra JSON request parameters for temperature, reasoning and search tools.
 
 ## 7. Use, privacy and license

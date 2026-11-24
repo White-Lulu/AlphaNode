@@ -294,6 +294,8 @@ def build():
             "coverage":{k:v for k,v in report.items() if k!="unavailable"}}
         dump(staging/"meta.json",metadata)
         dump(staging/"coverage.json",report)
+        if (dst/"macro-atlas").exists():
+            shutil.copytree(dst/"macro-atlas",staging/"macro-atlas")
         verify(staging)
         old=dst.with_name(".data-previous")
         if old.exists():

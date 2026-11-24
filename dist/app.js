@@ -25,7 +25,8 @@ const statisticsPeriods=new Map(),statisticsCoverage=new Map();
 let financialPeriod;
 const paneOrder={atlas:["data","trends"],collection:["data","charts"]};
 const graphModules=new Set(["chains","chain-values"]);
-const graphModuleFromHash=()=>graphModules.has(location.hash.slice(1))?location.hash.slice(1):"";
+const standaloneModules=new Set([...graphModules,"macro"]);
+const graphModuleFromHash=()=>standaloneModules.has(location.hash.slice(1))?location.hash.slice(1):"";
 let lastGraphModule="chains";
 const phoneLayout=matchMedia("(max-width:700px), (max-width:1000px) and (pointer:coarse)");
 const sources={
@@ -1090,6 +1091,7 @@ function rerenderLanguage(lang) {
   if (state.module==="collection") renderCollection();
   if (state.module==="chains") showChainPage(true);
   if (state.module==="chain-values") showChainValues();
+  if (state.module==="macro") showMacro();
   if ($("settings-dialog").open) {
     renderGlossarySettings();
     renderRadarSettings();
@@ -1237,12 +1239,14 @@ function updateViewPanel(key,visible=!paneSelection().includes(key)) {
 function setWorkspaceView() {
   const collecting=state.module==="collection",graphing=graphModules.has(state.module);
   const workspace=$("workspace");
-  workspace.hidden=graphing;
+  workspace.hidden=standaloneModules.has(state.module);
   $("chain-page").hidden=$("chain-heading").hidden=state.module!=="chains";
   $("chain-values-page").hidden=$("chain-values-heading").hidden=state.module!=="chain-values";
   $("atlas-heading").hidden=$("atlas-views").hidden=state.module!=="atlas";
   $("collection-heading").hidden=$("collection-views").hidden=!collecting;
   $("chain-views").hidden=!graphing;
+  $("macro-page").hidden=$("macro-heading").hidden=$("macro-views").hidden=state.module!=="macro";
+  if (state.module==="macro") return;
   if (graphing) {
     for (const button of $("chain-views").querySelectorAll("[data-chain-view]")) {
       button.setAttribute("aria-pressed",String(button.dataset.chainView===state.module));
@@ -1268,7 +1272,21 @@ function setWorkspaceView() {
   requestAnimationFrame(()=>{if (collecting) repaintSavedChart();else if(has("trends")) redraw($("charts"),state.charts,meta);});
 }
 const modulePositions=new Map();
-let atlasHash="",chainPage,chainValues;
+let atlasHash="",chainPage,chainValues,macroPage;
+function showMacro() {
+  const page=$("macro-page");
+  if (!macroPage) {
+    page.textContent=pair("正在读取宏观数据…","Loading macro data…");
+    macroPage=Promise.all([import("./macro-page.js"),api("macro-atlas/index")]);
+  }
+  void macroPage.then(([view,data])=>{
+    if(state.module==="macro") view.renderMacroPage(page,data);
+  }).catch(error=>{
+    macroPage=undefined;
+    console.error(error);
+    if(state.module==="macro") page.textContent=pair("宏观数据载入失败，请检查数据记录。","Macro data could not load. Check the data files.")+" "+error.message;
+  });
+}
 function showChainPage(relocalize=false) {
   chainPage??=import("./chain-page.js");
   void chainPage.then(({renderChainPage})=>{
@@ -1318,10 +1336,10 @@ function selectModule(module,keepProfile=false) {
   });
   if (!keepProfile) closeProfile();
   if (state.module==="chains") $("workspace").append($("profile-panel"));
-  if (graphModules.has(module)&&location.hash!=="#"+module) {
-    if (!graphModules.has(state.module)&&!graphModuleFromHash()) atlasHash=location.hash;
+  if (standaloneModules.has(module)&&location.hash!=="#"+module) {
+    if (!standaloneModules.has(state.module)&&!graphModuleFromHash()) atlasHash=location.hash;
     history.replaceState(null,"",location.pathname+location.search+"#"+module);
-  } else if (!graphModules.has(module)&&graphModules.has(state.module)&&graphModuleFromHash()) {
+  } else if (!standaloneModules.has(module)&&standaloneModules.has(state.module)&&graphModuleFromHash()) {
     history.replaceState(null,"",location.pathname+location.search+atlasHash);
   }
   state.module=module;
@@ -1343,6 +1361,7 @@ function selectModule(module,keepProfile=false) {
   setWorkspaceView();
   if (module==="chains") {showChainPage();return;}
   if (module==="chain-values") {showChainValues();return;}
+  if (module==="macro") {showMacro();return;}
   if (module==="collection") renderCollection();
   else renderTable();
   if (!keepProfile&&state.profile) {
@@ -1636,7 +1655,7 @@ $("settings").onclick=()=>{
   const syncWorkspace=()=>{
     const module=graphModuleFromHash();
     if (module&&state.module!==module) selectModule(module);
-    else if (!module&&graphModules.has(state.module)) selectModule("atlas");
+    else if (!module&&standaloneModules.has(state.module)) selectModule("atlas");
     else setWorkspaceView();
   };
   window.addEventListener("hashchange",syncWorkspace);

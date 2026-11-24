@@ -143,6 +143,8 @@ export function resultUnit(metric,mode,meta) {
 const units={
   score:["分","score"],pct:["%","%"],pp:["百分点","pp"],index:["点","points"],ratio:["倍","×"],count:["个","count"],
   people:["万人","10k persons"],vehicles:["万辆","10k vehicles"],mwh:["TWh","TWh"],
+  intMoney:["亿国际元","International $ × 100m"],
+  usdPerCapita:["美元／人","USD/person"],months:["月","months"],fx:["本币／美元","LCU/USD"],
   gasprice:["美元／加仑","USD/gal"],gasvol:["千桶／日","kb/d"]
 };
 export function unitLabel(metric,mode,meta,currency="USD") {
@@ -166,7 +168,7 @@ export function heatColor(value,range,reversed=false,base="") {
   return "rgba("+tone+","+strength.toFixed(3)+")";
 }
 export function scale(value,metric,mode,meta) {
-  return value/({money:1e8,people:1e4,vehicles:1e4,mwh:1e6,pct:.01,pp:.01}[resultUnit(metric,mode,meta)]??1);
+  return value/({money:1e8,intMoney:1e8,people:1e4,vehicles:1e4,mwh:1e6,pct:.01,pp:.01}[resultUnit(metric,mode,meta)]??1);
 }
 export function format(value,metric,mode,meta,axis=false) {
   if (!finite(value)) return "—";

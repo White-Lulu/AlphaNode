@@ -4,6 +4,7 @@ import {metricLabel} from "./glossary.js";
 import {rebaseToPercentChange} from "./vendor/superset/percentChange.js";
 import {defaultChartHeight} from "./layout.js";
 import {seriesColors} from "./chart-colors.js";
+import {drawScatter} from "./scatter-chart.js";
 
 const resizeObservers=new WeakMap();
 function metricOptions(selected,meta,financialGroups) {
@@ -52,7 +53,7 @@ export function chartRows(charts) {
   return rows;
 }
 export function canMoveChart(rows,index,direction) {
-  return Boolean(rows[index+direction])||(rows.length===1&&rows[index].length>1);
+  return Boolean(rows[index+direction])||(rows[index]?.length??0)>1;
 }
 export function insertChartBelow(charts,source,copy) {
   const rows=chartRows(charts),index=rows.findIndex(row=>row.includes(source));
@@ -84,26 +85,26 @@ export const chartParts=chart=>chart.parts??[chart];
 export const isMergeableRow=row=>row.every(chart=>!chart.parts);
 
 function snapshotTags(chart,meta) {
-  const tags=[metricLabel(chart.metric,meta),modeLabel(chart.mode)];
+  const tags=chart.tags??[metricLabel(chart.metric,meta),modeLabel(chart.mode)];
   if (chart.baseline!=null) tags.push(pair(chart.baseline+" 年为基准","Relative to "+chart.baseline));
   return '<div class="table-context saved-chart-tags">'+tags.map(tag=>'<span>'+esc(tag)+'</span>').join("")+'</div>';
 }
-function plotHTML(chart,plot,meta,live,valuesOpen) {
+function plotHTML(chart,plot,meta,live,valuesOpen,interactiveLegend=live,showTags=true) {
   const legend=chart.pins.map((pin,index)=>{
     const name=seriesName(pin),text='<span class="dot"></span><span>'+esc(name)+'</span>';
-    return live?'<span class="legend-item"><button class="quiet" type="button" data-locate-series="'+index+'" title="'+
+    return interactiveLegend?'<span class="legend-item"><button class="quiet" type="button" data-locate-series="'+index+'" title="'+
       esc(pair("定位数据表","Locate in table")+" · "+name)+'">'+text+'</button>'+
       chartButton('data-drop="'+index+'"',pair("移除序列","Remove series")+" · "+name,"×")+'</span>':
       '<span class="legend-static">'+text+'</span>';
   }).join("");
-  return (live?"":snapshotTags(chart,meta))+'<div class="chart-legend">'+legend+'</div>'+
+  return (live||!showTags?"":snapshotTags(chart,meta))+'<div class="chart-legend">'+legend+'</div>'+
     '<div class="chart-frame"><canvas id="'+plot+'" role="img" aria-label="'+
-    esc(metricLabel(chart.metric,meta)+" "+pair("走势图","Trend chart"))+'"></canvas><span class="chart-cursor" hidden></span>'+
+    esc(metricLabel(chart.metric,meta)+" "+(chart.scatter?pair("散点图","Scatter plot"):pair("走势图","Trend chart")))+'"></canvas><span class="chart-cursor" hidden></span>'+
     '<div class="chart-tip" hidden></div></div><p class="chart-note" hidden></p>'+
     '<details class="chart-numbers"'+(valuesOpen?" open":"")+'><summary>'+esc(pair("图表数值","Chart values"))+
     '</summary><div class="chart-numbers-scroll" tabindex="0" aria-label="'+esc(pair("图表数值","Chart values"))+'"></div></details>';
 }
-function chartActions(rows,index,chart,live) {
+export function chartActions(rows,index,chart,live) {
   const copyIcon='<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M6 13H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="7" width="10" height="10" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
   const saveIcon='<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M4 3.5h10l2.5 2.5v10.5h-13v-13h.5Zm2.5 0V8h7V3.5m-7 13V11h7v5.5" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.4"/></svg>';
   return '<div class="chart-actions"><div class="chart-move">'+
@@ -119,7 +120,7 @@ function rowSelection(row,selected) {
     (selected.has(key)?" checked":"")+(allowed?"":" disabled")+'><span>'+
     esc(allowed?pair("选中此行","Select row"):pair("此行包含合并图表","Contains a merged chart"))+'</span></label></div>';
 }
-export function renderCharts(container,charts,active,meta,financialGroups,{readonly=false,workbench=false,selectedRows=null}={}) {
+export function renderCharts(container,charts,active,meta,financialGroups,{readonly=false,workbench=false,selectedRows=null,interactiveLegend=false,showTags=true}={}) {
   resizeObservers.get(container)?.disconnect();
   const expanded=new Set([...container.querySelectorAll(".chart-numbers[open]")].map(details=>
     details.closest("[data-chart]").dataset.chart+"/"+details.closest("[data-chart-part]").dataset.chartPart));
@@ -137,7 +138,7 @@ export function renderCharts(container,charts,active,meta,financialGroups,{reado
       const parts=chartParts(chart).map((part,i)=>({row:part.row??i,html:'<div class="chart-part" data-chart-part="'+i+'"'+
         (chart.parts?' style="--chart-weight:'+(part.weight||1)+'"':"")+'>'+
         (chart.parts&&part.title?'<h4 class="chart-part-title" title="'+esc(part.title)+'">'+esc(part.title)+'</h4>':"")+
-        plotHTML(part,plotId+(i?"-"+i:""),meta,live,live?Boolean(chart.valuesOpen):expanded.has(chart.id+"/"+i))+'</div>'}));
+        plotHTML(part,plotId+(i?"-"+i:""),chartMetadata(part,meta),live,live?Boolean(chart.valuesOpen):expanded.has(chart.id+"/"+i),live||interactiveLegend,showTags)+'</div>'}));
       const plots=chart.parts?chartRows(parts).map(group=>'<div class="chart-part-row">'+group.map(part=>part.html).join("")+'</div>').join(""):parts[0].html;
       return '<article class="chart" data-chart="'+esc(chart.id)+'" style="--plot-height:'+height+'px;--chart-weight:'+(chart.weight||1)+'">'+
         (readonly?"":'<div class="chart-controls">'+controls+chartActions(rows,index,chart,live)+'</div>')+plots+
@@ -185,12 +186,16 @@ function renderValues(card,series,years,display,unitFor) {
     return '<td'+(description?' title="'+esc(description)+'"':"")+'>'+display(value)+
       (description?'<sup aria-label="'+esc(description)+'">!</sup>':"")+'</td>';
   }).join("")+'</tr>').reverse().join("");
-  box.innerHTML='<table class="chart-data"><thead><tr><th scope="col">'+esc(pair("年度","Year"))+'</th>'+
+  box.innerHTML='<table class="chart-data"><thead><tr><th scope="col">'+esc(pair("期间","Period"))+'</th>'+
     header+'</tr></thead><tbody>'+rows+'</tbody></table>';
   box.scrollLeft=scrollLeft;
   box.scrollTop=scrollTop;
 }
+export function chartMetadata(chart,meta) {
+  return chart.metricDefinitions?{...meta,metrics:{...meta.metrics,...chart.metricDefinitions}}:meta;
+}
 export function chartObservations(chart,meta) {
+  meta=chartMetadata(chart,meta);
   const years=chart.years??meta.years;
   const series=chart.pins.map(pin=>({
     name:seriesName(pin),currency:pin.row.currency||"USD",
@@ -200,6 +205,7 @@ export function chartObservations(chart,meta) {
   return {years,baseline,series:baseline?rebasedSeries(series,years,baseline):series};
 }
 function draw(card,chart,meta) {
+  meta=chartMetadata(chart,meta);
   const canvas=card.querySelector("canvas"),tip=card.querySelector(".chart-tip"),cursor=card.querySelector(".chart-cursor");
   const colors=seriesColors(card,chart);
   card.querySelectorAll(".chart-legend .dot").forEach((dot,i)=>{dot.style.background=colors[i];});
@@ -215,6 +221,7 @@ function draw(card,chart,meta) {
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
   const styles=getComputedStyle(canvas);
+  if(chart.scatter) {drawScatter(card,chart,meta,{canvas,ctx,w,h,styles,colors});return;}
   const axis=styles.getPropertyValue("--plot-ink").trim();
   const {years,baseline,series}=chartObservations(chart,meta);
   const money=!baseline&&resultUnit(chart.metric,chart.mode,meta)==="money";
@@ -236,17 +243,18 @@ function draw(card,chart,meta) {
   ctx.fillStyle=axis||"#55677c";
   if (!values.length) {
     ctx.textAlign="center";
-    const message=baseline?prose("基年缺少正值","No positive baseline value"):chart.pins.length?
+    const message=chart.emptyMessage||(baseline?prose("基年缺少正值","No positive baseline value"):chart.pins.length?
       prose("这些序列缺少该指标","No observations for this metric"):
-      prose("从上方表格添加序列","Add a series from the table");
+      prose("从上方表格添加序列","Add a series from the table"));
     ctx.fillText(message,w/2,h/2);
     return;
   }
   const max=Math.max(...values),min=Math.min(...values);
   const padding=(max-min)*.09 || Math.abs(max)*.12 || .1;
-  const low=min-padding,high=max+padding;
+  const zeroBaseline=chart.type==="bar";
+  const low=zeroBaseline?Math.min(0,min-padding):min-padding,high=zeroBaseline?Math.max(0,max+padding):max+padding;
   const area={l:w<430?58:67,r:w-16,t:25,b:h-25};
-  const px=i=>area.l+(area.r-area.l)*i/Math.max(1,years.length-1);
+  const px=i=>area.l+(area.r-area.l)*(chart.type==="bar"?(i+.5)/Math.max(1,years.length):i/Math.max(1,years.length-1));
   const py=v=>area.b-(v-low)/(high-low)*(area.b-area.t);
   ctx.fillText(baseline?pair("相对 "+baseline+" 年变化","Change from "+baseline):unitLabel(chart.metric,chart.mode,meta,currency),8,12);
   for (let n=0;n<=4;n++) {
@@ -258,12 +266,23 @@ function draw(card,chart,meta) {
   }
   ctx.textAlign="center";
   const last=years.length-1;
-  const step=Math.max(1,Math.ceil(34*last/(area.r-area.l)));
+  const labelWidth=Math.max(34,ctx.measureText(String(years[0])).width+14,ctx.measureText(String(years[last])).width+14);
+  const step=Math.max(1,Math.ceil(labelWidth*last/(area.r-area.l)));
   for (let i=0;i<=last;i+=step) {
     if (i===0 || last-i>=step) ctx.fillText(String(years[i]),px(i),area.b+17);
   }
   ctx.fillText(String(years[last]),px(last),area.b+17);
-  for (const line of active) {
+  for (const [lineIndex,line] of active.entries()) {
+    if (chart.type==="bar") {
+      const pitch=(area.r-area.l)/Math.max(1,years.length), bar=Math.min(28,pitch*.8/active.length);
+      ctx.fillStyle=line.color;
+      line.values.forEach(({value},i)=>{
+        if (!finite(value)) return;
+        const x=px(i)+bar*(lineIndex-active.length/2);
+        ctx.fillRect(x,py(Math.max(0,value)),bar,Math.max(1,Math.abs(py(value)-py(0))));
+      });
+      continue;
+    }
     ctx.lineWidth=2.2; ctx.lineJoin="round"; ctx.strokeStyle=line.color;
     ctx.beginPath();
     let prev=false;
@@ -283,7 +302,8 @@ function draw(card,chart,meta) {
   let currentYear=-1;
   canvas.onpointermove=e=>{
     const box=canvas.getBoundingClientRect();
-    const i=Math.min(years.length-1,Math.max(0,Math.round((e.clientX-box.left-area.l)/(area.r-area.l)*(years.length-1))));
+    const fraction=(e.clientX-box.left-area.l)/(area.r-area.l);
+    const i=Math.min(years.length-1,Math.max(0,chart.type==="bar"?Math.floor(fraction*years.length):Math.round(fraction*(years.length-1))));
     if (i===currentYear) return;
     currentYear=i;
     const order=line=>finite(line.values[i].value)?line.values[i].value:-Infinity;
