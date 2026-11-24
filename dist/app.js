@@ -1693,7 +1693,7 @@ $("settings").onclick=()=>{
       const copy={...chart,id:state.nextChart++,pins:[...chart.pins],defaultPins:false,weight:undefined};
       state.charts=insertChartBelow(state.charts,chart,copy);
       showCharts(true);
-      $("charts").querySelector('[data-chart="'+copy.id+'"] [data-chart-metric]').focus();
+      $("charts").querySelector('[data-chart="'+copy.id+'"] [data-chart-metric]').focus({preventScroll:true});
       return;
     }
     if (b.hasAttribute("data-save-chart")) {if (chart.pins.length) openSaveChart(chart);return;}

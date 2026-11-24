@@ -121,6 +121,10 @@ function rowSelection(row,selected) {
     esc(allowed?pair("选中此行","Select row"):pair("此行包含合并图表","Contains a merged chart"))+'</span></label></div>';
 }
 export function renderCharts(container,charts,active,meta,financialGroups,{readonly=false,workbench=false,selectedRows=null,interactiveLegend=false,showTags=true}={}) {
+  const positions=[];
+  for(let element=container;element;element=element.parentElement) {
+    if(element.scrollTop||element.scrollLeft) positions.push([element,element.scrollTop,element.scrollLeft]);
+  }
   resizeObservers.get(container)?.disconnect();
   const expanded=new Set([...container.querySelectorAll(".chart-numbers[open]")].map(details=>
     details.closest("[data-chart]").dataset.chart+"/"+details.closest("[data-chart-part]").dataset.chartPart));
@@ -163,6 +167,7 @@ export function renderCharts(container,charts,active,meta,financialGroups,{reado
     resizeObservers.set(container,resize);
   }
   redraw(container,charts,meta);
+  for(const [element,top,left] of positions) {element.scrollTop=top;element.scrollLeft=left;}
 }
 function moveButton(direction,enabled,label) {
   return '<button class="chart-arrow" type="button" data-move-chart="'+direction+'" aria-label="'+esc(label)+

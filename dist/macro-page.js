@@ -384,6 +384,9 @@ export function renderMacroPage(host,catalog) {
   async function renderChartList() {
     const token=++chartToken;
     const container=field("charts");
+    const top=container.scrollTop,left=container.scrollLeft;
+    const plots=new Map(state.charts.map(config=>[config.id,field("plot-"+config.id)]));
+    const heights=new Map([...plots].map(([id,plot])=>[id,plot?.getBoundingClientRect().height]));
     const rows=chartRows(state.charts);
     container.innerHTML=rows.map((row,index)=>'<div class="chart-row">'+row.map((config,position)=>{
       if(config.type==="scatter") ensureScatter(config);
@@ -405,12 +408,14 @@ export function renderMacroPage(host,catalog) {
           (config.scatterView==="cross"?label("中位数参考线","Median guides"):label("连接相邻期间","Connect consecutive periods"))+'</label>'+
           '<span class="help-dot" tabindex="0" title="'+label("横纵轴仅匹配相同频率、同一期间的原始值，不插值。最新可比期优先选择至少两个经济体有配对数据的最近期；只有一个经济体时使用其最新配对期。每个点等大，不代表经济规模。可悬停查看数值，点击定位数据表。","Axes pair original values at the same frequency and reference period, without interpolation. Latest comparable period prefers the latest with at least two economies; a single economy uses its latest pair. Equal dot sizes do not encode economic size. Hover for values; click to locate in the table.")+'">?</span>':"")+
         chartActions(rows,index,{pins:config.economies},true)+'</div>'+
-        '<div id="macro-plot-'+config.id+'" class="macro-chart-content"><p class="status">'+label("正在读取数据…","Loading data…")+'</p></div>'+
+        '<div id="macro-plot-'+config.id+'" class="macro-chart-content" style="min-height:'+(heights.get(config.id)||height)+'px"><p class="status">'+label("正在读取数据…","Loading data…")+'</p></div>'+
         '<div class="splitter chart-height-grip" role="separator" tabindex="0" aria-orientation="horizontal" aria-controls="macro-plot-'+config.id+
         '" aria-label="'+label("调整图表高度","Resize chart height")+'"></div>'+
         (position<row.length-1?'<div class="splitter chart-width-grip" data-macro-chart-width role="separator" tabindex="0" aria-orientation="vertical"'+
           ' aria-controls="macro-plot-'+config.id+' macro-plot-'+row[position+1].id+'" aria-label="'+label("调整相邻图表宽度","Resize adjacent charts")+'"></div>':"")+'</article>';
     }).join("")+'</div>').join("");
+    for(const [id,plot] of plots) if(plot) field("plot-"+id).replaceWith(plot);
+    container.scrollTop=top;container.scrollLeft=left;
     for (const config of state.charts) {
       const grip=container.querySelector('[data-macro-chart="'+config.id+'"] .chart-height-grip');
       bindChainSplitter(grip,{
@@ -444,20 +449,26 @@ export function renderMacroPage(host,catalog) {
       }
     }
     rendered=new Map();
-    await Promise.all(state.charts.map(async config=>{
-      try {
-        const chart=await prepareChart(config);
-        if(token!==chartToken) return;
-        rendered.set(config.id,chart);
-        const periodSelect=field("plot-"+config.id).closest(".macro-chart").querySelector("[data-macro-scatter-period]");
-        if(periodSelect) periodSelect.innerHTML=options([["latest",pair("最新可比期","Latest comparable period")],
-          ...[...new Set([...(config.scatterPeriod!=="latest"?[config.scatterPeriod]:[]),...chart.availablePeriods])].sort().reverse().map(period=>[period,period])],config.scatterPeriod);
-        renderCharts(field("plot-"+config.id),[chart],null,{metrics:{},years:[],stats:{},marketColumns:[]},{},{readonly:true,interactiveLegend:true,showTags:false});
-      } catch(error) {
-        if(token!==chartToken) return;
-        field("plot-"+config.id).textContent=pair("图表读取失败。","Chart could not load.")+" "+error.message;
-      }
-    }));
+    await Promise.all(state.charts.map(config=>renderChart(config,token)));
+  }
+  async function renderChart(config,token=chartToken) {
+    const plot=field("plot-"+config.id),saveButton=plot.closest(".macro-chart").querySelector("[data-save-chart]");
+    plot.style.minHeight=plot.getBoundingClientRect().height+"px";
+    rendered.delete(config.id);saveButton.disabled=true;
+    try {
+      const chart=await prepareChart(config);
+      if(token!==chartToken||!plot.isConnected) return;
+      rendered.set(config.id,chart);
+      const periodSelect=plot.closest(".macro-chart").querySelector("[data-macro-scatter-period]");
+      if(periodSelect) periodSelect.innerHTML=options([["latest",pair("最新可比期","Latest comparable period")],
+        ...[...new Set([...(config.scatterPeriod!=="latest"?[config.scatterPeriod]:[]),...chart.availablePeriods])].sort().reverse().map(period=>[period,period])],config.scatterPeriod);
+      renderCharts(plot,[chart],null,{metrics:{},years:[],stats:{},marketColumns:[]},{},{readonly:true,interactiveLegend:true,showTags:false});
+      plot.style.removeProperty("min-height");
+      saveButton.disabled=!chart.pins.length;
+    } catch(error) {
+      if(token!==chartToken||!plot.isConnected) return;
+      plot.textContent=pair("图表读取失败。","Chart could not load.")+" "+error.message;
+    }
   }
   function addChart(ids=chosenEconomies(),indicators=[state.metric],type="line") {
     if(!ids.length) {status(pair("先勾选经济体。","Select economies first."));return;}
@@ -476,7 +487,7 @@ export function renderMacroPage(host,catalog) {
     if(added) target.economies.push(id);
     if(!state.panels.includes("charts")) state.panels.push("charts");
     remember();applyPanels();
-    if(added) void renderChartList();
+    if(added) void renderChart(target);
   }
   host.onchange=event=>{
     const input=event.target, config=state.charts.find(item=>item.id===Number(input.closest("[data-macro-chart]")?.dataset.macroChart));

@@ -204,6 +204,7 @@ main { display:grid; grid-template-rows:minmax(345px,1fr) auto; min-height:0; mi
 .table-pane .table-footer { flex:none; border-top:1px solid var(--border); }
 #charts,.saved-preview,.bench-charts { display:grid; grid-template-columns:minmax(0,1fr); min-height:0; align-content:start; }
 #charts { overflow:auto; overscroll-behavior:contain; }
+#charts,#macro-charts,.bench-charts { overflow-anchor:none; }
 .chart-row { display:flex; align-items:flex-start; gap:10px; min-width:0; }
 .chart-row > .chart { flex:var(--chart-weight,1) 1 0; min-width:0; }
 .chart-actions,.legend-item,.legend-static { display:inline-flex; align-items:center; }
