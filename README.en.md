@@ -150,7 +150,7 @@ This first version is ready for learning how processes, inputs and outputs fit t
 
 Xiaoba opens **Macroeconomic Atlas**, selects real GDP growth, annual average CPI inflation, unemployment, policy rates and government debt in **Columns**, and chooses economies of interest. He sets the observation year to **2024**. Each cell shows its actual reference period, keeping monthly rates distinct from annual statistics. Clicking a value opens its definition and source below the table.
 
-He plots growth, inflation and policy rates through time, then adds a scatter plot with real GDP growth on X and CPI inflation on Y to compare economies in **2024**. He can save either chart to the **Workbench** and place it alongside the industry charts. The scatter plot suggests relationships to investigate; the positions of the points alone do not explain their causes.
+He plots growth, inflation and policy rates through time, then adds a scatter plot with real GDP growth on X and CPI inflation on Y to compare economies in **2024**. He can save either chart to the **Workbench** and place it alongside the industry charts.
 
 ![Twenty selected economies and multiple indicators, with the definition and source expanded below; growth, inflation and policy-rate time series, and a 2024 growth-versus-inflation scatter plot on the right.](docs/images/en/macro.png?v=20261125)
 
@@ -171,7 +171,7 @@ Xiaoba often researches at night and prefers a high-contrast display. In **Setti
 | Product markets | [IEA EV data](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer), [EIA-861](https://www.eia.gov/electricity/data/eia861/) and EIA gasoline data. AlphaNode estimates EV shares outside China, state-level electricity retail shares and HHI, and gasoline demand elasticity using monthly EIA data and CPI. |
 | Securities directory and stock prices | The directory uses a pinned version of [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase), with inferred primary listings and filing links. Adjusted weekly stock prices are requested on demand from Yahoo Finance. |
 | Value Chain Atlas | Processes and materials draw on [USGS mineral summaries](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries), [US Department of Energy battery supply chains](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15), [ASML’s chipmaking guide](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) and company filings. Node details link to sources for typical processes and disclosed company relationships. |
-| Macroeconomic Atlas | [World Bank WDI](https://data.worldbank.org/), [IMF DataMapper / WEO](https://www.imf.org/external/datamapper/), [BIS](https://data.bis.org/) and [FRED](https://fred.stlouisfed.org/). Retain indicator definitions, publishers and annual, quarterly or monthly frequencies. AlphaNode computes year-on-year growth, period changes and baseline indices. Scatter plots pair the same frequency and reference period without interpolating missing values. IMF historical data may include estimates; definitions distinguish government levels and policy-rate series. |
+| Macroeconomic Atlas | [World Bank WDI](https://data.worldbank.org/), [IMF DataMapper / WEO](https://www.imf.org/external/datamapper/), [BIS](https://data.bis.org/) and [FRED](https://fred.stlouisfed.org/). AlphaNode computes year-on-year growth, period changes and baseline indices. IMF historical data may include estimates. |
 
 Worldwide company totals cover the project's sample. Official statistics retain the source's coverage. Year-over-year growth in industry amounts uses a matched sample, and changes in profitability ratios use percentage points. Missing reports, invalid denominators and inapplicable metrics appear as blank values. Use **Methodology** or click a table value for its source and calculation.
 
@@ -229,13 +229,11 @@ python -m venv .venv
 | [OpenBB](https://github.com/openbq-org/OpenBB) | Federal Reserve H.15 access and ECB series selection. |
 | [Apache Superset](https://github.com/apache/superset) | Common-base-year transformation for trend charts. |
 | [markdown-it](https://github.com/markdown-it/markdown-it) | Markdown rendering for AI analysis. |
-| [World Bank WDI](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392), [IMF DataMapper](https://www.imf.org/external/datamapper/api/help), [BIS SDMX](https://stats.bis.org/api-doc/v1/) and [FRED](https://fred.stlouisfed.org/) | Collect macro indicators directly through official interfaces and public CSV files, retaining source links, series identifiers and terms. |
 
 ## 6. Roadmap
 
 - **Distributions.** Compare companies or industries at the same level, using equal-width or weight-scaled bars, quantiles and sample counts. [Distribution design (Chinese)](docs/distribution-view.md)
 - **Per-share data and valuation.** Add EPS, free cash flow per share, P/E, P/B, EV/EBITDA and dividend yields. Compare valuation over time and explore the assumptions reflected in market prices.
-- **Macroeconomic data.** ~~Build the Macroeconomic Atlas~~ (complete). Continue with more economy-specific high-frequency indicators, release calendars and revision histories, and compare macro series with industry data on a shared timeline.
 - **AI chart analysis.** Add optional web search with source links and deeper reasoning to the default configuration. Let custom providers accept extra JSON request parameters for temperature, reasoning and search tools.
 
 ## 7. Use, privacy and license
