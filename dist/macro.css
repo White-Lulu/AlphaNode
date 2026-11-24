@@ -5,10 +5,12 @@
 .macro-data .macro-toolbar { gap:8px; flex:none; flex-wrap:nowrap; overflow-x:auto; height:var(--pane-header-height); padding-block:4px; }
 .macro-toolbar :is(select,.filter-picker-trigger,button) { min-height:28px; padding-block:4px; line-height:18px; white-space:nowrap; }
 .macro-toolbar > button { flex:none; }
-.macro-toolbar .control { display:flex; flex-direction:row; flex:1 0 140px; align-items:center; gap:6px; }
+.macro-toolbar .control { display:flex; flex-direction:row; flex:none; align-items:center; gap:6px; }
 .macro-toolbar .control > span { flex:none; margin:0; font-size:12px; }
-.macro-toolbar .control > :is(div,select) { flex:1; min-width:0; }
-.macro-toolbar .filter-picker-trigger,.macro-toolbar select { width:100%; }
+.macro-toolbar .control > :is(div,select) { flex:none; min-width:0; }
+#macro-economies { inline-size:clamp(110px,18cqw,160px); }
+.macro-toolbar .filter-picker-trigger { width:100%; }
+.macro-toolbar select { width:clamp(130px,18cqw,180px); }
 .macro-context { flex:none; padding:7px 12px; border-block:1px solid var(--border); }
 .macro-scroll { flex:1; min-height:0; scroll-padding-inline-start:var(--macro-economy-width); }
 .macro-table { width:100%; font-size:12px; }

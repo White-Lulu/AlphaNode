@@ -76,10 +76,10 @@ export function renderMacroPage(host,catalog) {
   const display=(metric,value)=>format(value,metric.id,"level",metadata(metric));
   const unit=metric=>unitLabel(metric.id,"level",metadata(metric));
   const phone=matchMedia("(max-width:700px)");
-  host.innerHTML='<section class="panel macro-data"><div class="filter-bar macro-toolbar"><button type="button" class="quiet" data-macro-columns>'+
-    label("指标列","Columns")+'</button>'+
+  host.innerHTML='<section class="panel macro-data"><div class="filter-bar macro-toolbar">'+
     '<div class="control"><span id="macro-economies-title">'+label("经济体","Economies")+'</span><div id="macro-economies"></div></div>'+
     '<label class="control"><span>'+label("观察期","Observation period")+'</span><select id="macro-period"></select></label>'+
+    '<button type="button" class="quiet" data-macro-columns>'+label("指标列","Columns")+'</button>'+
     '<button type="button" class="quiet" data-macro-export>'+label("导出 CSV","Export CSV")+'</button></div>'+
     '<div class="table-context macro-context"></div><div class="table-scroll macro-scroll" tabindex="0"><table id="macro-grid" class="macro-table"><thead></thead><tbody></tbody></table></div>'+
     '<p class="macro-status" role="status"></p><div class="macro-selection"><span id="macro-selected-count"></span>'+
