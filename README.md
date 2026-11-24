@@ -160,7 +160,7 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 
 看完企业和产业链，小八又想知道，它们面对的是怎样的经济环境。打开「宏观经济图谱」，在「指标列」同时选出实际 GDP 增速、CPI 年均通胀率、失业率、央行政策利率和政府债务，再勾选一组感兴趣的经济体，把观察期设为 **2024 年**。每列都标着实际期间，月度利率与年度统计也能分清。点数值还能在下方核对指标定义和来源。
 
-小八用折线图回看增长、通胀和利率的变化，再添加散点图，把实际 GDP 增速放在 X 轴、CPI 年均通胀率放在 Y 轴，比较 **2024 年**各经济体的位置。遇到想继续追查的组合，就保存到「工作台」，与前面的行业图表一起看。散点图提供的是共同变化的线索，不能单凭点的位置解释原因。
+小八用折线图回看增长、通胀和利率的变化，再添加散点图，把实际 GDP 增速放在 X 轴、CPI 年均通胀率放在 Y 轴，比较 **2024 年**各经济体的位置。遇到想继续追查的组合，就保存到「工作台」，与前面的行业图表一起看。
 
 ![宏观经济图谱。左侧选择二十个经济体，同时查看增长、通胀、就业、利率和债务，下方展开指标说明与来源；右侧用增长、通胀、利率折线图及 2024 年增长—通胀散点图对照。](docs/images/macro.png?v=20261125)
 
@@ -183,7 +183,7 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 | 产品市场 | 读取 [IEA 电动车数据](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer)、[EIA-861](https://www.eia.gov/electricity/data/eia861/) 和 EIA 汽油数据。项目据此计算海外 EV 渗透率、州级售电 HHI 和市占率，并用 EIA 月度数据和 CPI 回归估算汽油需求弹性。 |
 | 证券目录和股价 | 目录来自锁定版本的 [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase)，推定主上市及财报链接由项目生成。股价按需读取 Yahoo Finance 的周频复权数据。 |
 | 产业链图谱 | 工序和投入参考 [美国地质调查局矿产资料](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries)、[美国能源部电池供应链](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15)、[ASML 芯片制造流程](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) 和企业年报。节点详情标注通用工艺示例及有披露支持的企业关系，并附原始链接。 |
-| 宏观经济图谱 | 来自 [世界银行 WDI](https://data.worldbank.org/)、[IMF DataMapper／WEO](https://www.imf.org/external/datamapper/)、[BIS](https://data.bis.org/) 和 [FRED](https://fred.stlouisfed.org/)，保留指标定义、发布机构及年度、季度或月度频率。同比、较上期变化和基期指数由项目计算；散点图按同频率、同期间配对，缺失期不插值。IMF 历史数据可能含估计，政府层级和政策利率定义见指标说明。 |
+| 宏观经济图谱 | 来自 [世界银行 WDI](https://data.worldbank.org/)、[IMF DataMapper／WEO](https://www.imf.org/external/datamapper/)、[BIS](https://data.bis.org/) 和 [FRED](https://fred.stlouisfed.org/)，同比、较上期变化和基期指数由项目计算。IMF 历史数据可能含估计。|
 
 行业财务的「全球」指纳入样本中的全球企业。官方统计保留各机构的调查范围，产品市场保留各自的分母。行业财务金额同比在共同样本上计算，利润率同比用百分点表示。缺报、无效基数和不适用指标保留空值。页面右下角的「数据说明」与表格数值明细提供更具体的出处与公式。
 
@@ -239,15 +239,12 @@ python -m venv .venv
 | [OpenBB](https://github.com/openbq-org/OpenBB) | 美联储 H.15 数据接入及 ECB 序列选择。 |
 | [Apache Superset](https://github.com/apache/superset) | 趋势对照的共同基年变换。 |
 | [markdown-it](https://github.com/markdown-it/markdown-it) | AI 分析的 Markdown 渲染。 |
-| [世界银行 WDI](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392)、[IMF DataMapper](https://www.imf.org/external/datamapper/api/help)、[BIS SDMX](https://stats.bis.org/api-doc/v1/) 与 [FRED](https://fred.stlouisfed.org/) | 宏观指标通过官方接口及公开 CSV 直接采集，保留来源链接、序列标识和使用条款。 |
 
 ## 6. 未来计划
 
 - **分布与权重：** 增加可交互的同层行业和企业分布视图，支持等宽与按权重绘制、分位数、样本数和重点企业定位。
 
 - **每股数据与估值：** 增加基本和稀释每股收益（EPS）、每股自由现金流、市盈率（P/E）、市净率（P/B）、EV/EBITDA 和股息率。把股价和估值放在同一时间轴上，区分历史已披露数据与市场预期，再探索用不同增长、利润率假设做情景对照，观察当前价格可能反映了什么预期。
-
-- **经济体与全球宏观：** ~~建立宏观经济图谱~~（已完成）。后续继续扩展各国高频数据、发布日历和数据修订记录，支持同步观察宏观序列与行业数据。
 
 - **改进 AI 图表分析：** 计划在默认配置中提供联网搜索和深度思考选项，联网结果附引用链接。自定义 API 可填写 JSON 请求体参数，例如温度、推理强度和搜索工具。
 
