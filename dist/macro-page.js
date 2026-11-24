@@ -57,6 +57,7 @@ export function renderMacroPage(host,catalog) {
     selected:Array.isArray(stored.selected)?stored.selected.filter(id=>economies.has(id)):["USA","CHN","EMU","JPN"],
     width:Number.isFinite(stored.width)?stored.width:.44,panels:stored.panels??["data","charts"],
     economyWidth:Number.isFinite(stored.economyWidth)?Math.max(110,Math.min(620,stored.economyWidth)):155,
+    active:stored.active??null,
     charts:Array.isArray(stored.charts)?stored.charts.map(chart=>({...chart,type:chart.type==="area"?"line":chart.type})): [
       {id:1,indicator:"gdpGrowth",economies:["USA","CHN","EMU","JPN"],mode:"level",type:"line",range:10},
       {id:2,indicator:"cpiMonthly",economies:["USA","CHN","EMU","JPN"],mode:"level",type:"line",range:5},
@@ -65,6 +66,7 @@ export function renderMacroPage(host,catalog) {
   };
   state.charts=state.charts.filter(chart=>Number.isSafeInteger(chart.id)&&metrics.has(chart.indicator)&&Array.isArray(chart.economies))
     .map((chart,index)=>({...chart,row:Number.isSafeInteger(chart.row)?chart.row:index}));
+  if(!state.charts.some(chart=>chart.id===state.active)) state.active=state.charts[0]?.id??null;
   let tableToken=0,chartToken=0,rendered=new Map(),located="";
   const tableData=new Map(),tablePeriods=new Map();
   const economyName=id=>{
@@ -397,7 +399,8 @@ export function renderMacroPage(host,catalog) {
         (scatter?templateSelect('data-macro-scatter-view aria-label="'+label("对照方式","Comparison view")+'"',[["cross",pair("经济体对照","Cross-section")],["time",pair("时间轨迹","Time trajectories")]],config.scatterView):"")+
         (scatter&&config.scatterView==="cross"?templateSelect('data-macro-scatter-period aria-label="'+label("共同观察期","Shared observation period")+'"',[[config.scatterPeriod,config.scatterPeriod==="latest"?pair("最新可比期","Latest comparable period"):config.scatterPeriod]],config.scatterPeriod):
           templateSelect('data-macro-chart-range aria-label="'+label("时间范围","Time range")+'"',[... [5,10,20].map(n=>[String(n),pair("近 "+n+" 年","Last "+n+" years")]),["0",pair("全部","All")]],config.range))+
-        '<button type="button" class="quiet" data-macro-chart-selected>'+label("接收经济体","Receive economies")+'</button>'+
+        '<button type="button" class="quiet" data-macro-chart-active aria-pressed="'+(state.active===config.id)+'">'+
+          (state.active===config.id?label("接收经济体","Receive economies"):label("设为添加目标","Make active"))+'</button>'+
         (scatter?'<label class="macro-scatter-option"><input type="checkbox" '+(config.scatterView==="cross"?'data-macro-scatter-guide'+(config.scatterGuide?' checked':""):'data-macro-scatter-connect'+(config.scatterConnect?' checked':""))+'>'+
           (config.scatterView==="cross"?label("中位数参考线","Median guides"):label("连接相邻期间","Connect consecutive periods"))+'</label>'+
           '<span class="help-dot" tabindex="0" title="'+label("横纵轴仅匹配相同频率、同一期间的原始值，不插值。最新可比期优先选择至少两个经济体有配对数据的最近期；只有一个经济体时使用其最新配对期。每个点等大，不代表经济规模。可悬停查看数值，点击定位数据表。","Axes pair original values at the same frequency and reference period, without interpolation. Latest comparable period prefers the latest with at least two economies; a single economy uses its latest pair. Equal dot sizes do not encode economic size. Hover for values; click to locate in the table.")+'">?</span>':"")+
@@ -459,9 +462,21 @@ export function renderMacroPage(host,catalog) {
   function addChart(ids=chosenEconomies(),indicators=[state.metric],type="line") {
     if(!ids.length) {status(pair("先勾选经济体。","Select economies first."));return;}
     let id=state.charts.reduce((next,chart)=>Math.max(next,chart.id+1),1),row=(state.charts.at(-1)?.row??-1)+1;
-    for(const indicator of indicators) state.charts.push({id:id++,row:row++,indicator,economies:[...ids],mode:"level",type,range:10});
+    for(const indicator of indicators) {
+      state.active=id;
+      state.charts.push({id:id++,row:row++,indicator,economies:[...ids],mode:"level",type,range:10});
+    }
     if(!state.panels.includes("charts")) state.panels.push("charts");
     remember();applyPanels();void renderChartList();
+  }
+  function receiveEconomy(id) {
+    const target=state.charts.find(chart=>chart.id===state.active);
+    if(!target) {addChart([id]);return;}
+    const added=!target.economies.includes(id);
+    if(added) target.economies.push(id);
+    if(!state.panels.includes("charts")) state.panels.push("charts");
+    remember();applyPanels();
+    if(added) void renderChartList();
   }
   host.onchange=event=>{
     const input=event.target, config=state.charts.find(item=>item.id===Number(input.closest("[data-macro-chart]")?.dataset.macroChart));
@@ -502,7 +517,7 @@ export function renderMacroPage(host,catalog) {
     }
     if(key.macroDetail) {showSource(key.macroDetail,key.macroSource??state.metric);remember();host.querySelector(".macro-definition").open=true;return;}
     if(key.macroPlot) {addChart(chosenEconomies(),[key.macroPlot]);return;}
-    if(key.macroPin) {addChart([key.macroPin],state.columns);return;}
+    if(key.macroPin) {receiveEconomy(key.macroPin);return;}
     if(button.hasAttribute("data-macro-add")) {addChart();return;}
     if(button.hasAttribute("data-macro-add-scatter")) {addChart(chosenEconomies(),["gdpGrowth"],"scatter");return;}
     if(button.hasAttribute("data-macro-selected")) {addChart(chosenEconomies(),state.columns);return;}
@@ -516,6 +531,15 @@ export function renderMacroPage(host,catalog) {
       downloadCSV(rows,"AlphaNode-macro.csv");return;
     }
     if(!config) return;
+    if(button.hasAttribute("data-macro-chart-active")) {
+      state.active=config.id;remember();
+      for(const target of host.querySelectorAll("[data-macro-chart-active]")) {
+        const active=Number(target.closest("[data-macro-chart]").dataset.macroChart)===state.active;
+        target.setAttribute("aria-pressed",String(active));
+        target.textContent=active?pair("接收经济体","Receive economies"):pair("设为添加目标","Make active");
+      }
+      return;
+    }
     if(button.hasAttribute("data-locate-series")) {
       const pin=rendered.get(config.id)?.pins[Number(key.locateSeries)];
       if(pin) void locateEconomy(pin.scope,config.indicator,config.type==="scatter"?config.scatterY:null);
@@ -533,6 +557,7 @@ export function renderMacroPage(host,catalog) {
     if(button.hasAttribute("data-chart-remove")) {
       state.charts=state.charts.filter(item=>item!==config);
       for(const other of state.charts) if(other.row===config.row) delete other.weight;
+      if(state.active===config.id) state.active=state.charts.at(-1)?.id??null;
     }
     if(button.hasAttribute("data-copy-chart")) {
       const id=state.charts.reduce((next,item)=>Math.max(next,item.id+1),1);
@@ -540,7 +565,6 @@ export function renderMacroPage(host,catalog) {
       state.charts=insertChartBelow(state.charts,config,copy);
     }
     if(button.hasAttribute("data-move-chart")) state.charts=moveChartInRows(state.charts,config,Number(key.moveChart));
-    if(button.hasAttribute("data-macro-chart-selected")) config.economies=[...new Set([...config.economies,...chosenEconomies()])];
     if(button.hasAttribute("data-macro-scatter-swap")) [config.indicator,config.scatterY]=[config.scatterY,config.indicator];
     remember();void renderChartList();
   };
