@@ -1,6 +1,7 @@
 
 import {esc,finite} from "./model.js";
 import {locale,pair,prefs,prose} from "./i18n.js";
+import {bindChartHover} from "./chart-hover.js";
 
 const snapshots=new Map();
 const ttl=60*60*1000;
@@ -102,10 +103,13 @@ function draw(canvas,points) {
   const tip=canvas.nextElementSibling?.classList.contains("stock-point")?canvas.nextElementSibling:document.createElement("span");
   tip.className="stock-point";
   if (!tip.isConnected) canvas.after(tip);
-  canvas.onpointermove=event=>{
-    const timestamp=first+(last-first)*Math.max(0,Math.min(1,(event.offsetX-left)/(right-left)));
-    const [stamp,value]=points.reduce((best,point)=>Math.abs(point[0]-timestamp)<Math.abs(best[0]-timestamp)?point:best);
+  bindChartHover(canvas,tip,{resolve:event=>{
+    const position=event.clientX-canvas.getBoundingClientRect().left;
+    const timestamp=first+(last-first)*Math.max(0,Math.min(1,(position-left)/(right-left)));
+    return points.reduce((best,point,index)=>Math.abs(point[0]-timestamp)<Math.abs(points[best][0]-timestamp)?index:best,0);
+  },show:index=>{
+    if(!points[index]) return false;
+    const [stamp,value]=points[index];
     tip.textContent=month.format(stamp*1000)+" · "+pct.format(value);
-  };
-  canvas.onpointerleave=()=>{tip.textContent="";};
+  }});
 }

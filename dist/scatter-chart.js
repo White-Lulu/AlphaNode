@@ -1,5 +1,6 @@
 import {esc,finite,format,unitLabel} from "./model.js";
 import {pair,locale} from "./i18n.js";
+import {bindChartHover,clearChartHover} from "./chart-hover.js";
 
 // Pair exact reference periods only. Neither missing values nor mixed frequencies are interpolated.
 export function pairScatter(xRows,yRows,economies,{view="cross",period="latest",range=10}={}) {
@@ -82,7 +83,7 @@ export function drawScatter(card,chart,meta,{canvas,ctx,w,h,styles,colors}) {
   if(!points.length) {
     ctx.textAlign="center";
     ctx.fillText(pair("没有同频率、同期间的有效配对","No valid pairs at the same frequency and period"),w/2,h/2);
-    canvas.onpointermove=canvas.onpointerleave=canvas.onclick=null;
+    clearChartHover(canvas);tip.hidden=cursor.hidden=true;
     return;
   }
   const extent=key=>{
@@ -146,23 +147,25 @@ export function drawScatter(card,chart,meta,{canvas,ctx,w,h,styles,colors}) {
     const [x,y]=pos;occupied.push({l:x,r:x+width,t:y-11,b:y});
     ctx.fillStyle=item.color;ctx.textAlign="left";ctx.fillText(item.text,x,y);
   }
-  let nearest=[];
-  canvas.onpointermove=event=>{
+  const resolve=event=>{
     const rect=canvas.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;
     let best,distance=Infinity;
     for(const point of hits) {
       const d=Math.hypot(point.px-x,point.py-y);
       if(d<distance) {best=point;distance=d;}
     }
-    nearest=best&&distance<18?[best,...hits.filter(point=>point!==best&&Math.hypot(point.px-x,point.py-y)<=distance+1)]:[];
-    tip.hidden=!nearest.length;cursor.hidden=true;
-    canvas.style.cursor=nearest.length?"pointer":"default";
-    if(!nearest.length) return;
+    canvas.style.cursor=best&&distance<18?"pointer":"default";
+    return best&&distance<18?best.pin+":"+best.period:null;
+  };
+  const show=key=>{
+    const best=hits.find(point=>point.pin+":"+point.period===key);
+    if(!best) return false;
+    const nearest=[best,...hits.filter(point=>point!==best&&Math.hypot(point.px-best.px,point.py-best.py)<=1)];
+    cursor.hidden=true;
     tip.classList.toggle("tip-left",best.px>w/2);
     tip.innerHTML=nearest.slice(0,6).map(point=>'<b>'+esc(country(point)+" · "+point.period)+'</b><ul><li><span>'+esc("X · "+name(spec.x))+
       '</span><strong>'+display(point.x,spec.x)+'</strong></li><li><span>'+esc("Y · "+name(spec.y))+'</span><strong>'+display(point.y,spec.y)+
       '</strong></li></ul>').join("")+(nearest.length>6?'<small>'+esc(pair("更多重合点见图表数值","More overlapping points in chart values"))+'</small>':"");
   };
-  canvas.onpointerleave=()=>{tip.hidden=true;nearest=[];};
-  canvas.onclick=()=>{if(nearest.length) card.querySelector('[data-locate-series="'+nearest[0].pin+'"]')?.click();};
+  bindChartHover(canvas,tip,{resolve,show,cursor});
 }

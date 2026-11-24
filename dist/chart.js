@@ -5,6 +5,7 @@ import {rebaseToPercentChange} from "./vendor/superset/percentChange.js";
 import {defaultChartHeight} from "./layout.js";
 import {seriesColors} from "./chart-colors.js";
 import {drawScatter} from "./scatter-chart.js";
+import {bindChartHover,clearChartHover} from "./chart-hover.js";
 
 const resizeObservers=new WeakMap();
 function metricOptions(selected,meta,financialGroups) {
@@ -217,8 +218,6 @@ function draw(card,chart,meta) {
   const ctx=canvas.getContext("2d");
   const rect=canvas.getBoundingClientRect(), w=rect.width, h=rect.height;
   if (w<20||h<20) return;
-  tip.hidden=cursor.hidden=true;
-  canvas.onpointermove=null;
   const dpr=window.devicePixelRatio || 1;
   const pixelWidth=Math.round(w*dpr),pixelHeight=Math.round(h*dpr);
   if (canvas.width!==pixelWidth) canvas.width=pixelWidth;
@@ -247,6 +246,8 @@ function draw(card,chart,meta) {
   ctx.font='11px "Microsoft YaHei UI",sans-serif';
   ctx.fillStyle=axis||"#55677c";
   if (!values.length) {
+    clearChartHover(canvas);
+    tip.hidden=cursor.hidden=true;
     ctx.textAlign="center";
     const message=chart.emptyMessage||(baseline?prose("基年缺少正值","No positive baseline value"):chart.pins.length?
       prose("这些序列缺少该指标","No observations for this metric"):
@@ -304,13 +305,13 @@ function draw(card,chart,meta) {
       if (note) ctx.stroke(); else ctx.fill();
     });
   }
-  let currentYear=-1;
-  canvas.onpointermove=e=>{
+  const resolve=e=>{
     const box=canvas.getBoundingClientRect();
     const fraction=(e.clientX-box.left-area.l)/(area.r-area.l);
-    const i=Math.min(years.length-1,Math.max(0,chart.type==="bar"?Math.floor(fraction*years.length):Math.round(fraction*(years.length-1))));
-    if (i===currentYear) return;
-    currentYear=i;
+    return Math.min(years.length-1,Math.max(0,chart.type==="bar"?Math.floor(fraction*years.length):Math.round(fraction*(years.length-1))));
+  };
+  const show=i=>{
+    if(!Number.isInteger(i)||!years[i]) return false;
     const order=line=>finite(line.values[i].value)?line.values[i].value:-Infinity;
     const ordered=[...active].sort((a,b)=>order(b)-order(a));
     tip.hidden=cursor.hidden=false;
@@ -322,7 +323,7 @@ function draw(card,chart,meta) {
         '<strong>'+display(value)+'</strong>'+(description?'<small>'+esc(description)+'</small>':"")+'</li>';
     }).join("")+"</ul>";
   };
-  canvas.onpointerleave=()=>{tip.hidden=cursor.hidden=true;currentYear=-1;};
+  bindChartHover(canvas,tip,{resolve,show,cursor});
 }
 function rebasedSeries(series,years,baseline) {
   const index=years.indexOf(baseline);
