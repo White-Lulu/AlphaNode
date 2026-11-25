@@ -1117,9 +1117,6 @@ function radarSelectionCount() {
   $("radar-selection-count").textContent=pair("已选 "+count+" / "+available+" 项财务指标",count+" / "+available+" financial metrics selected");
 }
 function renderRadarSettings() {
-  const terms=Object.keys(glossary),metrics=terms.filter(key=>key.startsWith("macro:")||Object.hasOwn(meta.metrics,key)).length;
-  $("term-coverage-count").textContent=pair(number(metrics)+" 项指标 · "+number(terms.length-metrics)+" 个其他术语",
-    number(metrics)+" metrics · "+number(terms.length-metrics)+" other terms");
   const selected=new Set(selectedRadarMetrics(meta));
   $("radar-metric-list").innerHTML=radarMetricOptions(meta).map(key=>
     '<label><input type="checkbox" data-radar-metric="'+esc(key)+'"'+(selected.has(key)?" checked":"")+
@@ -1581,8 +1578,10 @@ $("settings").onclick=()=>{
   };
   $("hover-enabled").onchange=e=>{prefs.hover=e.target.checked;save();};
   $("term-list").onchange=e=>{if(e.target.dataset.hint){prefs.hints[e.target.dataset.hint]=e.target.checked;save();}};
-  $("terms-all").onclick=()=>{setAllHints(true);renderGlossarySettings();};
-  $("terms-none").onclick=()=>{setAllHints(false);renderGlossarySettings();};
+  $("term-list").onclick=e=>{
+    const button=e.target.closest("[data-terms-toggle]");
+    if (button) {setAllHints(button.dataset.termsToggle==="all",button.dataset.termGroup);renderGlossarySettings();}
+  };
   $("settings-dialog").onclose=()=>{resetAISettings();rerenderLanguage(prefs.language);};
   document.addEventListener("click",e=>{
     if (!e.target.closest("[data-locate-series],#grid tr.located .row-label")) clearLocatedRow();

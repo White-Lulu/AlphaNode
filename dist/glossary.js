@@ -121,14 +121,22 @@ export function bindGlossary() {
 export function renderGlossarySettings(query="") {
   const target=$("term-list");
   const q=query.trim().toLowerCase();
-  target.innerHTML=Object.entries(glossary).filter(([id,v])=>[id,...v.slice(0,2)].join(" ").toLowerCase().includes(q))
-    .sort((a,b)=>pair(a[1][0],a[1][1]).localeCompare(pair(b[1][0],b[1][1]),locale()))
-    .map(([id,[zh,en,,,formulaZh,formulaEn,source]])=>'<div class="term-card"><label><input type="checkbox" data-hint="'+esc(id)+'"'+
-      (prefs.hints[id]===false?"":" checked")+'><span data-term-hover="'+esc(id)+'">'+esc(pair(zh,en))+'</span></label><p class="term-formula">'+
-      esc(paragraphs(formulaZh,formulaEn))+'</p>'+(source?'<a class="hint-copy" href="'+esc(source.url)+'" target="_blank" rel="noopener">'+
-        esc(pair(source.zh,source.en)+" · "+source.code)+'</a>':"")+'</div>').join("");
+  const terms=Object.entries(glossary).filter(([id,v])=>[id,...v.slice(0,2)].join(" ").toLowerCase().includes(q))
+    .sort((a,b)=>pair(a[1][0],a[1][1]).localeCompare(pair(b[1][0],b[1][1]),locale()));
+  target.innerHTML=[["industry","行业数据图谱","Industry Data Atlas"],["macro","宏观经济图谱","Macroeconomic Atlas"]].map(([group,zh,en])=>{
+    const entries=terms.filter(([id])=>termGroup(id)===group),title="terms-"+group+"-title";
+    return '<section class="term-settings-group"><div class="pref-toolbar"><h4 id="'+title+'">'+esc(pair(zh,en))+" · "+
+      entries.length.toLocaleString(locale())+'</h4><button type="button" class="quiet" data-term-group="'+group+'" data-terms-toggle="all">'+
+      esc(pair("全选","Enable all"))+'</button><button type="button" class="quiet" data-term-group="'+group+'" data-terms-toggle="none">'+
+      esc(pair("全部取消","Disable all"))+'</button></div><div class="check-grid settings-list" role="group" tabindex="0" aria-labelledby="'+title+'">'+
+      entries.map(([id,[zh,en,,,formulaZh,formulaEn,source]])=>'<div class="term-card"><label><input type="checkbox" data-hint="'+esc(id)+'"'+
+        (prefs.hints[id]===false?"":" checked")+'><span data-term-hover="'+esc(id)+'">'+esc(pair(zh,en))+'</span></label><p class="term-formula">'+
+        esc(paragraphs(formulaZh,formulaEn))+'</p>'+(source?'<a class="hint-copy" href="'+esc(source.url)+'" target="_blank" rel="noopener">'+
+          esc(pair(source.zh,source.en)+" · "+source.code)+'</a>':"")+'</div>').join("")+'</div></section>';
+  }).join("");
 }
-export function setAllHints(enabled) {
-  prefs.hints=Object.fromEntries(Object.keys(glossary).map(key=>[key,enabled]));
+const termGroup=key=>key.startsWith("macro:")?"macro":"industry";
+export function setAllHints(enabled,group) {
+  for (const key of Object.keys(glossary)) if (termGroup(key)===group) prefs.hints[key]=enabled;
   save();
 }

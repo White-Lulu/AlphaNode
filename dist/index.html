@@ -352,14 +352,9 @@
     <h3 class="settings-block" id="term-settings-title" data-zh="术语解释" data-en="Term explanations"></h3>
     <div class="pref-toolbar">
       <label class="toggle"><input type="checkbox" id="hover-enabled"><span data-zh="悬停时显示" data-en="Show on hover"></span></label>
-      <span id="term-coverage-count" class="hint-copy"></span>
-    </div>
-    <div class="pref-toolbar">
-      <button type="button" id="terms-all" class="quiet" data-zh="全选" data-en="Enable all"></button>
-      <button type="button" id="terms-none" class="quiet" data-zh="全部取消" data-en="Disable all"></button>
       <span class="hint-copy" data-zh="勾选的术语会在悬停时显示解释。" data-en="Enabled terms appear on hover."></span>
     </div>
-    <div id="term-list" class="check-grid settings-list" role="group" tabindex="0" aria-labelledby="term-settings-title"></div>
+    <div id="term-list"></div>
     <h3 class="settings-block" data-zh="AI 图表分析" data-en="AI chart analysis"></h3>
     <p class="hint-copy" data-zh="自定义配置和个人 API Key 加密保存在当前浏览器。调用时，浏览器通过 HTTPS 直接向你选择的模型服务发送密钥和请求。"
       data-en="Custom settings and API keys are encrypted in this browser. Requests with a key go directly to your chosen model provider over HTTPS."></p>
