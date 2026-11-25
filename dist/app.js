@@ -1011,6 +1011,7 @@ function pin(row,key=null,mode=state.mode,scope=activeScope()) {
   else if (!chart.pins.some(p=>meta.years.some(y=>finite(annual(p.row,chart.metric,y,p.scope,p.aggregate))))) {
     chart.metric=allColumns().find(k=>meta.years.some(y=>finite(annual(row,k,y,scope,state.aggregate))))||chart.metric;
   }
+  updateViewPanel("trends",true);
   status(pair("已添加趋势序列","Added chart series")+" · "+nameOf(row));showCharts(true);
 }
 let columnView;
