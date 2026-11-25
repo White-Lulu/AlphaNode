@@ -148,27 +148,27 @@
 :root[data-ui-theme] :is(.splitter[data-resize="financial"],.splitter[data-resize="directory"]):hover::after { background:transparent; }
 
 /* Table heat colors: white cells in light themes, dark cells in dark themes. */
-:root[data-ui-theme] :is(#grid,.directory-table) { background:#fff; }
-:root[data-ui-theme] :is(#grid,.directory-table) tbody {
+:root[data-ui-theme] :is(#grid,.directory-table,.macro-table) { background:#fff; }
+:root[data-ui-theme] :is(#grid,.directory-table,.macro-table) tbody {
   --accent:#171717; --muted:#696969; --border:#e4e4e4; --soft:#f6f6f6; --surface:#fff;
   --theme-input:#fff; --theme-ink:#171717; --theme-action:#171717; --theme-action-ink:#fff; --theme-focus:#171717;
   --theme-warning:#815200;
   color:#171717; color-scheme:light;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) {
   background:var(--theme-panel);
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) tbody {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) tbody {
   --accent:var(--theme-accent); --muted:var(--theme-muted); --border:#525964; --soft:var(--theme-subtle); --surface:var(--theme-panel);
   --theme-input:var(--theme-panel); --theme-ink:#ffffff; --theme-action:var(--theme-accent); --theme-action-ink:var(--theme-background); --theme-focus:#ffffff;
   --theme-warning:#fbd669; --heat-hi:255,120,100; --heat-lo:96,150,255;
   color:#ffffff; color-scheme:dark;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) td {
   background:var(--theme-panel);
   border-bottom-color:#2a3038;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) thead th {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) thead th {
   background:#161b22;
   color:#e6edf3;
   border-bottom-color:#525964;
@@ -180,7 +180,7 @@
 :root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) .directory-table tr:nth-child(even) td {
   background:#161b22;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .missing {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) .missing {
   color:#8b949e;
 }
 :root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .tier {
@@ -192,11 +192,11 @@
 :root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) #grid .tier.low {
   background:#23406a; color:#a9c8ff;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .name-cell .profile-open:hover,
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) .name-cell .star:hover {
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) .name-cell .profile-open:hover,
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) .name-cell .star:hover {
   background:#2a3038;
 }
-:root[data-ui-theme] :is(.brand,.cell-value,.chart-data td,.radar-score-value) { font-family:var(--theme-mono,inherit); }
+:root[data-ui-theme] :is(.brand,.cell-value,.macro-value,.chart-data td,.radar-score-value) { font-family:var(--theme-mono,inherit); }
 :root[data-ui-theme] .cell-value { padding-block:6px; }
 :root[data-ui-theme] #grid td { height:33px; }
 
@@ -220,10 +220,10 @@
 :root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) th {
   border-bottom:0;
 }
-:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table) td {
-  border-bottom-color:color-mix(in srgb,var(--border),transparent 55%);
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table,.macro-table) :is(td,th[scope="row"]) {
+  border-bottom:1px solid color-mix(in srgb,var(--border),transparent 55%);
 }
-:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table) td:first-child {
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(#grid,.directory-table,.macro-table) td:first-child {
   border-right:0;
 }
 :root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) .filter-pane {
@@ -231,16 +231,16 @@
 }
 
 /* Borderless tables for the contrast themes: faint dividers, no vertical rules. */
-:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"]) :is(#grid,.directory-table) td {
-  border-bottom-color:#eceef2;
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"]) :is(#grid,.directory-table,.macro-table) :is(td,th[scope="row"]) {
+  border-bottom:1px solid #eceef2;
 }
-:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td {
-  border-bottom-color:#1e242c;
+:root:is([data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) :is(td,th[scope="row"]) {
+  border-bottom:1px solid #1e242c;
 }
-:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) td:first-child {
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) td:first-child {
   border-right:0;
 }
-:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table) th {
+:root:is([data-ui-theme="hm-slate"],[data-ui-theme="hm-cobalt"],[data-ui-theme="hm-slate-dark"],[data-ui-theme="hm-vscode-hc"],[data-ui-theme="hm-slate-blue"]) :is(#grid,.directory-table,.macro-table) th {
   border-bottom:0;
 }
 
@@ -265,7 +265,7 @@
 :root[data-font="serif"] :is(button,input,select,textarea) {
   font-family:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",Georgia,serif;
 }
-:root[data-font="serif"] :is(.brand,.cell-value,.chart-data td,.radar-score-value,th button,.profile-table th,.profile-table td) {
+:root[data-font="serif"] :is(.brand,.cell-value,.macro-value,.chart-data td,.radar-score-value,th button,.profile-table th,.profile-table td) {
   font-family:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",Georgia,serif;
 }
 
