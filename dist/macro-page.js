@@ -1,5 +1,6 @@
 import {api,downloadCSV,esc,finite,format,heatColor,heatExtent,options,unitLabel} from "./model.js";
-import {countryName,chineseEconomyName,nameOf,pair,prose,locale,prefs,save} from "./i18n.js";
+import {countryName,chineseEconomyName,nameOf,pair,paragraphs,prose,locale,prefs,save} from "./i18n.js";
+import {glossary} from "./glossary.js";
 import {redraw,renderCharts,chartActions,chartRows,insertChartBelow,moveChartInRows} from "./chart.js";
 import {openSaveChart,compactChartSubjects} from "./saved-charts.js";
 import {bindChainSplitter} from "./chain-viewport.js";
@@ -94,7 +95,9 @@ export function renderMacroPage(host,catalog) {
     '<button type="button" class="primary" data-macro-add>'+label("＋ 添加图表","+ Add chart")+'</button></div></div><div id="macro-charts"></div></section>'+
     '<dialog id="macro-columns-dialog" aria-labelledby="macro-columns-title" closedby="any"><div class="dialog-head">'+
     '<h2 id="macro-columns-title">'+label("选择指标列","Choose columns")+'</h2></div>'+
-    '<p class="macro-column-count" role="status"></p><div id="macro-column-list"></div></dialog>';
+    '<div class="column-toolbar"><p class="macro-column-count" role="status"></p><label class="toggle">'+
+    '<input type="checkbox" id="macro-column-glossary"><span>'+label("显示术语介绍","Show term explanations")+
+    '</span></label></div><div id="macro-column-list"></div></dialog>';
   const grid=host.querySelector(".macro-table"), output=host.querySelector(".macro-status");
   const field=id=>host.querySelector("#macro-"+id);
   const status=value=>{output.textContent=value;output.hidden=!value;};
@@ -146,12 +149,17 @@ export function renderMacroPage(host,catalog) {
   }
   function renderColumnChoices() {
     const focused=document.activeElement?.dataset.macroColumn;
+    field("column-glossary").checked=Boolean(prefs.columnGlossary);
     field("column-list").innerHTML=catalog.categories.map(category=>{
       const items=catalog.metrics.filter(metric=>metric.category===category.id);
       return '<section class="macro-column-group"><h3><label><input type="checkbox" data-macro-column-group="'+category.id+'">'+
-        esc(nameOf(category))+'</label></h3><div class="check-grid">'+items.map(metric=>'<label><input type="checkbox" data-macro-column="'+metric.id+
-        '"'+(state.columns.includes(metric.id)?" checked":"")+'><span>'+esc(nameOf(metric))+
-        '<small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+'</small></span></label>').join("")+'</div></section>';
+        esc(nameOf(category))+'</label></h3><div class="check-grid">'+items.map(metric=>{
+          const term="macro:"+metric.id,entry=glossary[term];
+          return '<div class="column-card"><label><input type="checkbox" data-macro-column="'+metric.id+
+            '"'+(state.columns.includes(metric.id)?" checked":"")+'><span><span data-term-hover="'+term+'">'+esc(nameOf(metric))+
+            '</span><small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+'</small></span></label>'+
+            (prefs.columnGlossary&&entry?'<p class="term-formula">'+esc(paragraphs(entry[4],entry[5]))+'</p>':"")+'</div>';
+        }).join("")+'</div></section>';
     }).join("");
     for(const input of host.querySelectorAll("[data-macro-column-group]")) {
       const items=catalog.metrics.filter(metric=>metric.category===input.dataset.macroColumnGroup);
@@ -209,8 +217,8 @@ export function renderMacroPage(host,catalog) {
       columnResizeHandle("macro-economy-column","macro-grid",pair("调整经济体列宽","Resize economy column"))+'</th>'+
       state.columns.map(id=>{
         const metric=metrics.get(id);
-        return '<th scope="col"><button type="button" class="sort" data-macro-sort="'+id+'">'+esc(nameOf(metric))+
-          (state.sort===id?(state.descending?" ↓":" ↑"):"")+'</button><small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+
+        return '<th scope="col"><button type="button" class="sort" data-macro-sort="'+id+'"><span data-term-hover="macro:'+id+'">'+esc(nameOf(metric))+
+          '</span>'+(state.sort===id?(state.descending?" ↓":" ↑"):"")+'</button><small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+
           '</small><button type="button" class="macro-column-plot" data-macro-plot="'+id+'" aria-label="'+
           esc(pair("绘制 "+nameOf(metric),"Chart "+nameOf(metric)))+'">+</button></th>';
       }).join("")+'</tr>';
@@ -246,7 +254,7 @@ export function renderMacroPage(host,catalog) {
     state.metric=metricId;
     const source=catalog.sources[current.source], row=current.rows.find(item=>item.economy===economy);
     const remarks=row?.notes??{};
-    field("source").innerHTML='<p><strong>'+esc(nameOf(current))+'</strong> · '+esc(unit(current))+' · '+pair(...frequencies[current.frequency])+'</p>'+
+    field("source").innerHTML='<p><strong data-term-hover="macro:'+metricId+'">'+esc(nameOf(current))+'</strong> · '+esc(unit(current))+' · '+pair(...frequencies[current.frequency])+'</p>'+
       '<p><a target="_blank" rel="noopener" href="'+esc(current.url)+'">'+esc(current.publisher??nameOf(source))+'</a> · '+esc(current.code)+
       (current.updated?' · '+label("来源更新","Source updated")+" "+esc(current.updated):"")+'</p>'+
       (current.note?'<p>'+esc(pair(current.note,current.noteEn??current.note))+'</p>':"")+
@@ -294,7 +302,8 @@ export function renderMacroPage(host,catalog) {
     grid.querySelector("tr.located")?.classList.remove("located");
   },{signal:bindings.signal,capture:true});
   const types=[["line","折线","Line"],["bar","柱状","Bar"],["scatter","散点","Scatter"]];
-  const templateSelect=(attribute,entries,value)=>'<select '+attribute+'>'+options(entries,String(value))+'</select>';
+  const templateSelect=(attribute,entries,value)=>'<select '+attribute+
+    (/^data-macro-(chart-indicator|scatter-y)\b/.test(attribute)?' data-term-hover="macro:'+esc(value)+'"':"")+'>'+options(entries,String(value))+'</select>';
   function macroChartTitle(config,metric,periods,{y,baseline,period}={}) {
     const subjects=[...new Set(config.economies)].map(id=>{
       const item=economies.get(id);
@@ -492,6 +501,7 @@ export function renderMacroPage(host,catalog) {
   host.onchange=event=>{
     const input=event.target, config=state.charts.find(item=>item.id===Number(input.closest("[data-macro-chart]")?.dataset.macroChart));
     if(input.hasAttribute("data-choice")) return;
+    if(input.id==="macro-column-glossary") {prefs.columnGlossary=input.checked;save();renderColumnChoices();return;}
     if(input.id==="macro-period") {state.period=input.value;remember();renderTable();return;}
     if(input.dataset.macroColumn||input.dataset.macroColumnGroup) {
       const ids=input.dataset.macroColumn?[input.dataset.macroColumn]:

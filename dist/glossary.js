@@ -1,7 +1,9 @@
 import {prefs,pair,paragraphs,locale,save} from "./i18n.js";
 import {$,esc} from "./model.js";
+import {macroGlossary} from "./macro-glossary.js";
 
 export const glossary={
+  ...macroGlossary,
   peerRadar:["同业综合分","Peer composite","取同年、同组和所选地域内其他企业的分位参考。所选指标至少有三项可比才计算综合分。","Uses other issuers in the same year, industry group and geography. At least three comparable selected percentiles are required.","综合分 = 四舍五入(100 × 所选有效指标的平均分位)","Composite = round(100 × mean of selected valid percentiles)"],
   equityMultiplier:["杜邦权益乘数","DuPont equity multiplier","平均总资产除以平均归母权益。用于拆解净资产收益率。","Average total assets divided by average equity attributable to owners.","权益乘数 = 平均总资产 ÷ 平均归母权益","Equity multiplier = average assets ÷ average equity attributable to owners"],
   dupontRoe:["杜邦 ROE","DuPont ROE","净利率 × 总资产周转率 × 权益乘数。三个分项在同一财年计算。","Net margin × asset turnover × equity multiplier. All three components use the same fiscal year.","杜邦 ROE = 净利率 × 总资产周转率 × 权益乘数","DuPont ROE = net margin × asset turnover × equity multiplier"],
@@ -96,9 +98,10 @@ export function bindGlossary() {
     const surface=btn.closest("dialog[open]") || document.body;
     if (tip.parentElement!==surface) surface.appendChild(tip);
     trigger=btn;
-    const [zh,en,descriptionZh,descriptionEn,formulaZh,formulaEn]=entry;
+    const [zh,en,descriptionZh,descriptionEn,formulaZh,formulaEn,source]=entry;
     tip.innerHTML="<strong>"+esc(pair(zh,en))+'</strong><p class="term-formula">'+
-      esc(paragraphs(formulaZh,formulaEn))+"</p><p>"+esc(paragraphs(descriptionZh,descriptionEn))+"</p>";
+      esc(paragraphs(formulaZh,formulaEn))+"</p><p>"+esc(paragraphs(descriptionZh,descriptionEn))+"</p>"+
+      (source?'<p>'+esc(pair(source.zh,source.en)+" · "+source.code)+'</p>':"");
     tip.hidden=false;
     const r=btn.getBoundingClientRect();
     tip.style.left=Math.max(8,Math.min(r.left-12,innerWidth-tip.offsetWidth-12))+"px";
@@ -120,9 +123,10 @@ export function renderGlossarySettings(query="") {
   const q=query.trim().toLowerCase();
   target.innerHTML=Object.entries(glossary).filter(([id,v])=>[id,...v.slice(0,2)].join(" ").toLowerCase().includes(q))
     .sort((a,b)=>pair(a[1][0],a[1][1]).localeCompare(pair(b[1][0],b[1][1]),locale()))
-    .map(([id,[zh,en,,,formulaZh,formulaEn]])=>'<div class="term-card"><label><input type="checkbox" data-hint="'+esc(id)+'"'+
-      (prefs.hints[id]===false?"":" checked")+">"+esc(pair(zh,en))+'</label><p class="term-formula">'+
-      esc(paragraphs(formulaZh,formulaEn))+'</p></div>').join("");
+    .map(([id,[zh,en,,,formulaZh,formulaEn,source]])=>'<div class="term-card"><label><input type="checkbox" data-hint="'+esc(id)+'"'+
+      (prefs.hints[id]===false?"":" checked")+'><span data-term-hover="'+esc(id)+'">'+esc(pair(zh,en))+'</span></label><p class="term-formula">'+
+      esc(paragraphs(formulaZh,formulaEn))+'</p>'+(source?'<a class="hint-copy" href="'+esc(source.url)+'" target="_blank" rel="noopener">'+
+        esc(pair(source.zh,source.en)+" · "+source.code)+'</a>':"")+'</div>').join("");
 }
 export function setAllHints(enabled) {
   prefs.hints=Object.fromEntries(Object.keys(glossary).map(key=>[key,enabled]));

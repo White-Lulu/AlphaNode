@@ -1116,7 +1116,7 @@ function radarSelectionCount() {
   $("radar-selection-count").textContent=pair("已选 "+count+" / "+available+" 项财务指标",count+" / "+available+" financial metrics selected");
 }
 function renderRadarSettings() {
-  const terms=Object.keys(glossary),metrics=terms.filter(key=>Object.hasOwn(meta.metrics,key)).length;
+  const terms=Object.keys(glossary),metrics=terms.filter(key=>key.startsWith("macro:")||Object.hasOwn(meta.metrics,key)).length;
   $("term-coverage-count").textContent=pair(number(metrics)+" 项指标 · "+number(terms.length-metrics)+" 个其他术语",
     number(metrics)+" metrics · "+number(terms.length-metrics)+" other terms");
   const selected=new Set(selectedRadarMetrics(meta));
