@@ -59,6 +59,7 @@ agriculture|农业增加值占 GDP|Agriculture value added / GDP|structure|NV.AG
 manufacturing|制造业增加值占 GDP|Manufacturing value added / GDP|structure|NV.IND.MANF.ZS|pct
 industry|工业增加值占 GDP|Industry value added / GDP|structure|NV.IND.TOTL.ZS|pct
 services|服务业增加值占 GDP|Services value added / GDP|structure|NV.SRV.TOTL.ZS|pct
+gdpPerCapitaReal|实际人均 GDP（2015 年不变美元）|Real GDP per capita, constant 2015 USD|growth|NY.GDP.PCAP.KD|usdPerCapita
 """
 def field(line,source,frequency="A"):
     key,zh,en,category,code,unit=line.split("|")
