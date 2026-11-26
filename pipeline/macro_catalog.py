@@ -8,6 +8,7 @@ CATEGORIES=[
  ("external","贸易与国际收支","Trade and external balances"),
  ("stability","信用、住房与金融稳定","Credit, housing and financial stability"),
  ("structure","经济结构","Economic structure"),
+ ("costs","上游成本与全球基准","Input costs and global benchmarks"),
 ]
 # International areas remain separate from their member economies.
 ECONOMIES="WLD EMU EUU OED HIC MIC LMY USA CHN JPN DEU IND GBR FRA ITA CAN AUS BRA RUS KOR MEX IDN TUR SAU ZAF ARG ESP NLD CHE SWE NOR DNK POL CZE HUN GRC PRT IRL AUT BEL FIN NZL SGP HKG TWN MYS THA VNM PHL ISR ARE EGY NGA KEN PAK BGD CHL COL PER".split()
@@ -60,6 +61,11 @@ manufacturing|制造业增加值占 GDP|Manufacturing value added / GDP|structur
 industry|工业增加值占 GDP|Industry value added / GDP|structure|NV.IND.TOTL.ZS|pct
 services|服务业增加值占 GDP|Services value added / GDP|structure|NV.SRV.TOTL.ZS|pct
 gdpPerCapitaReal|实际人均 GDP（2015 年不变美元）|Real GDP per capita, constant 2015 USD|growth|NY.GDP.PCAP.KD|usdPerCapita
+gdpReal|实际 GDP（2015 年不变美元）|Real GDP, constant 2015 USD|growth|NY.GDP.MKTP.KD|money
+gdpPerCapitaPpp|人均 GDP（2021 年不变国际元，PPP）|GDP per capita, constant 2021 international dollars, PPP|growth|NY.GDP.PCAP.PP.KD|intPerCapita
+consumptionGrowth|实际家庭消费增速|Real household consumption growth|growth|NE.CON.PRVT.KD.ZG|pct
+fixedInvestmentGrowth|实际固定资本形成增速|Real gross fixed capital formation growth|growth|NE.GDI.FTOT.KD.ZG|pct
+labourProductivity|劳动生产率（2021 年不变国际元／就业者）|GDP per worker, constant 2021 international dollars|labor|SL.GDP.PCAP.EM.KD|intPerWorker
 """
 def field(line,source,frequency="A"):
     key,zh,en,category,code,unit=line.split("|")
@@ -68,6 +74,9 @@ WB=[field(line,"wb") for line in WB_FIELDS.strip().splitlines()]
 IMF=[
  field("governmentDebt|一般政府总债务占 GDP|General government gross debt / GDP|fiscal|GGXWDG_NGDP|pct","imf"),
  field("fiscalBalance|一般政府净贷出／借入占 GDP|General government net lending / borrowing / GDP|fiscal|GGXCNL_NGDP|pct","imf"),
+ field("generalGovRevenue|一般政府收入占 GDP|General government revenue / GDP|fiscal|GGR_G01_GDP_PT|pct","imfFM"),
+ field("generalGovExpenditure|一般政府总支出占 GDP|General government expenditure / GDP|fiscal|G_X_G01_GDP_PT|pct","imfFM"),
+ field("primaryBalance|一般政府基本财政余额占 GDP|General government primary balance / GDP|fiscal|GGXONLB_G01_GDP_PT|pct","imfFM"),
 ]
 BIS=[
  field("policyRate|央行政策利率（月末）|Central bank policy rate, month end|money|WS_CBPOL|pct","bis","M"),
@@ -100,9 +109,34 @@ FRED=[
  ("usGdpQuarter","实际 GDP 季环比折年率（美国）","Real GDP quarterly annualized growth, US","growth","A191RL1Q225SBEA","pct","Q","level",.01,"BEA"),
  ("usHousingStarts","新屋开工折年量（美国）","Housing starts, seasonally adjusted annual rate, US","stability","HOUST","count","M","level",1000,"US Census Bureau"),
 ]
+OECD=[
+ # id, labels, category, frequency, measure, unit, activity, adjustment, transformation
+ ("gdpQuarterGrowth","实际 GDP 季环比（季调）","Real GDP quarter-on-quarter, seasonally adjusted","growth","Q","B1GQ_Q","GR","_T","Y","G1","pct"),
+ ("gdpQuarterYoy","实际 GDP 季度同比（季调）","Real GDP quarterly year-on-year, seasonally adjusted","growth","Q","B1GQ_Q","GR","_T","Y","GY","pct"),
+ ("industrialMonthly","工业产出同比（季调，月度）","Industrial production YoY, seasonally adjusted, monthly","growth","M","PRVM","GR","BTE","Y","GY","pct"),
+ ("retailVolumeMonthly","实际零售额同比（季调，月度）","Retail trade volume YoY, seasonally adjusted, monthly","growth","M","TOVM","GR","G47","Y","GY","pct"),
+ ("hourlyEarningsMonthly","制造业名义时薪同比（季调，月度）","Manufacturing nominal hourly earnings YoY, seasonally adjusted, monthly","labor","M","H_EARN","GR","C","Y","GY","pct"),
+ ("unemploymentMonthly","失业率（季调，月度）","Unemployment rate, seasonally adjusted, monthly","labor","M","UNEMP","PT_LF","_T","Y","_Z","pct"),
+ ("longTermYield","长期国债收益率（月均）","Long-term government bond yield, monthly average","money","M","IRLT","PA","_Z","_Z","_Z","pct"),
+ ("leadingIndicator","综合领先指标（长期趋势＝100）","Composite leading indicator, long-term trend = 100","growth","M","LI","IX","_T","AA","_Z","index"),
+]
+IIP=[
+ field("niip|国际投资净头寸（季度）|Net international investment position, quarterly|external|NIIP|money","imfIip","Q"),
+ field("niipAnnual|国际投资净头寸（年度）|Net international investment position, annual|external|NIIP|money","imfIip","A"),
+]
+COSTS=[
+ ("brent","布伦特原油价格（全球基准）","Brent crude oil price, global benchmark","DCOILBRENTEU","usdPerBarrel"),
+ ("wti","WTI 原油价格（美国基准）","WTI crude oil price, US benchmark","DCOILWTICO","usdPerBarrel"),
+ ("henryHub","Henry Hub 天然气价格（美国基准）","Henry Hub natural gas price, US benchmark","DHHNGSP","usdPerMmbtu"),
+]
+DERIVED=[field("usYieldSlope|美国国债 10 年−2 年利差（月均）|US Treasury 10-year minus 2-year spread, monthly average|money|DGS10-DGS2|pp","fred","M")]
 SOURCES={
  "wb":{"name":"世界银行 WDI","en":"World Bank WDI","url":"https://databank.worldbank.org/source/world-development-indicators","terms":"https://data.worldbank.org/summary-terms-of-use"},
  "imf":{"name":"IMF WEO","en":"IMF WEO","url":"https://www.imf.org/external/datamapper/","terms":"https://www.imf.org/en/about/copyright-and-terms"},
  "bis":{"name":"国际清算银行／各国央行","en":"BIS / national central banks","url":"https://data.bis.org/","terms":"https://www.bis.org/about/terms-conditions"},
  "fred":{"name":"美国官方机构／FRED","en":"US official agencies / FRED","url":"https://fred.stlouisfed.org/","terms":"https://fred.stlouisfed.org/legal/"},
+ "imfFM":{"name":"IMF 财政监测","en":"IMF Fiscal Monitor","url":"https://www.imf.org/external/datamapper/datasets/FM","terms":"https://www.imf.org/en/about/copyright-and-terms"},
+ "imfIip":{"name":"IMF／各国国际收支统计","en":"IMF / national external-sector statistics","url":"https://data.imf.org/Datasets/IIP","terms":"https://www.imf.org/en/about/copyright-and-terms"},
+ "oecd":{"name":"OECD／各国统计机构","en":"OECD / national statistical agencies","url":"https://data-explorer.oecd.org/","terms":"https://www.oecd.org/en/about/terms-conditions.html"},
+ "eia":{"name":"美国 EIA／FRED","en":"US EIA / FRED","url":"https://www.eia.gov/petroleum/prices/","terms":"https://www.eia.gov/about/copyrights_reuse.php"},
 }

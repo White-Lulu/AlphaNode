@@ -36,9 +36,9 @@ AlphaNode（全球行业数据图谱）是一个用来学习、分析市场基�
 
 ### 宏观经济图谱
 
-![宏观经济图谱功能图。按八个主题选择指标，与经济体和观察期组成数据表，再用折线、柱状或散点图比较，保存到工作台继续分析。](docs/images/macro-flow.svg)
+![宏观经济图谱功能图。按主题选择指标，与经济体和观察期组成数据表，再用折线、柱状或散点图比较，保存到工作台继续分析。](docs/images/macro-flow.svg)
 
-宏观页面覆盖增长与需求、通胀、就业、货币与利率、财政、国际收支、信用与住房、经济结构八个主题，收录 75 项指标、59 个经济体及区域组合。
+宏观页面覆盖增长与需求、通胀、就业、货币与利率、财政、国际收支、信用与住房、经济结构和上游成本九个主题，收录 98 项指标、59 个经济体及区域组合。各指标的经济体与时间覆盖不同，缺失数据保留为空；原油、天然气价格仅在全球行作为基准参考。
 
 ### 设置
 
@@ -183,7 +183,7 @@ Adobe 的两条线还受同一件事影响。2024 财年的 **10 亿美元 Figma
 | 产品市场 | 读取 [IEA 电动车数据](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer)、[EIA-861](https://www.eia.gov/electricity/data/eia861/) 和 EIA 汽油数据。项目据此计算海外 EV 渗透率、州级售电 HHI 和市占率，并用 EIA 月度数据和 CPI 回归估算汽油需求弹性。 |
 | 证券目录和股价 | 目录来自锁定版本的 [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase)，推定主上市及财报链接由项目生成。股价按需读取 Yahoo Finance 的周频复权数据。 |
 | 产业链图谱 | 工序和投入参考 [美国地质调查局矿产资料](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries)、[美国能源部电池供应链](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15)、[ASML 芯片制造流程](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) 和企业年报。节点详情标注通用工艺示例及有披露支持的企业关系，并附原始链接。 |
-| 宏观经济图谱 | 来自 [世界银行 WDI](https://data.worldbank.org/)、[IMF DataMapper／WEO](https://www.imf.org/external/datamapper/)、[BIS](https://data.bis.org/) 和 [FRED](https://fred.stlouisfed.org/)，同比、较上期变化和基期指数由项目计算。IMF 历史数据可能含估计。|
+| 宏观经济图谱 | 来自 [世界银行 WDI](https://data.worldbank.org/)、[IMF WEO](https://www.imf.org/external/datamapper/)、[IMF 财政监测](https://www.imf.org/external/datamapper/datasets/FM)、[IMF 国际投资头寸](https://data.imf.org/Datasets/IIP)、[BIS](https://data.bis.org/)、[OECD](https://data-explorer.oecd.org/) 及经 [FRED](https://fred.stlouisfed.org/) 获取的美国官方数据（含 [EIA 能源价格](https://www.eia.gov/petroleum/prices/)）。图表中的同比、较上期变化、基期指数及美国国债期限利差由项目计算；保留来源频率、季节调整和估计／暂定标记。IMF 历史数据可能含估计，部分财政数据按财政年度发布。|
 
 行业财务的「全球」指纳入样本中的全球企业。官方统计保留各机构的调查范围，产品市场保留各自的分母。行业财务金额同比在共同样本上计算，利润率同比用百分点表示。缺报、无效基数和不适用指标保留空值。页面右下角的「数据说明」与表格数值明细提供更具体的出处与公式。
 

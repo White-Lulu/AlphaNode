@@ -16,7 +16,8 @@ import zipfile
 import requests
 
 from fetch import ROOT, CACHE, fetch as fetch_source, cached_file, read_cached
-from macro_catalog import BIS, CATEGORIES, ECONOMIES, FRED, IMF, SOURCES, WB
+from macro_catalog import BIS, CATEGORIES, COSTS, DERIVED, ECONOMIES, FRED, IIP, IMF, OECD, SOURCES, WB
+from macro_supplement import build_costs, build_iip, build_oecd
 
 START = 2000
 TODAY = date.today()
@@ -57,26 +58,28 @@ def set_value(rows, economy, period, value, unit, notes=None):
     if economy not in ECONOMIES or value is None or not period_allowed(period):
         return
     row = rows.setdefault(economy, series_row(economy))
-    row["values"][period] = value / 100 if unit == "pct" else value
+    row["values"][period] = value / 100 if unit in ("pct", "pp") else value
     if notes:
         row["notes"].update({key: text for key, text in notes.items() if text})
 
-def build_wb(countries):
+def build_wb(countries, selected=None):
+    selected = WB if selected is None else selected
     codes = ";".join(c["id"] for c in countries if c["id"] != "TWN")
     definitions = load_json("wb-wdi-definitions", "https://api.worldbank.org/v2/indicator",
         {"source": 2, "format": "json", "per_page": 20000})[1]
     definitions = {row["id"]: row for row in definitions}
     output = {}
-    for offset in range(0, len(WB), 10):
-        chunk = WB[offset:offset+10]
+    for offset in range(0, len(selected), 10):
+        chunk = selected[offset:offset+10]
         endpoint = "https://api.worldbank.org/v2/country/" + codes + "/indicator/" + ";".join(m["code"] for m in chunk)
-        pages = load_json("wb-" + str(offset), endpoint, {
+        batch = "wb-" + hashlib.sha256((endpoint + f"/{START}/{END}").encode()).hexdigest()[:16]
+        pages = load_json(batch, endpoint, {
             "source": 2, "format": "json", "date": f"{START}:{END}", "per_page": 20000})
         if not isinstance(pages, list) or len(pages) != 2 or "pages" not in pages[0]:
             raise ValueError("World Bank returned an invalid data response")
         records = pages[1] or []
         for page in range(2, int(pages[0]["pages"])+1):
-            records.extend(load_json(f"wb-{offset}-{page}", endpoint, {
+            records.extend(load_json(f"{batch}-{page}", endpoint, {
                 "source": 2, "format": "json", "date": f"{START}:{END}", "per_page": 20000, "page": page})[1] or [])
         for metric in chunk:
             rows = {}
@@ -92,22 +95,28 @@ def build_wb(countries):
             }
     return output
 
-def build_imf():
+def build_imf(selected=None):
     output = {}
-    for metric in IMF:
+    for metric in IMF if selected is None else selected:
         endpoint = "https://www.imf.org/external/datamapper/api/v2/" + metric["code"]
         data = load_json(metric["code"], endpoint)
         info = data["indicators"][metric["code"]]
+        is_fm = metric["source"] == "imfFM"
+        note = ("IMF 财政监测：一般政府范围，包含来源估计值；部分经济体采用财政年度。基本余额排除净利息支出。仅展示来源标为预测起始年之前的完整年度。" if is_fm else
+            "IMF WEO 历史序列可能含工作人员估计，展示至最近完整历年。")
+        note_en = ("IMF Fiscal Monitor, generally general-government coverage; includes source estimates and fiscal-year reporting in some economies. Primary balances exclude net interest expense. Only completed years before the source projection start are shown." if is_fm else
+            "Historical WEO observations can include IMF staff estimates. Only completed calendar years are shown.")
         rows = {}
         for economy, history in data["values"][metric["code"]].items():
             for period, value in history.items():
+                if int(period) >= int(info.get("projection-year", TODAY.year)):
+                    continue
                 set_value(rows, economy, period, value, metric["unit"])
         output[metric["id"]] = {
             **metric, "rows": list(rows.values()), "definition": info.get("description", ""),
             "publisher": info.get("source", "IMF WEO"), "updated": info.get("last-modified", "")[:10],
             "url": "https://www.imf.org/external/datamapper/" + metric["code"],
-            "note": "IMF WEO 历史序列可能含工作人员估计，展示至最近完整历年。",
-            "noteEn": "Historical WEO observations can include IMF staff estimates. Only completed calendar years are shown.",
+            "note": note, "noteEn": note_en,
         }
     return output
 
@@ -208,19 +217,50 @@ def build_fred():
                 "US official source via FRED. Monthly observations retain the source seasonal adjustment. Treasury yields are calendar-month averages; Federal Reserve assets use the final published weekly observation of each month.")
     return output
 
-def build(cached=False):
+def build_derived(metrics):
+    long = {row["economy"]: row["values"] for row in metrics["usTreasury10"]["rows"]}
+    short = {row["economy"]: row["values"] for row in metrics["usTreasury2"]["rows"]}
+    rows = []
+    for economy in long.keys() & short.keys():
+        periods = long[economy].keys() & short[economy].keys()
+        values = {period: long[economy][period] - short[economy][period] for period in sorted(periods)}
+        if values:
+            rows.append({"economy": economy, "values": values, "notes": {}})
+    metric = DERIVED[0]
+    return {metric["id"]: {**metric, "rows": rows, "derived": True,
+        "publisher": "Federal Reserve H.15 via FRED; AlphaNode calculation",
+        "definition": "Spread = monthly average 10-year Treasury yield minus monthly average 2-year Treasury yield. Values are stored as fractions and displayed in percentage points; negative values indicate inversion.",
+        "note": "本项目计算：10 年期国债月均年化收益率减 2 年期国债月均年化收益率，仅匹配同月有效值。以百分点显示，负值表示期限倒挂，不代表必然出现衰退。",
+        "noteEn": "Calculated by AlphaNode from the two monthly average annualized yields, matching valid observations in the same month. Displayed in percentage points. Negative values indicate inversion, not a guaranteed recession.",
+        "url": "https://fred.stlouisfed.org/graph/?id=DGS10,DGS2"}}
+
+
+def build(cached=False, extend=False):
     global USE_CACHE_ONLY
     USE_CACHE_ONLY = cached
     if cached:
-        needed = ["macro-atlas-wb-0.json", "macro-atlas-WS_CBPOL.csv"]
+        needed = ["macro-atlas-countries.json"]
         if not all(cached_file(CACHE/name).exists() for name in needed):
             raise RuntimeError("Macro caches are missing. Run python pipeline/macro_atlas.py first.")
     country_data = load_json("countries", "https://api.worldbank.org/v2/country", {"format": "json", "per_page": 400})[1]
     countries = [{**item, "iso2": item["iso2Code"]} for item in country_data if item["id"] in ECONOMIES]
     countries.append({"id": "TWN", "iso2": "TW", "name": "Taiwan region", "region": {"id": "EAS", "value": "East Asia & Pacific"}})
     countries.sort(key=lambda c: ECONOMIES.index(c["id"]))
-    jobs = {"wb": lambda: build_wb(countries), "bis": lambda: build_bis(countries), "imf": build_imf, "fred": build_fred}
     metrics, errors = {}, []
+    output = ROOT/"dist/data/macro-atlas"
+    if extend:
+        manifest = json.loads((output/"index.json").read_text(encoding="utf-8"))
+        metrics = {item["id"]: json.loads((output/item["file"]).read_text(encoding="utf-8")) for item in manifest["metrics"]}
+    needed = lambda definitions: [item for item in definitions if item["id"] not in metrics]
+    selected_wb, selected_imf = needed(WB), needed(IMF)
+    jobs = {}
+    if selected_wb: jobs["wb"] = lambda: build_wb(countries, selected_wb)
+    if selected_imf: jobs["imf"] = lambda: build_imf(selected_imf)
+    if needed(BIS): jobs["bis"] = lambda: build_bis(countries)
+    if any(item[0] not in metrics for item in FRED): jobs["fred"] = build_fred
+    if any(item[0] not in metrics for item in OECD): jobs["oecd"] = lambda: build_oecd(countries, fetch, set_value)
+    if needed(IIP): jobs["iip"] = lambda: build_iip(countries, fetch, set_value)
+    if any(item[0] not in metrics for item in COSTS): jobs["costs"] = lambda: build_costs(fetch, set_value)
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = {pool.submit(job): name for name, job in jobs.items()}
         for task in as_completed(futures):
@@ -232,14 +272,15 @@ def build(cached=False):
             except Exception as error:
                 errors.append({"source": source, "error": str(error)})
                 print(source, "FAILED", str(error)[:200], flush=True)
-    expected = len(WB)+len(BIS)+len(IMF)+len(FRED)
+    if not errors:
+        metrics.update(build_derived(metrics))
+    expected = len(WB)+len(BIS)+len(IMF)+len(FRED)+len(OECD)+len(IIP)+len(COSTS)+len(DERIVED)
     if errors or len(metrics) != expected or any(not item["rows"] for item in metrics.values()):
         raise RuntimeError("Macro build incomplete; existing output retained. " + json.dumps(errors))
     for item in metrics.values():
         for row in item["rows"]:
             row["values"] = dict(sorted(row["values"].items()))
             assert row["values"] and all(math.isfinite(v) for v in row["values"].values())
-    output = ROOT/"dist/data/macro-atlas"
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".macro-", dir=output.parent))
     try:
@@ -271,9 +312,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cached", action="store_true")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--extend", action="store_true", help="Add missing indicators while retaining existing published histories")
     args = parser.parse_args()
     if args.force and args.cached:
         parser.error("--cached and --force are mutually exclusive")
     if args.force:
         os.environ["INDUSTRYLAB_REFRESH"] = "1"
-    build(args.cached)
+    build(args.cached, args.extend)

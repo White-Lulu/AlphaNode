@@ -82,7 +82,7 @@ export function drawScatter(card,chart,meta,{canvas,ctx,w,h,styles,colors}) {
   ctx.textAlign="right";caption("X · "+axisLabel(spec.x),area.r,h-5,w-16);
   if(!points.length) {
     ctx.textAlign="center";
-    ctx.fillText(pair("没有同频率、同期间的有效配对","No valid pairs at the same frequency and period"),w/2,h/2);
+    ctx.fillText(chart.emptyMessage||pair("没有同频率、同期间的有效配对","No valid pairs at the same frequency and period"),w/2,h/2);
     clearChartHover(canvas);tip.hidden=cursor.hidden=true;
     return;
   }

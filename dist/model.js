@@ -145,6 +145,8 @@ const units={
   people:["万人","10k persons"],vehicles:["万辆","10k vehicles"],mwh:["TWh","TWh"],
   intMoney:["亿国际元","International $ × 100m"],
   usdPerCapita:["美元／人","USD/person"],months:["月","months"],fx:["本币／美元","LCU/USD"],
+  intPerCapita:["国际元／人","International $/person"],intPerWorker:["国际元／就业者","International $/worker"],
+  usdPerBarrel:["美元／桶","USD/barrel"],usdPerMmbtu:["美元／百万英热单位","USD/MMBtu"],
   gasprice:["美元／加仑","USD/gal"],gasvol:["千桶／日","kb/d"]
 };
 export function unitLabel(metric,mode,meta,currency="USD") {

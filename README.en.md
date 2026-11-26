@@ -36,9 +36,9 @@ Compare multiple pathways from the catalog. Click a node for its inputs, outputs
 
 ### Explore the macroeconomy
 
-![Macroeconomic Atlas workflow. Choose indicators from eight topics, compare economies in a multi-column table, chart time series or paired scatter points, then save them to the Workbench.](docs/images/en/macro-flow.svg)
+![Macroeconomic Atlas workflow. Choose indicators by topic, compare economies in a multi-column table, chart time series or paired scatter points, then save them to the Workbench.](docs/images/en/macro-flow.svg)
 
-The Macroeconomic Atlas contains 75 indicators across 59 economies and regional aggregates. Its eight topics cover growth, inflation, labour, money and rates, fiscal policy, external balances, credit and housing, and economic structure.
+The Macroeconomic Atlas contains 98 indicators across 59 economies and regional aggregates. Its nine topics cover growth, inflation, labour, money and rates, fiscal policy, external balances, credit and housing, economic structure, and input costs. Country and time coverage vary by indicator; missing observations remain empty. Oil and natural gas prices appear only on the World row as benchmark references.
 
 ### Adjust the display
 
@@ -171,7 +171,7 @@ Xiaoba often researches at night and prefers a high-contrast display. In **Setti
 | Product markets | [IEA EV data](https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer), [EIA-861](https://www.eia.gov/electricity/data/eia861/) and EIA gasoline data. AlphaNode estimates EV shares outside China, state-level electricity retail shares and HHI, and gasoline demand elasticity using monthly EIA data and CPI. |
 | Securities directory and stock prices | The directory uses a pinned version of [FinanceDatabase](https://github.com/JerBouma/FinanceDatabase), with inferred primary listings and filing links. Adjusted weekly stock prices are requested on demand from Yahoo Finance. |
 | Value Chain Atlas | Processes and materials draw on [USGS mineral summaries](https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries), [US Department of Energy battery supply chains](https://www.energy.gov/sites/default/files/2024-12/Supply_Chain_Readiness_Level_SCRL_Analysis_Nov-2024_2024.12.20.pdf#page=15), [ASML’s chipmaking guide](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made) and company filings. Node details link to sources for typical processes and disclosed company relationships. |
-| Macroeconomic Atlas | [World Bank WDI](https://data.worldbank.org/), [IMF DataMapper / WEO](https://www.imf.org/external/datamapper/), [BIS](https://data.bis.org/) and [FRED](https://fred.stlouisfed.org/). AlphaNode computes year-on-year growth, period changes and baseline indices. IMF historical data may include estimates. |
+| Macroeconomic Atlas | [World Bank WDI](https://data.worldbank.org/), [IMF WEO](https://www.imf.org/external/datamapper/), [IMF Fiscal Monitor](https://www.imf.org/external/datamapper/datasets/FM), [IMF International Investment Position](https://data.imf.org/Datasets/IIP), [BIS](https://data.bis.org/), [OECD](https://data-explorer.oecd.org/) and US official data via [FRED](https://fred.stlouisfed.org/), including [EIA energy prices](https://www.eia.gov/petroleum/prices/). AlphaNode calculates chart transformations and the US Treasury term spread, retaining source frequencies, seasonal adjustments and estimated/provisional flags. IMF history may include estimates; some fiscal series use fiscal years. |
 
 Worldwide company totals cover the project's sample. Official statistics retain the source's coverage. Year-over-year growth in industry amounts uses a matched sample, and changes in profitability ratios use percentage points. Missing reports, invalid denominators and inapplicable metrics appear as blank values. Use **Methodology** or click a table value for its source and calculation.
 

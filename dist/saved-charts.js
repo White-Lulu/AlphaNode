@@ -71,7 +71,7 @@ function chartTitle(chart) {
 function snapshot(chart,title) {
   const years=(chart.years??meta.years).slice();
   return {id:crypto.randomUUID(),title,created:Date.now(),updated:chart.built??meta.built,years,
-    ...(chart.macro?{macro:true,type:chart.type,height:chart.height,tags:chart.tags,metricDefinitions:chart.metricDefinitions,scatter:chart.scatter}:{}),
+    ...(chart.macro?{macro:true,type:chart.type,height:chart.height,tags:chart.tags,sourceNotes:chart.sourceNotes,metricDefinitions:chart.metricDefinitions,scatter:chart.scatter}:{}),
     metric:chart.metric,mode:chart.mode,baseline:chart.baseline??null,pins:chart.pins.map(pin=>({
       row:{id:pin.row.id,kind:pin.row.kind,currency:pin.row.currency||"USD",scheme:pin.row.scheme},
       scope:pin.scope,aggregate:pin.aggregate,isAggregate:pin.isAggregate,source:pin.source,savedName:seriesName(pin),
@@ -263,7 +263,7 @@ function analysisContext(chart) {
       const spec=part.scatter;
       const axis=key=>({metric:metricLabel(key,metadata),unit:unitLabel(key,"level",metadata)});
       return part.pins.map((pin,index)=>({name:seriesName(pin),chartTitle:part.title,chartType:"scatter",view:spec.view,
-        x:axis(spec.x),y:axis(spec.y),frequency:spec.frequency,source:pin.source,isAggregate:pin.isAggregate,
+        x:axis(spec.x),y:axis(spec.y),frequency:spec.frequency,source:pin.source,sourceNotes:part.sourceNotes,isAggregate:pin.isAggregate,
         observationFields:["period","x","y"],
         observations:spec.points.filter(point=>point.pin===index).map(point=>[point.period,
           scale(point.x,spec.x,"level",metadata),scale(point.y,spec.y,"level",metadata)]),
@@ -274,7 +274,7 @@ function analysisContext(chart) {
     return series.map((line,i)=>{
       const pin=part.pins[i],unit=resultUnit(part.metric,part.mode,metadata);
       return {name:line.name,chartTitle:part.title,metric:metricLabel(part.metric,metadata),timeBasis:part.tags?.join(" · ")??modeLabel(part.mode),baselineYear:baseline,
-        region:scopeLabel(pin.scope),classification:pin.row.scheme,source:pin.source,aggregation:pin.aggregate,
+        region:scopeLabel(pin.scope),classification:pin.row.scheme,source:pin.source,sourceNotes:part.sourceNotes,aggregation:pin.aggregate,
         unit:baseline?"%":unitLabel(part.metric,part.mode,metadata,line.currency),
         currency:!baseline&&unit==="money"?line.currency:undefined,
         observations:years.map((year,j)=>{

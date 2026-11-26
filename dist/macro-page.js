@@ -78,6 +78,13 @@ export function renderMacroPage(host,catalog) {
   const metadata=metric=>({metrics:{[metric.id]:[metric.name,metric.unit,metric.en]}});
   const display=(metric,value)=>format(value,metric.id,"level",metadata(metric));
   const unit=metric=>unitLabel(metric.id,"level",metadata(metric));
+  const frequencyLabel=metric=>pair(...frequencies[metric.frequency])+(metric.reference?" · "+pair("基准参考，仅全球行","Benchmark reference, World row only"):"");
+  const sourceFlag=flag=>({P:pair("暂定值","Provisional"),E:pair("估计值","Estimated"),B:pair("序列断点","Series break"),F:pair("预测值","Forecast")}[flag]??flag);
+  function chartSourceNotes(metric,data,ids,periods) {
+    const flags=[...new Set(data.rows.filter(row=>ids.includes(row.economy)).flatMap(row=>periods.map(period=>row.flags?.[period]).filter(Boolean)))];
+    return [metric.note?pair(metric.note,metric.noteEn??metric.note):"",
+      flags.length?pair("图中包含来源标记：","Source flags in this chart: ")+flags.map(sourceFlag).join(", "):""].filter(Boolean);
+  }
   const phone=matchMedia("(max-width:700px)");
   host.innerHTML='<section class="panel macro-data"><div class="filter-bar macro-toolbar">'+
     '<div class="control"><span id="macro-economies-title">'+label("经济体","Economies")+'</span><div id="macro-economies"></div></div>'+
@@ -157,7 +164,7 @@ export function renderMacroPage(host,catalog) {
           const term="macro:"+metric.id,entry=glossary[term];
           return '<div class="column-card"><label><input type="checkbox" data-macro-column="'+metric.id+
             '"'+(state.columns.includes(metric.id)?" checked":"")+'><span><span data-term-hover="'+term+'">'+esc(nameOf(metric))+
-            '</span><small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+'</small></span></label>'+
+            '</span><small>'+esc(frequencyLabel(metric)+" · "+unit(metric))+'</small></span></label>'+
             (prefs.columnGlossary&&entry?'<p class="term-formula">'+esc(paragraphs(entry[4],entry[5]))+'</p>':"")+'</div>';
         }).join("")+'</div></section>';
     }).join("");
@@ -218,7 +225,7 @@ export function renderMacroPage(host,catalog) {
       state.columns.map(id=>{
         const metric=metrics.get(id);
         return '<th scope="col"><button type="button" class="sort" data-macro-sort="'+id+'"><span data-term-hover="macro:'+id+'">'+esc(nameOf(metric))+
-          '</span>'+(state.sort===id?(state.descending?" ↓":" ↑"):"")+'</button><small>'+esc(pair(...frequencies[metric.frequency])+" · "+unit(metric))+
+          '</span>'+(state.sort===id?(state.descending?" ↓":" ↑"):"")+'</button><small>'+esc(frequencyLabel(metric)+" · "+unit(metric))+
           '</small><button type="button" class="macro-column-plot" data-macro-plot="'+id+'" aria-label="'+
           esc(pair("绘制 "+nameOf(metric),"Chart "+nameOf(metric)))+'">+</button></th>';
       }).join("")+'</tr>';
@@ -227,9 +234,11 @@ export function renderMacroPage(host,catalog) {
       '<button type="button" class="pin" data-macro-pin="'+economy+'" aria-label="'+label("为该经济体绘制所选指标","Chart selected indicators for this economy")+'">＋</button></div></th>'+
       state.columns.map(id=>{
         const value=valueFor(id,economy),period=observationPeriod(id,economy), metric=metrics.get(id);
+        const flag=tableData.get(id)?.rows.find(row=>row.economy===economy)?.flags?.[period];
         const color=prefs.heat!==false?heatColor(value,ranges.get(id)):"";
         return '<td data-macro-cell="'+id+'"'+(color?' style="background:'+color+'"':"")+'><button type="button" class="macro-value" data-macro-source="'+id+
-          '" data-macro-detail="'+economy+'">'+display(metric,value)+'</button><small>'+esc(period??"—")+'</small></td>';
+          '" data-macro-detail="'+economy+'">'+display(metric,value)+'</button><small'+(flag?' title="'+esc(sourceFlag(flag))+'"':"")+'>'+esc(period??"—")+
+          (flag?" · "+esc(flag):"")+'</small></td>';
       }).join("")+'</tr>').join("");
     const columnLimits=()=>({min:110,max:Math.max(110,Math.min(620,(panelfor("data").clientWidth||host.clientWidth)-88))});
     bindChainSplitter(grid.querySelector('[data-resize="macro-economy-column"]'),{
@@ -254,10 +263,12 @@ export function renderMacroPage(host,catalog) {
     state.metric=metricId;
     const source=catalog.sources[current.source], row=current.rows.find(item=>item.economy===economy);
     const remarks=row?.notes??{};
+    const period=observationPeriod(metricId,economy),flag=row?.flags?.[period];
     field("source").innerHTML='<p><strong data-term-hover="macro:'+metricId+'">'+esc(nameOf(current))+'</strong> · '+esc(unit(current))+' · '+pair(...frequencies[current.frequency])+'</p>'+
       '<p><a target="_blank" rel="noopener" href="'+esc(current.url)+'">'+esc(current.publisher??nameOf(source))+'</a> · '+esc(current.code)+
       (current.updated?' · '+label("来源更新","Source updated")+" "+esc(current.updated):"")+'</p>'+
       (current.note?'<p>'+esc(pair(current.note,current.noteEn??current.note))+'</p>':"")+
+      (flag?'<p>'+esc(period+" · "+pair("来源标记：","Source flag: ")+sourceFlag(flag))+'</p>':"")+
       (remarks.standard?'<p><strong>'+esc(economyName(economy))+'</strong> · '+esc(remarks.standard)+'</p>':"")+
       (remarks.breaks?'<p>'+esc(remarks.breaks)+'</p>':"")+
       '<details><summary>'+label("原始定义","Original definition")+'</summary><p>'+esc(current.definition)+'</p></details>'+
@@ -339,14 +350,16 @@ export function renderMacroPage(host,catalog) {
   async function prepareScatter(config) {
     ensureScatter(config);
     const x=metrics.get(config.indicator),y=metrics.get(config.scatterY);
-    const [xData,yData]=await Promise.all([loadHistory(x),loadHistory(y)]);
+    const [xData,yData]=config.economies.length?await Promise.all([loadHistory(x),loadHistory(y)]):[{rows:[]},{rows:[]}];
     const matched=pairScatter(xData.rows,yData.rows,config.economies,{view:config.scatterView,period:config.scatterPeriod,range:config.range});
     const years=[...new Set(matched.points.map(point=>point.period))].sort();
     const sampleCount=new Set(matched.points.map(point=>point.pin)).size;
     const title=macroChartTitle(config,x,years,{y,period:matched.period});
     const periodText=config.scatterView==="cross"?matched.period??"—":years.length?years[0]+"–"+years.at(-1):"—";
     return {id:config.id,macro:true,built:catalog.built,title,mode:"level",metric:y.id,type:"scatter",height:config.height??300,years,
+      emptyMessage:!config.economies.length?pair("点击左侧经济体的 ＋ 添加对照点。","Use + beside an economy in the table to add a point."):"",
       metricDefinitions:{[x.id]:[x.name,x.unit,x.en],[y.id]:[y.name,y.unit,y.en]},
+      sourceNotes:[...chartSourceNotes(x,xData,config.economies,years),...chartSourceNotes(y,yData,config.economies,years)],
       scatter:{x:x.id,y:y.id,frequency:x.frequency,view:config.scatterView,period:matched.period,
         points:matched.points,guide:config.scatterGuide,connect:config.scatterConnect},
       availablePeriods:matched.periods,
@@ -362,7 +375,7 @@ export function renderMacroPage(host,catalog) {
   }
   async function prepareChart(config) {
     if(config.type==="scatter") return prepareScatter(config);
-    const metric=metrics.get(config.indicator), data=await loadHistory(metric);
+    const metric=metrics.get(config.indicator), data=config.economies.length?await loadHistory(metric):{rows:[]};
     const available=config.economies.map(id=>data.rows.find(row=>row.economy===id)).filter(Boolean);
     const all=[...new Set(available.flatMap(row=>Object.keys(row.values)))].sort();
     const last=all.at(-1), start=config.range?String(Number(last?.slice(0,4))-config.range+1):String(catalog.start);
@@ -383,7 +396,9 @@ export function renderMacroPage(host,catalog) {
     const title=macroChartTitle(config,metric,periods.filter((period,index)=>pins.some(pin=>finite(pin.savedValues[index].value))),{baseline});
     return {id:config.id,macro:true,built:catalog.built,title,mode:"level",metric:chartMetric,type:config.type,years:periods,height:config.height??230,
       metricDefinitions:{[chartMetric]:[metric.name,resultUnit,metric.en]},
-      emptyMessage:mode==="index"&&!baseline?pair("所选经济体没有共同的正值基期。","No common positive baseline for the selected economies."):
+      sourceNotes:chartSourceNotes(metric,data,config.economies,periods),
+      emptyMessage:!config.economies.length?pair("点击左侧经济体的 ＋ 添加对照序列。","Use + beside an economy in the table to add a series."):
+        mode==="index"&&!baseline?pair("所选经济体没有共同的正值基期。","No common positive baseline for the selected economies."):
         !available.length?pair("所选经济体暂无该指标。","This indicator is unavailable for the selected economies."):"",
       tags:[pair(...frequencies[metric.frequency]),pair(...transformations[mode]),
         ...(available.length<config.economies.length?[pair(available.length+"/"+config.economies.length+" 个经济体有数据",available.length+"/"+config.economies.length+" economies with data")]:[]),
@@ -479,8 +494,7 @@ export function renderMacroPage(host,catalog) {
       plot.textContent=pair("图表读取失败。","Chart could not load.")+" "+error.message;
     }
   }
-  function addChart(ids=chosenEconomies(),indicators=[state.metric],type="line") {
-    if(!ids.length) {status(pair("先勾选经济体。","Select economies first."));return;}
+  function addChart(ids=[],indicators=["gdpGrowth"],type="line") {
     let id=state.charts.reduce((next,chart)=>Math.max(next,chart.id+1),1),row=(state.charts.at(-1)?.row??-1)+1;
     for(const indicator of indicators) {
       state.active=id;
@@ -491,7 +505,7 @@ export function renderMacroPage(host,catalog) {
   }
   function receiveEconomy(id) {
     const target=state.charts.find(chart=>chart.id===state.active);
-    if(!target) {addChart([id]);return;}
+    if(!target) {addChart([id],[state.metric]);return;}
     const added=!target.economies.includes(id);
     if(added) target.economies.push(id);
     if(!state.panels.includes("charts")) state.panels.push("charts");
@@ -540,14 +554,14 @@ export function renderMacroPage(host,catalog) {
     if(key.macroPlot) {addChart(chosenEconomies(),[key.macroPlot]);return;}
     if(key.macroPin) {receiveEconomy(key.macroPin);return;}
     if(button.hasAttribute("data-macro-add")) {addChart();return;}
-    if(button.hasAttribute("data-macro-add-scatter")) {addChart(chosenEconomies(),["gdpGrowth"],"scatter");return;}
+    if(button.hasAttribute("data-macro-add-scatter")) {addChart([],["gdpGrowth"],"scatter");return;}
     if(button.hasAttribute("data-macro-selected")) {addChart(chosenEconomies(),state.columns);return;}
     if(button.hasAttribute("data-macro-export")) {
       const rows=[["Economy","ISO3","Period","Value","Unit","Series","Source"]];
       for(const id of state.columns) {
         const metric=metrics.get(id);
         for(const economy of listedRows()) for(const [period,value] of Object.entries(history(id,economy))) rows.push([economyName(economy),economy,period,
-          value,metric.unit==="pct"?"decimal fraction":metric.unit==="money"?"USD":metric.unit==="intMoney"?"International dollar":unit(metric)||metric.unit,metric.code,metric.url]);
+          metric.unit==="pp"?value*100:value,metric.unit==="pct"?"decimal fraction":metric.unit==="pp"?"percentage points":metric.unit==="money"?"USD":metric.unit==="intMoney"?"International dollar":unit(metric)||metric.unit,metric.code,metric.url]);
       }
       downloadCSV(rows,"AlphaNode-macro.csv");return;
     }
