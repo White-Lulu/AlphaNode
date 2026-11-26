@@ -121,7 +121,7 @@
 :root[data-ui-theme] .primary:hover { background:color-mix(in srgb,var(--theme-action,var(--accent)),var(--surface) 14%); }
 :root[data-ui-theme] :focus-visible { outline-color:var(--theme-focus); }
 :root[data-ui-theme] .filter-pane { background:var(--soft); }
-:root[data-ui-theme] :is(.tabs,.comparison-head,.profile-header) { background:var(--theme-panel-head,var(--surface)); }
+:root[data-ui-theme] :is(.tabs,.comparison-head,.profile-header,.macro-toolbar) { background:var(--theme-panel-head,var(--surface)); }
 :root[data-ui-theme] .tabs { border-radius:inherit; border-end-start-radius:0; border-end-end-radius:0; }
 :root[data-ui-theme] .comparison-head { border-radius:inherit; border-end-start-radius:0; border-end-end-radius:0; }
 :root[data-ui-theme] :is(.chart-tip,.chart-data td,.radar-values td,.profile-grid td) { background:var(--surface); color:var(--theme-ink); }
@@ -207,7 +207,7 @@
 }
 
 /* Modern borderless standard variants: separate regions with fill color instead of frames. */
-:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(.panel,.chart,.table-scroll,.comparison-head,.tabs) {
+:root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) :is(.panel,.chart,.table-scroll,.comparison-head,.tabs,.macro-toolbar) {
   border:0;
 }
 :root:is([data-ui-theme="hm-slate-soft"],[data-ui-theme="hm-cobalt-soft"],[data-ui-theme="hm-cobalt-deep"]) .chart {

@@ -1,8 +1,8 @@
-#macro-page { position:relative; display:grid; grid-template-columns:minmax(0,1fr); min-width:0; min-height:0; gap:8px; }
+#macro-page { --macro-divider:color-mix(in srgb,var(--border),var(--surface) 80%); position:relative; display:grid; grid-template-columns:minmax(0,1fr); min-width:0; min-height:0; gap:8px; }
 #macro-page[data-split=true] { grid-template-columns:minmax(280px,var(--macro-data-width,44%)) minmax(0,1fr); }
 .macro-data,.macro-comparison { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
 .macro-data { align-self:start; max-height:100%; container-type:inline-size; --macro-economy-width:clamp(110px,var(--macro-economy-width-override,155px),min(620px,max(110px,calc(100cqw - 88px)))); }
-.macro-data .macro-toolbar { gap:8px; flex:none; flex-wrap:nowrap; overflow-x:auto; height:var(--pane-header-height); padding-block:4px; }
+.macro-data .macro-toolbar { gap:8px; flex:none; flex-wrap:nowrap; overflow-x:auto; height:var(--pane-header-height); padding-block:4px; border-bottom-color:var(--macro-divider); }
 .macro-toolbar :is(select,.filter-picker-trigger,button) { min-height:28px; padding-block:4px; line-height:18px; white-space:nowrap; }
 .macro-toolbar > button { flex:none; }
 .macro-toolbar .control { display:flex; flex-direction:row; flex:none; align-items:center; gap:6px; }
@@ -11,8 +11,8 @@
 #macro-economies { inline-size:clamp(110px,18cqw,160px); }
 .macro-toolbar .filter-picker-trigger { width:100%; }
 .macro-toolbar select { width:clamp(130px,18cqw,180px); }
-.macro-context { flex:none; padding:7px 12px; border-block:1px solid var(--border); }
-.macro-scroll { flex:0 1 auto; min-height:0; max-height:none; scroll-padding-inline-start:var(--macro-economy-width); }
+.macro-context { flex:none; padding:7px 12px; border-block:0; }
+.macro-scroll { flex:0 1 auto; min-height:0; max-height:none; scroll-padding-inline-start:var(--macro-economy-width); border-top-color:var(--macro-divider); }
 .macro-table { width:100%; }
 .macro-table :is(th,td) { min-width:130px; padding:7px 9px; }
 .macro-table tbody th { z-index:1; text-align:start; font-weight:inherit; color:inherit; background:var(--surface); }
@@ -41,7 +41,7 @@
 #macro-source { max-height:220px; overflow:auto; line-height:1.5; overflow-wrap:anywhere; }
 #macro-source p { margin:7px 0; }
 .macro-status { margin:7px 12px; font-size:12px; color:var(--muted); }
-.macro-comparison .comparison-head { flex:none; }
+.macro-comparison .comparison-head { flex:none; border-bottom-color:var(--macro-divider); }
 #macro-charts { overflow:auto; min-height:0; display:grid; grid-template-columns:minmax(0,1fr); align-content:start; padding:10px; gap:10px; }
 .macro-chart-controls { align-items:center; }
 .macro-add-actions { display:flex; flex:none; gap:6px; }
